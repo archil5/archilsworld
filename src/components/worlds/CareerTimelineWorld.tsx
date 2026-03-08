@@ -500,12 +500,13 @@ const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButt
    PUZZLE 3: GOVERNANCE MATRIX
    ═══════════════════════════════════════════════════════════ */
 
-const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [matched, setMatched] = useState<Record<string, string>>({});
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const [wrongPair, setWrongPair] = useState<string | null>(null);
-  const isDone = solved || Object.keys(matched).length === puzzle.accounts.length;
+  const isDone = solved || autoReveal || Object.keys(matched).length === puzzle.accounts.length;
 
+  useEffect(() => { if (autoReveal) setMatched({ ...puzzle.matches }); }, [autoReveal, puzzle.matches]);
   useEffect(() => { setMatched({}); setSelectedAccount(null); setWrongPair(null); }, [puzzle.title]);
 
   const handleAccountClick = (accId: string) => {
