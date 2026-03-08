@@ -1,8 +1,8 @@
-import { useRef, useMemo, Suspense } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { brandLogos, chapterImages, careerLogos } from "@/data/brandLogos";
-import TileSurface, { CareerSplitSurface } from "./TileSurface";
 
 const HexTile = ({
   position,
@@ -27,7 +27,7 @@ const HexTile = ({
   brandLogo?: string;
   image?: string;
 }) => {
-  const groupRef = useRef<THREE.Group>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
   const ringRef = useRef<THREE.Mesh>(null);
   const baseY = position[1];
@@ -52,12 +52,12 @@ const HexTile = ({
   );
 
   useFrame((state) => {
-    if (!groupRef.current) return;
+    if (!meshRef.current) return;
     const t = state.clock.elapsedTime;
     const floatY = baseY + Math.sin(t * 0.8 + index * 0.5) * 0.05;
-    groupRef.current.position.set(position[0], isActive ? baseY + 0.35 : floatY, position[2]);
+    meshRef.current.position.y = isActive ? baseY + 0.35 : floatY;
     const s = isActive ? 1.12 + Math.sin(t * 3) * 0.02 : 1;
-    groupRef.current.scale.setScalar(s);
+    meshRef.current.scale.setScalar(s);
 
     if (glowRef.current) {
       const mat = glowRef.current.material as THREE.MeshBasicMaterial;
@@ -75,26 +75,46 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
+  const tileSize = 130;
+
+  const engravedFilter = [
+    "contrast(1.1)", "saturate(0.3)", "brightness(0.85)", "sepia(0.35)",
+    "drop-shadow(1px 2px 1px rgba(0,0,0,0.35))",
+    "drop-shadow(-1px -1px 0px rgba(255,250,240,0.4))",
+  ].join(" ");
+
+  const engravedFilterActive = [
+    "contrast(1.15)", "saturate(0.45)", "brightness(0.9)", "sepia(0.2)",
+    "drop-shadow(1px 2px 2px rgba(0,0,0,0.4))",
+    "drop-shadow(-1px -1px 1px rgba(255,250,240,0.5))",
+  ].join(" ");
+
+  const containerStyle: React.CSSProperties = {
+    width: tileSize, height: tileSize,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    borderRadius: "50%", overflow: "hidden",
+    boxShadow: "inset 0 2px 6px rgba(0,0,0,0.15), inset 0 -1px 3px rgba(255,250,240,0.2)",
+  };
+
+  const imgFilter = isActive ? engravedFilterActive : engravedFilter;
+
   return (
-    <group ref={groupRef} position={position}>
-      {/* Glow */}
+    <group position={position}>
       <mesh ref={glowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
         <circleGeometry args={[1.4, 32]} />
         <meshBasicMaterial color={color} transparent opacity={0} />
       </mesh>
 
-      {/* Active ring */}
       <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.35, 0]}>
         <ringGeometry args={[0.85, 0.95, 6]} />
         <meshBasicMaterial color={color} transparent opacity={0} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* Hex body */}
       <mesh
+        ref={meshRef}
         rotation={[-Math.PI / 2, 0, 0]}
         onClick={(e) => { e.stopPropagation(); onClick(); }}
-        castShadow
-        receiveShadow
+        castShadow receiveShadow
       >
         <extrudeGeometry args={[hexShape, extrudeSettings]} />
         <meshStandardMaterial
@@ -106,16 +126,38 @@ const HexTile = ({
         />
       </mesh>
 
-      {/* Logo/image surfaces — SIBLING meshes, not children of the hex */}
-      <Suspense fallback={null}>
-        {isCareer ? (
-          <CareerSplitSurface leftUrl={careerLogos.RBC} rightUrl={careerLogos.BMO} isActive={isActive} />
-        ) : imageSrc ? (
-          <TileSurface textureUrl={imageSrc} isActive={isActive} size={0.5} />
-        ) : logoSrc ? (
-          <TileSurface textureUrl={logoSrc} isActive={isActive} size={0.42} />
-        ) : null}
-      </Suspense>
+      <Html
+        position={[0, isActive ? 0.6 : 0.22, 0]}
+        center
+        distanceFactor={5.5}
+        style={{ pointerEvents: "none", userSelect: "none" }}
+      >
+        <div style={containerStyle}>
+          {isCareer ? (
+            <div style={{ width: tileSize, height: tileSize, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+              <div style={{ flex: 1, height: "100%", display: "flex", alignItems: "center", justifyContent: "center", borderRight: "1px solid rgba(160,130,100,0.2)" }}>
+                <img src={careerLogos.RBC} alt="RBC" style={{ height: "55%", objectFit: "contain", filter: imgFilter, mixBlendMode: "multiply", opacity: 0.85 }} />
+              </div>
+              <div style={{ flex: 1, height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <img src={careerLogos.BMO} alt="BMO" style={{ height: "55%", objectFit: "contain", filter: imgFilter, mixBlendMode: "multiply", opacity: 0.85 }} />
+              </div>
+              <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 3, height: "40%", background: "linear-gradient(to bottom, transparent, rgba(140,120,90,0.3), transparent)", borderRadius: 2 }} />
+            </div>
+          ) : imageSrc ? (
+            <div style={{ width: tileSize, height: tileSize, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <img src={imageSrc} alt={label} style={{ width: "88%", height: "88%", objectFit: "contain", filter: imgFilter, mixBlendMode: "multiply", opacity: 0.8 }} />
+            </div>
+          ) : logoSrc ? (
+            <div style={{ width: tileSize, height: tileSize, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <img src={logoSrc} alt={brandLogo} style={{ height: "60%", maxWidth: "80%", objectFit: "contain", filter: imgFilter, mixBlendMode: "multiply", opacity: 0.8 }} />
+            </div>
+          ) : (
+            <div style={{ width: tileSize, height: tileSize, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 42, lineHeight: 1, filter: "grayscale(0.4) drop-shadow(1px 2px 1px rgba(0,0,0,0.3))", opacity: 0.7 }}>{icon}</span>
+            </div>
+          )}
+        </div>
+      </Html>
 
       {isActive && <pointLight color={color} intensity={3} distance={5} position={[0, 1.8, 0]} />}
     </group>
