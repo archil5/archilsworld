@@ -88,7 +88,7 @@ const CodeBuilderWorld = () => {
                 style={{ background: "#fefcf9", border: "1px solid #e0d8cc" }}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xs font-mono" style={{ color: "#8a8078" }}>index.html</span>
-                  <span className="text-[10px] font-mono ml-auto" style={{ color: "rgba(80,70,60,0.35)" }}>
+                  <span className="text-[10px] font-mono ml-auto" style={{ color: "rgba(80,70,60,0.55)" }}>
                     {placed.length}/{codePieces.length} pieces
                   </span>
                 </div>
