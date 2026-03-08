@@ -984,6 +984,8 @@ const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
+
+      {!isDone && revealButton}
     </div>
   );
 };
