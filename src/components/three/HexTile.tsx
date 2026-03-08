@@ -132,40 +132,24 @@ const HexTile = ({
           }}
         >
           {imageSrc ? (
-            <div style={{ width: tileSize, height: tileSize, position: "relative" }}>
+            <div style={{
+              width: tileSize,
+              height: tileSize,
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
               <img
                 src={imageSrc}
                 alt={label}
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "50%",
-                  border: isActive ? `3px solid ${color}` : "2px solid rgba(180,140,100,0.3)",
-                  boxShadow: isActive ? `0 0 20px ${color}40` : "none",
+                  width: "90%",
+                  height: "90%",
+                  objectFit: "contain",
+                  filter: isActive ? "drop-shadow(0 0 8px rgba(0,0,0,0.15))" : "none",
                 }}
               />
-              <div style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: "6px 0 4px",
-                background: "linear-gradient(transparent, rgba(30,28,26,0.85))",
-                borderRadius: "0 0 60px 60px",
-                textAlign: "center",
-              }}>
-                <span style={{
-                  fontSize: 9,
-                  fontFamily: "'Cinzel', serif",
-                  fontWeight: 700,
-                  color: "#f5f0e8",
-                  letterSpacing: "0.1em",
-                  textShadow: "0 1px 3px rgba(0,0,0,0.5)",
-                }}>
-                  {label}
-                </span>
-              </div>
             </div>
           ) : isCareer ? (
             <div style={{
