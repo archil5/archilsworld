@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Terminal, Network, Grid3X3, Workflow, BarChart3, Shield, Sparkles, Eye } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Eye, Cloud, FileCode, Container, GitBranch } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 
 /* ═══════════════════════════════════════════════════════════
    TYPES
    ═══════════════════════════════════════════════════════════ */
 
-type PuzzleType = "terminal-seq" | "arch-flow" | "gov-matrix" | "pipeline" | "capacity" | "risk-assess";
+type PuzzleType = "aws-arch" | "terraform-debug" | "k8s-scheduler" | "cicd-pipeline";
 
 interface BasePuzzle {
   type: PuzzleType;
@@ -16,57 +16,43 @@ interface BasePuzzle {
   success: string;
 }
 
-// 1) Terminal Sequencer — click commands in order
-interface TerminalPuzzle extends BasePuzzle {
-  type: "terminal-seq";
-  commands: { id: string; cmd: string; desc: string }[];
-  correctOrder: string[];
-}
-
-// 2) Architecture Flow — connect nodes
-interface ArchNode { id: string; label: string; col: number; row: number; tier?: string }
-interface ArchFlowPuzzle extends BasePuzzle {
-  type: "arch-flow";
-  nodes: ArchNode[];
-  sequence: string[];
+// 1) AWS Architecture Builder — place services in correct slots
+interface AwsService { id: string; name: string; icon: string; desc: string }
+interface ArchSlot { id: string; label: string; tier: string; correctService: string }
+interface AwsArchPuzzle extends BasePuzzle {
+  type: "aws-arch";
+  services: AwsService[];
+  slots: ArchSlot[];
   tiers: string[];
 }
 
-// 3) Governance Matrix — match pairs
-interface GovMatrixPuzzle extends BasePuzzle {
-  type: "gov-matrix";
-  accounts: { id: string; name: string; desc: string }[];
-  controls: { id: string; name: string }[];
-  matches: Record<string, string>; // account → control
+// 2) Terraform Plan Debugger — find & fix broken lines
+interface TfLine { id: string; code: string; isBroken: boolean; fix?: string; hint?: string }
+interface TerraformPuzzle extends BasePuzzle {
+  type: "terraform-debug";
+  fileName: string;
+  lines: TfLine[];
 }
 
-// 4) Pipeline Assembler — place stages
+// 3) K8s Pod Scheduler — assign pods to nodes
+interface Pod { id: string; name: string; cpu: number; mem: number; icon: string }
+interface K8sNode { id: string; name: string; cpuCap: number; memCap: number; labels: string[] }
+interface K8sPuzzle extends BasePuzzle {
+  type: "k8s-scheduler";
+  pods: Pod[];
+  nodes: K8sNode[];
+  solution: Record<string, string>;
+}
+
+// 4) CI/CD Pipeline Builder — arrange stages
 interface PipelineStage { id: string; label: string; icon: string; desc: string }
-interface PipelinePuzzle extends BasePuzzle {
-  type: "pipeline";
+interface CicdPuzzle extends BasePuzzle {
+  type: "cicd-pipeline";
   stages: PipelineStage[];
   correctOrder: string[];
 }
 
-// 5) Capacity Planner — allocate to regions
-interface Workload { id: string; name: string; cpu: number; mem: number; latReq: "low" | "med" | "high" }
-interface Region { id: string; name: string; cpuCap: number; memCap: number; latency: "low" | "med" | "high" }
-interface CapacityPuzzle extends BasePuzzle {
-  type: "capacity";
-  workloads: Workload[];
-  regions: Region[];
-  solution: Record<string, string>; // workload → region
-}
-
-// 6) Risk Assessment — approve/reject models
-interface AIModel { id: string; name: string; attributes: Record<string, string>; safe: boolean; reason: string }
-interface RiskAssessPuzzle extends BasePuzzle {
-  type: "risk-assess";
-  criteria: string[];
-  models: AIModel[];
-}
-
-type RolePuzzle = TerminalPuzzle | ArchFlowPuzzle | GovMatrixPuzzle | PipelinePuzzle | CapacityPuzzle | RiskAssessPuzzle;
+type RolePuzzle = AwsArchPuzzle | TerraformPuzzle | K8sPuzzle | CicdPuzzle;
 
 interface JourneyStop {
   company: string;
@@ -95,19 +81,19 @@ const stops: JourneyStop[] = [
     techStack: ["Ansible", "Python", "Jenkins", "Splunk", "Palo Alto", "Linux"],
     wins: ["Automated compliance across 500+ endpoints", "Reduced firewall audit time by 60%", "Introduced Ansible to the security team"],
     puzzle: {
-      type: "terminal-seq",
-      title: "Compliance Automation Pipeline",
-      prompt: "Build the security automation flow by executing commands in the right order. Each command represents a real step in the compliance pipeline I built.",
-      commands: [
-        { id: "scan", cmd: "$ ansible-playbook scan_drift.yml", desc: "Scan 500+ endpoints for config drift against CIS benchmarks" },
-        { id: "parse", cmd: "$ python parse_findings.py --severity HIGH", desc: "Parse scan results, filter critical & high-severity findings" },
-        { id: "remediate", cmd: "$ ansible-playbook remediate_firewall.yml", desc: "Auto-remediate firewall rule violations across Palo Alto fleet" },
-        { id: "validate", cmd: "$ python validate_compliance.py --all", desc: "Re-validate all endpoints pass compliance baseline" },
-        { id: "report", cmd: "$ splunk-forwarder push --index=compliance", desc: "Push audit evidence to Splunk for executive reporting" },
-        { id: "notify", cmd: "$ jenkins trigger downstream_audit_gate", desc: "Trigger Jenkins pipeline gate for sign-off & archival" },
+      type: "cicd-pipeline",
+      title: "Security Automation Pipeline",
+      prompt: "Arrange the security automation stages in the correct order — this is the exact compliance pipeline I built at RBC.",
+      stages: [
+        { id: "scan", label: "Ansible: Scan Drift", icon: "🔍", desc: "Scan 500+ endpoints for config drift against CIS benchmarks" },
+        { id: "parse", label: "Python: Parse Findings", icon: "📋", desc: "Filter critical & high-severity findings from scan results" },
+        { id: "remediate", label: "Ansible: Remediate", icon: "🔧", desc: "Auto-remediate firewall rule violations across Palo Alto fleet" },
+        { id: "validate", label: "Python: Validate", icon: "✅", desc: "Re-validate all endpoints pass compliance baseline" },
+        { id: "report", label: "Splunk: Push Audit", icon: "📊", desc: "Push audit evidence to Splunk for executive reporting" },
+        { id: "notify", label: "Jenkins: Gate", icon: "🚦", desc: "Trigger Jenkins pipeline gate for sign-off & archival" },
       ],
       correctOrder: ["scan", "parse", "remediate", "validate", "report", "notify"],
-      success: "This exact pipeline cut manual audit effort by 60% and produced bank-ready compliance evidence every cycle.",
+      success: "This pipeline cut manual audit effort by 60% and produced bank-ready compliance evidence every cycle.",
     },
   },
   {
@@ -119,22 +105,27 @@ const stops: JourneyStop[] = [
     techStack: ["AWS", "Azure", "Terraform", "CloudFormation", "Docker", "Jenkins"],
     wins: ["Provisioning: weeks → hours", "IaC patterns adopted by 10+ teams", "30% cloud cost reduction"],
     puzzle: {
-      type: "arch-flow",
+      type: "aws-arch",
       title: "Zero-Downtime Migration Architecture",
-      prompt: "Connect the architecture nodes from source to production. Follow the path I designed for safe, zero-downtime cloud migration across 50+ applications.",
-      tiers: ["Discovery", "Provision", "Validate", "Cutover"],
-      nodes: [
-        { id: "inventory", label: "App Inventory & Deps", col: 0, row: 0, tier: "Discovery" },
-        { id: "assess", label: "Cloud Readiness Score", col: 0, row: 1, tier: "Discovery" },
-        { id: "tf-net", label: "Terraform: VPC + Subnets", col: 1, row: 0, tier: "Provision" },
-        { id: "tf-compute", label: "Terraform: ECS + RDS", col: 1, row: 1, tier: "Provision" },
-        { id: "smoke", label: "Smoke Test Suite", col: 2, row: 0, tier: "Validate" },
-        { id: "shadow", label: "Traffic Shadow (5%)", col: 2, row: 1, tier: "Validate" },
-        { id: "dns", label: "Weighted DNS Shift", col: 3, row: 0, tier: "Cutover" },
-        { id: "decom", label: "Legacy Decommission", col: 3, row: 1, tier: "Cutover" },
+      prompt: "Place each AWS service into the correct architecture slot to build the migration pipeline I designed for 50+ applications.",
+      tiers: ["Ingress", "Compute", "Data", "Monitoring"],
+      services: [
+        { id: "alb", name: "ALB", icon: "⚖️", desc: "Application Load Balancer — distributes traffic across targets" },
+        { id: "r53", name: "Route 53", icon: "🌐", desc: "DNS service — weighted routing for blue/green cutover" },
+        { id: "ecs", name: "ECS Fargate", icon: "📦", desc: "Serverless container orchestration — no EC2 management" },
+        { id: "rds", name: "RDS Aurora", icon: "🗄️", desc: "Managed relational database — multi-AZ for HA" },
+        { id: "s3", name: "S3", icon: "📂", desc: "Object storage — static assets & migration artifacts" },
+        { id: "cw", name: "CloudWatch", icon: "📊", desc: "Monitoring & alerting — SLO tracking post-migration" },
       ],
-      sequence: ["inventory", "assess", "tf-net", "tf-compute", "smoke", "shadow", "dns", "decom"],
-      success: "This architecture is how we migrated 50+ applications without a single minute of customer-facing downtime.",
+      slots: [
+        { id: "slot-dns", label: "DNS & Routing", tier: "Ingress", correctService: "r53" },
+        { id: "slot-lb", label: "Load Balancer", tier: "Ingress", correctService: "alb" },
+        { id: "slot-compute", label: "Container Runtime", tier: "Compute", correctService: "ecs" },
+        { id: "slot-db", label: "Database", tier: "Data", correctService: "rds" },
+        { id: "slot-storage", label: "Artifact Store", tier: "Data", correctService: "s3" },
+        { id: "slot-monitor", label: "Observability", tier: "Monitoring", correctService: "cw" },
+      ],
+      success: "This architecture migrated 50+ applications without a single minute of customer-facing downtime.",
     },
   },
   {
@@ -146,23 +137,39 @@ const stops: JourneyStop[] = [
     techStack: ["AWS", "Azure", "Kubernetes", "Helm", "Datadog", "Confluence"],
     wins: ["Architecture patterns reducing failures by 40%", "Executive-ready decision frameworks", "SLA program saving $2M/year"],
     puzzle: {
-      type: "gov-matrix",
-      title: "Multi-Account Governance Matrix",
-      prompt: "Match each cloud account archetype to its correct governance control. I designed this framework to bring order to 200+ ungoverned accounts.",
-      accounts: [
-        { id: "sandbox", name: "🧪 Sandbox", desc: "Developer experimentation, non-prod workloads" },
-        { id: "staging", name: "🔄 Staging", desc: "Pre-prod mirror, integration testing" },
-        { id: "production", name: "🏭 Production", desc: "Customer-facing, SLA-bound workloads" },
-        { id: "shared-svc", name: "🔗 Shared Services", desc: "Central logging, IAM, networking hub" },
+      type: "terraform-debug",
+      title: "Multi-Account Governance — Fix the Terraform",
+      prompt: "This Terraform config manages 200+ cloud accounts but has bugs. Click on each broken line to fix it — these are real mistakes I caught during governance rollout.",
+      fileName: "governance.tf",
+      lines: [
+        { id: "l1", code: 'resource "aws_organizations_account" "sandbox" {', isBroken: false },
+        { id: "l2", code: '  name  = "sandbox-dev"', isBroken: false },
+        { id: "l3", code: '  email = "sandbox@bmo.com"', isBroken: false },
+        { id: "l4", code: '  parent_id = aws_organizations_unit.dev.id', isBroken: false },
+        { id: "l5", code: '  tags = {', isBroken: false },
+        { id: "l6", code: '    CostCenter = ""', isBroken: true, fix: '    CostCenter = "CC-4420-DEV"', hint: "Empty CostCenter tag — untagged accounts waste $50K/month" },
+        { id: "l7", code: '  }', isBroken: false },
+        { id: "l8", code: '}', isBroken: false },
+        { id: "l9", code: '', isBroken: false },
+        { id: "l10", code: 'resource "aws_budgets_budget" "sandbox_limit" {', isBroken: false },
+        { id: "l11", code: '  budget_type  = "COST"', isBroken: false },
+        { id: "l12", code: '  limit_amount = "999999"', isBroken: true, fix: '  limit_amount = "500"', hint: "Budget limit too high — sandbox should cap at $500/month" },
+        { id: "l13", code: '  limit_unit   = "USD"', isBroken: false },
+        { id: "l14", code: '  time_unit    = "MONTHLY"', isBroken: false },
+        { id: "l15", code: '}', isBroken: false },
+        { id: "l16", code: '', isBroken: false },
+        { id: "l17", code: 'resource "aws_iam_policy" "sandbox_boundary" {', isBroken: false },
+        { id: "l18", code: '  name   = "SandboxBoundary"', isBroken: false },
+        { id: "l19", code: '  policy = jsonencode({', isBroken: false },
+        { id: "l20", code: '    Statement = [{', isBroken: false },
+        { id: "l21", code: '      Effect   = "Allow"', isBroken: true, fix: '      Effect   = "Deny"', hint: "Should DENY production actions in sandbox — Allow is a privilege escalation risk" },
+        { id: "l22", code: '      Action   = ["iam:CreateUser", "organizations:*"]', isBroken: false },
+        { id: "l23", code: '      Resource = "*"', isBroken: true, fix: '      Resource = "arn:aws:iam::*:role/SandboxRole"', hint: "Wildcard resource on IAM actions — scope to sandbox roles only" },
+        { id: "l24", code: '    }]', isBroken: false },
+        { id: "l25", code: '  })', isBroken: false },
+        { id: "l26", code: '}', isBroken: false },
       ],
-      controls: [
-        { id: "budget-kill", name: "Budget Kill Switch + 72hr TTL" },
-        { id: "change-window", name: "Change Window + Approval Gate" },
-        { id: "sla-monitor", name: "SLA Scorecard + Auto-Escalation" },
-        { id: "cross-audit", name: "Cross-Account Audit Trail" },
-      ],
-      matches: { "sandbox": "budget-kill", "staging": "change-window", "production": "sla-monitor", "shared-svc": "cross-audit" },
-      success: "This governance matrix stabilized 200+ accounts and saved $2M/year by killing untagged sandbox resources automatically.",
+      success: "These exact fixes stabilized 200+ accounts and saved $2M/year by killing untagged sandbox resources automatically.",
     },
   },
   {
@@ -174,21 +181,24 @@ const stops: JourneyStop[] = [
     techStack: ["Kubernetes", "EKS", "GitHub Actions", "ArgoCD", "Vault", "Istio"],
     wins: ["Led team of 6, 100% retention", "Zero critical audit findings", "3 engineers promoted to senior"],
     puzzle: {
-      type: "pipeline",
-      title: "Enterprise CI/CD Pipeline",
-      prompt: "Assemble the pipeline stages in the correct order. This is the exact delivery system that cut deploy time from 5 days to 2 hours.",
-      stages: [
-        { id: "lint", label: "Lint + Unit Tests", icon: "🔍", desc: "Static analysis, linting, unit test gate — fails fast on code quality" },
-        { id: "build", label: "Container Build", icon: "📦", desc: "Multi-stage Docker build with layer caching, image tagging" },
-        { id: "scan", label: "Trivy + Snyk Scan", icon: "🛡️", desc: "Container image vulnerability scan — blocks on HIGH/CRITICAL CVEs" },
-        { id: "sign", label: "Image Sign (Cosign)", icon: "✍️", desc: "Cryptographic image signing for supply chain integrity" },
-        { id: "gitops", label: "ArgoCD Sync", icon: "🔄", desc: "GitOps reconciliation — desired state applied to EKS cluster" },
-        { id: "canary", label: "Canary (Istio 5%)", icon: "🐤", desc: "Route 5% traffic to new version via Istio virtual service" },
-        { id: "promote", label: "Full Rollout", icon: "🚀", desc: "Promote canary to 100% after health checks pass" },
-        { id: "observe", label: "Datadog SLO Gate", icon: "📊", desc: "Post-deploy SLO validation — auto-rollback if error rate spikes" },
+      type: "k8s-scheduler",
+      title: "EKS Pod Scheduler",
+      prompt: "Assign each pod to the correct EKS node based on CPU/memory constraints and node labels. This is how I planned workload placement for our container platform.",
+      pods: [
+        { id: "api", name: "api-gateway", cpu: 2, mem: 4, icon: "🌐" },
+        { id: "worker", name: "batch-worker", cpu: 4, mem: 8, icon: "⚙️" },
+        { id: "cache", name: "redis-cache", cpu: 1, mem: 8, icon: "💾" },
+        { id: "monitor", name: "datadog-agent", cpu: 1, mem: 2, icon: "📊" },
+        { id: "vault", name: "vault-injector", cpu: 1, mem: 2, icon: "🔐" },
+        { id: "istio", name: "istio-proxy", cpu: 2, mem: 4, icon: "🔀" },
       ],
-      correctOrder: ["lint", "build", "scan", "sign", "gitops", "canary", "promote", "observe"],
-      success: "This 8-stage pipeline delivered zero critical audit findings and cut deploy cycles from 5 days to under 2 hours.",
+      nodes: [
+        { id: "compute", name: "m5.2xlarge (Compute)", cpuCap: 8, memCap: 16, labels: ["workload=compute"] },
+        { id: "memory", name: "r5.xlarge (Memory)", cpuCap: 4, memCap: 16, labels: ["workload=memory"] },
+        { id: "system", name: "t3.large (System)", cpuCap: 2, memCap: 4, labels: ["workload=system"] },
+      ],
+      solution: { "api": "compute", "worker": "compute", "cache": "memory", "monitor": "system", "vault": "system", "istio": "memory" },
+      success: "This scheduling strategy cut deploy cycles from 5 days to under 2 hours with zero resource contention.",
     },
   },
   {
@@ -200,24 +210,27 @@ const stops: JourneyStop[] = [
     techStack: ["EKS", "Lambda", "Step Functions", "API Gateway", "CDK", "Grafana"],
     wins: ["60% complexity reduction via serverless", "Multi-region active-active", "Golden-path templates: weeks → minutes"],
     puzzle: {
-      type: "capacity",
-      title: "Multi-Region Capacity Planning",
-      prompt: "Assign each workload to the correct AWS region based on latency requirements and capacity constraints. This is how I planned multi-region active-active at scale.",
-      workloads: [
-        { id: "api-gw", name: "API Gateway (Core Banking)", cpu: 4, mem: 8, latReq: "low" },
-        { id: "batch", name: "Batch ETL (Nightly)", cpu: 8, mem: 16, latReq: "high" },
-        { id: "ml-infer", name: "ML Inference (Fraud)", cpu: 6, mem: 12, latReq: "low" },
-        { id: "static", name: "Static Assets (CDN Origin)", cpu: 1, mem: 2, latReq: "high" },
-        { id: "event-bus", name: "Event Bus (Kafka)", cpu: 4, mem: 8, latReq: "med" },
-        { id: "logs", name: "Log Aggregation", cpu: 2, mem: 8, latReq: "high" },
+      type: "aws-arch",
+      title: "Serverless Event-Driven Architecture",
+      prompt: "Build the multi-region serverless architecture I designed for 1000+ developers — place each AWS service in its correct slot.",
+      tiers: ["API Layer", "Processing", "Storage", "Orchestration"],
+      services: [
+        { id: "apigw", name: "API Gateway", icon: "🚪", desc: "REST/WebSocket API endpoint — request routing & throttling" },
+        { id: "lambda", name: "Lambda", icon: "⚡", desc: "Serverless functions — event-driven compute, zero servers" },
+        { id: "sqs", name: "SQS", icon: "📨", desc: "Message queue — decouples producers and consumers" },
+        { id: "dynamo", name: "DynamoDB", icon: "🗃️", desc: "NoSQL database — single-digit ms latency at any scale" },
+        { id: "step", name: "Step Functions", icon: "🔄", desc: "Workflow orchestration — visual state machines for complex flows" },
+        { id: "eventbridge", name: "EventBridge", icon: "📡", desc: "Event bus — routes events between services and accounts" },
       ],
-      regions: [
-        { id: "ca-central", name: "🇨🇦 ca-central-1 (Primary)", cpuCap: 14, memCap: 28, latency: "low" },
-        { id: "us-east", name: "🇺🇸 us-east-1 (Failover)", cpuCap: 12, memCap: 24, latency: "med" },
-        { id: "eu-west", name: "🇪🇺 eu-west-1 (DR/Batch)", cpuCap: 11, memCap: 26, latency: "high" },
+      slots: [
+        { id: "slot-api", label: "API Endpoint", tier: "API Layer", correctService: "apigw" },
+        { id: "slot-compute", label: "Compute", tier: "Processing", correctService: "lambda" },
+        { id: "slot-queue", label: "Message Queue", tier: "Processing", correctService: "sqs" },
+        { id: "slot-db", label: "Database", tier: "Storage", correctService: "dynamo" },
+        { id: "slot-workflow", label: "Workflow Engine", tier: "Orchestration", correctService: "step" },
+        { id: "slot-events", label: "Event Router", tier: "Orchestration", correctService: "eventbridge" },
       ],
-      solution: { "api-gw": "ca-central", "ml-infer": "ca-central", "event-bus": "us-east", "batch": "eu-west", "static": "eu-west", "logs": "us-east" },
-      success: "This capacity model powered active-active across 3 regions serving 1000+ developers with full disaster recovery.",
+      success: "This event-driven architecture served 1000+ developers with 60% less complexity than the previous monolith.",
     },
   },
   {
@@ -229,65 +242,352 @@ const stops: JourneyStop[] = [
     techStack: ["Azure OpenAI", "AI Studio", "LangChain", "Vector DBs", "MLflow", "Python"],
     wins: ["Enterprise AI platform architecture", "Model governance framework", "RAG at petabyte scale", "AI security standards org-wide"],
     puzzle: {
-      type: "risk-assess",
-      title: "AI Model Risk Assessment",
-      prompt: "Review each AI model deployment request. Approve or reject based on banking compliance criteria. This is the governance framework I built for enterprise AI.",
-      criteria: [
-        "Data residency must be Canadian (PIPEDA)",
-        "No PII in training data without consent",
-        "Model explainability score ≥ 0.7",
-        "Red-team tested before production",
+      type: "terraform-debug",
+      title: "Azure AI Platform — Fix the Terraform",
+      prompt: "This Terraform config provisions the Azure AI platform but has security issues. Click on broken lines to fix them — these are real compliance gaps I caught.",
+      fileName: "azure-ai-platform.tf",
+      lines: [
+        { id: "l1", code: 'resource "azurerm_cognitive_account" "openai" {', isBroken: false },
+        { id: "l2", code: '  name                = "bmo-ai-openai"', isBroken: false },
+        { id: "l3", code: '  resource_group_name = azurerm_resource_group.ai.name', isBroken: false },
+        { id: "l4", code: '  location            = "eastus"', isBroken: true, fix: '  location            = "canadacentral"', hint: "Data residency violation — PIPEDA requires Canadian data hosting" },
+        { id: "l5", code: '  kind                = "OpenAI"', isBroken: false },
+        { id: "l6", code: '  sku_name            = "S0"', isBroken: false },
+        { id: "l7", code: '', isBroken: false },
+        { id: "l8", code: '  network_acls {', isBroken: false },
+        { id: "l9", code: '    default_action = "Allow"', isBroken: true, fix: '    default_action = "Deny"', hint: "Public access enabled — AI endpoints must be private in banking" },
+        { id: "l10", code: '    ip_rules       = []', isBroken: false },
+        { id: "l11", code: '  }', isBroken: false },
+        { id: "l12", code: '}', isBroken: false },
+        { id: "l13", code: '', isBroken: false },
+        { id: "l14", code: 'resource "azurerm_private_endpoint" "openai_pe" {', isBroken: false },
+        { id: "l15", code: '  name                = "openai-private-endpoint"', isBroken: false },
+        { id: "l16", code: '  resource_group_name = azurerm_resource_group.ai.name', isBroken: false },
+        { id: "l17", code: '  location            = "canadacentral"', isBroken: false },
+        { id: "l18", code: '  subnet_id           = azurerm_subnet.ai.id', isBroken: false },
+        { id: "l19", code: '', isBroken: false },
+        { id: "l20", code: '  private_service_connection {', isBroken: false },
+        { id: "l21", code: '    name                           = "openai-psc"', isBroken: false },
+        { id: "l22", code: '    is_manual_connection            = false', isBroken: false },
+        { id: "l23", code: '    private_connection_resource_id  = azurerm_cognitive_account.openai.id', isBroken: false },
+        { id: "l24", code: '    subresource_names               = ["account"]', isBroken: false },
+        { id: "l25", code: '  }', isBroken: false },
+        { id: "l26", code: '}', isBroken: false },
+        { id: "l27", code: '', isBroken: false },
+        { id: "l28", code: 'resource "azurerm_key_vault_secret" "api_key" {', isBroken: false },
+        { id: "l29", code: '  name         = "openai-api-key"', isBroken: false },
+        { id: "l30", code: '  value        = "sk-abc123hardcoded"', isBroken: true, fix: '  value        = data.azurerm_key_vault_secret.rotated_key.value', hint: "Hardcoded API key — must reference rotated secret from Key Vault" },
+        { id: "l31", code: '  key_vault_id = azurerm_key_vault.ai.id', isBroken: false },
+        { id: "l32", code: '  content_type = "application/json"', isBroken: false },
+        { id: "l33", code: '  expiration_date = "2099-12-31T00:00:00Z"', isBroken: true, fix: '  expiration_date = "2026-06-30T00:00:00Z"', hint: "Secret never expires — banking policy requires 90-day rotation" },
+        { id: "l34", code: '}', isBroken: false },
       ],
-      models: [
-        {
-          id: "fraud-v2", name: "Fraud Detection v2",
-          attributes: { "Data Residency": "🇨🇦 Canada (Azure Canada Central)", "PII Handling": "Tokenized, consent-verified", "Explainability": "0.82 (SHAP)", "Red-Team": "✅ 3 rounds completed" },
-          safe: true, reason: "Meets all criteria — Canadian data, tokenized PII, high explainability, fully red-teamed."
-        },
-        {
-          id: "chatbot-v1", name: "Customer Chatbot v1",
-          attributes: { "Data Residency": "🇺🇸 US East (Azure Virginia)", "PII Handling": "Raw transcripts in fine-tuning", "Explainability": "0.45 (black box)", "Red-Team": "❌ Not tested" },
-          safe: false, reason: "Fails 4/4 criteria — US-hosted data violates PIPEDA, raw PII in training, low explainability, no red-team testing."
-        },
-        {
-          id: "doc-summary", name: "Document Summarizer",
-          attributes: { "Data Residency": "🇨🇦 Canada (Azure Canada Central)", "PII Handling": "No PII in pipeline", "Explainability": "0.91 (attention maps)", "Red-Team": "✅ 2 rounds completed" },
-          safe: true, reason: "Clean deployment — no PII exposure, high explainability, Canadian-hosted, fully tested."
-        },
-        {
-          id: "credit-score", name: "Credit Scoring Model",
-          attributes: { "Data Residency": "🇨🇦 Canada (Azure Canada Central)", "PII Handling": "Encrypted, consent-verified", "Explainability": "0.65 (below threshold)", "Red-Team": "✅ 1 round completed" },
-          safe: false, reason: "Explainability at 0.65 is below the 0.7 threshold — critical for credit decisions under fair lending laws."
-        },
-      ],
-      success: "This governance framework ensured every AI model at BMO met banking-grade compliance before touching production data.",
+      success: "These fixes ensured the Azure AI platform met PIPEDA, OSFI, and internal banking security standards before production.",
     },
   },
 ];
 
 /* ═══════════════════════════════════════════════════════════
-   PUZZLE 1: TERMINAL SEQUENCER
+   PUZZLE 1: AWS ARCHITECTURE BUILDER
    ═══════════════════════════════════════════════════════════ */
 
-const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: TerminalPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
-  const [placed, setPlaced] = useState<string[]>([]);
-  const [wrongId, setWrongId] = useState<string | null>(null);
-  const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
+const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: {
+  puzzle: AwsArchPuzzle; color: string; solved: boolean; onSolve: () => void;
+  autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void;
+}) => {
+  const [placements, setPlacements] = useState<Record<string, string>>({});
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [wrongSlot, setWrongSlot] = useState<string | null>(null);
 
-  useEffect(() => { if (autoReveal) setPlaced([...puzzle.correctOrder]); }, [autoReveal, puzzle.correctOrder]);
+  useEffect(() => {
+    if (autoReveal) {
+      const auto: Record<string, string> = {};
+      puzzle.slots.forEach(s => { auto[s.id] = s.correctService; });
+      setPlacements(auto);
+    }
+  }, [autoReveal, puzzle.slots]);
 
-  const nextExpected = puzzle.correctOrder[placed.length];
+  const isDone = solved || autoReveal || Object.keys(placements).length === puzzle.slots.length;
 
-  const handleClick = (id: string) => {
-    if (isDone) return;
-    if (id === nextExpected) {
-      const next = [...placed, id];
-      setPlaced(next);
-      setWrongId(null);
-      if (next.length === puzzle.correctOrder.length) onSolve();
+  const placedServices = new Set(Object.values(placements));
+  const availableServices = puzzle.services.filter(s => !placedServices.has(s.id));
+
+  const handleSlotClick = (slotId: string) => {
+    if (isDone || !selectedService) return;
+    const slot = puzzle.slots.find(s => s.id === slotId);
+    if (!slot) return;
+    if (selectedService === slot.correctService) {
+      setPlacements(prev => {
+        const next = { ...prev, [slotId]: selectedService };
+        if (Object.keys(next).length === puzzle.slots.length) onSolve();
+        return next;
+      });
+      setSelectedService(null);
     } else {
-      setWrongId(id);
-      setTimeout(() => setWrongId(null), 500);
+      setWrongSlot(slotId);
+      setTimeout(() => setWrongSlot(null), 500);
+    }
+  };
+
+  const groupedSlots = puzzle.tiers.map(tier => ({
+    tier,
+    slots: puzzle.slots.filter(s => s.tier === tier),
+  }));
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Cloud size={14} style={{ color }} />
+          <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
+        </div>
+        <button onClick={() => { setPlacements({}); setSelectedService(null); onReset?.(); }}
+          className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer"
+          style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
+      </div>
+      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
+
+      {/* Service palette */}
+      {!isDone && (
+        <div className="flex flex-wrap gap-1.5 p-2.5 rounded-lg" style={{ background: "rgba(180,140,100,0.04)", border: "1px solid rgba(180,140,100,0.1)" }}>
+          <p className="w-full text-[8px] font-mono uppercase tracking-widest mb-1" style={{ color: "rgba(80,70,60,0.45)" }}>
+            {selectedService ? "Now click a slot below ↓" : "Select a service to place ↓"}
+          </p>
+          {availableServices.map(svc => (
+            <motion.button key={svc.id}
+              onClick={() => setSelectedService(svc.id === selectedService ? null : svc.id)}
+              className="text-[10px] font-mono px-2.5 py-1.5 rounded-lg cursor-pointer transition-all"
+              style={{
+                background: selectedService === svc.id ? `${color}15` : "#fefcf9",
+                border: `1.5px solid ${selectedService === svc.id ? color : "rgba(180,140,100,0.15)"}`,
+                color: selectedService === svc.id ? color : "#2d2a26",
+                boxShadow: selectedService === svc.id ? `0 0 8px ${color}15` : "none",
+              }}
+              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              {svc.icon} {svc.name}
+            </motion.button>
+          ))}
+        </div>
+      )}
+
+      {/* Architecture slots by tier */}
+      <div className="space-y-2">
+        {groupedSlots.map(({ tier, slots }) => (
+          <div key={tier}>
+            <p className="text-[8px] font-mono uppercase tracking-widest mb-1.5" style={{ color: `${color}80` }}>{tier}</p>
+            <div className="grid grid-cols-2 gap-2">
+              {slots.map(slot => {
+                const placed = placements[slot.id];
+                const service = placed ? puzzle.services.find(s => s.id === placed) : null;
+                const isWrong = wrongSlot === slot.id;
+                return (
+                  <motion.div key={slot.id}
+                    onClick={() => handleSlotClick(slot.id)}
+                    className="p-2.5 rounded-lg cursor-pointer transition-all"
+                    style={{
+                      background: placed ? `${color}06` : selectedService ? `${color}04` : "#fefcf9",
+                      border: `1.5px dashed ${placed ? `${color}40` : isWrong ? "#dc3232" : selectedService ? `${color}30` : "rgba(180,140,100,0.2)"}`,
+                    }}
+                    animate={isWrong ? { x: [0, -3, 3, -2, 2, 0] } : {}}
+                    transition={isWrong ? { duration: 0.35 } : {}}>
+                    <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>{slot.label}</p>
+                    {service ? (
+                      <p className="text-xs font-mono font-bold mt-0.5" style={{ color }}>{service.icon} {service.name}</p>
+                    ) : (
+                      <p className="text-[10px] font-mono mt-0.5" style={{ color: "rgba(180,140,100,0.3)" }}>Drop service here</p>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Progress */}
+      <div className="flex items-center gap-1.5">
+        {puzzle.slots.map((s, i) => (
+          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300"
+            style={{ background: placements[s.id] ? color : "rgba(180,140,100,0.12)" }} />
+        ))}
+      </div>
+
+      {isDone && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
+          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Architecture Complete</p>
+          <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
+        </motion.div>
+      )}
+      {!isDone && revealButton}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   PUZZLE 2: TERRAFORM PLAN DEBUGGER
+   ═══════════════════════════════════════════════════════════ */
+
+const TerraformDebuggerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: {
+  puzzle: TerraformPuzzle; color: string; solved: boolean; onSolve: () => void;
+  autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void;
+}) => {
+  const [fixed, setFixed] = useState<Set<string>>(new Set());
+  const brokenLines = puzzle.lines.filter(l => l.isBroken);
+  const totalBroken = brokenLines.length;
+
+  useEffect(() => {
+    if (autoReveal) setFixed(new Set(brokenLines.map(l => l.id)));
+  }, [autoReveal]);
+
+  const isDone = solved || autoReveal || fixed.size === totalBroken;
+
+  const handleLineClick = (line: TfLine) => {
+    if (isDone || !line.isBroken || fixed.has(line.id)) return;
+    setFixed(prev => {
+      const next = new Set(prev);
+      next.add(line.id);
+      if (next.size === totalBroken) onSolve();
+      return next;
+    });
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <FileCode size={14} style={{ color }} />
+          <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
+        </div>
+        <button onClick={() => { setFixed(new Set()); onReset?.(); }}
+          className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer"
+          style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
+      </div>
+      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
+      <p className="text-[9px] font-mono px-2 py-1 rounded inline-block" style={{ background: `${color}08`, color, border: `1px solid ${color}20` }}>
+        🐛 {totalBroken - fixed.size} bug{totalBroken - fixed.size !== 1 ? "s" : ""} remaining
+      </p>
+
+      {/* Code block */}
+      <div className="rounded-lg overflow-hidden" style={{ background: "#1a1a2e", border: "1px solid #2a2a4a" }}>
+        <div className="flex items-center gap-1.5 px-3 py-1.5" style={{ background: "#12122a" }}>
+          <div className="w-2 h-2 rounded-full" style={{ background: "#ff5f56" }} />
+          <div className="w-2 h-2 rounded-full" style={{ background: "#ffbd2e" }} />
+          <div className="w-2 h-2 rounded-full" style={{ background: "#27c93f" }} />
+          <span className="text-[9px] font-mono ml-2" style={{ color: "rgba(255,255,255,0.3)" }}>{puzzle.fileName}</span>
+        </div>
+        <div className="p-3 overflow-x-auto">
+          {puzzle.lines.map((line, idx) => {
+            const isFixed = fixed.has(line.id);
+            const isBroken = line.isBroken && !isFixed;
+            return (
+              <motion.div key={line.id}
+                onClick={() => handleLineClick(line)}
+                className={`flex items-start gap-2 px-1 py-0.5 rounded-sm ${line.isBroken && !isDone ? "cursor-pointer" : ""}`}
+                style={{
+                  background: isFixed ? "rgba(42,125,79,0.1)" : isBroken ? "rgba(220,50,50,0.05)" : "transparent",
+                }}
+                whileHover={isBroken ? { background: "rgba(220,50,50,0.12)" } : {}}>
+                <span className="text-[9px] font-mono w-5 text-right shrink-0 select-none"
+                  style={{ color: isBroken ? "#dc3232" : isFixed ? "#2a7d4f" : "rgba(255,255,255,0.2)" }}>{idx + 1}</span>
+                <span className="text-[11px] font-mono whitespace-pre" style={{
+                  color: isFixed ? "#7ee8a8" : isBroken ? "#ff8888" : line.code === "" ? "transparent" : "rgba(255,255,255,0.75)",
+                  textDecoration: isFixed ? "none" : isBroken ? "wavy underline" : "none",
+                  textDecorationColor: isBroken ? "#dc323260" : undefined,
+                }}>
+                  {isFixed && line.fix ? line.fix : line.code || " "}
+                </span>
+                {isBroken && (
+                  <motion.span className="text-[8px] shrink-0 ml-auto"
+                    animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+                    ⚠️
+                  </motion.span>
+                )}
+                {isFixed && (
+                  <span className="text-[8px] shrink-0 ml-auto">✅</span>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Fixed hints */}
+      {fixed.size > 0 && (
+        <div className="space-y-1.5">
+          {brokenLines.filter(l => fixed.has(l.id)).map(l => (
+            <motion.div key={l.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+              className="text-[9px] font-mono p-2 rounded-lg flex items-start gap-2"
+              style={{ background: "rgba(42,125,79,0.04)", border: "1px solid rgba(42,125,79,0.1)", color: "rgba(45,42,38,0.7)" }}>
+              <span style={{ color: "#2a7d4f" }}>✓</span> {l.hint}
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Progress */}
+      <div className="flex items-center gap-1.5">
+        {brokenLines.map((l, i) => (
+          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300"
+            style={{ background: fixed.has(l.id) ? "#2a7d4f" : "rgba(180,140,100,0.12)" }} />
+        ))}
+      </div>
+
+      {isDone && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
+          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ All Bugs Fixed</p>
+          <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
+        </motion.div>
+      )}
+      {!isDone && revealButton}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   PUZZLE 3: K8S POD SCHEDULER
+   ═══════════════════════════════════════════════════════════ */
+
+const K8sPodSchedulerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: {
+  puzzle: K8sPuzzle; color: string; solved: boolean; onSolve: () => void;
+  autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void;
+}) => {
+  const [assignments, setAssignments] = useState<Record<string, string>>({});
+  const [selectedPod, setSelectedPod] = useState<string | null>(null);
+  const [wrongNode, setWrongNode] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (autoReveal) setAssignments({ ...puzzle.solution });
+  }, [autoReveal, puzzle.solution]);
+
+  const isDone = solved || autoReveal || Object.keys(assignments).length === puzzle.pods.length;
+  const assignedPods = new Set(Object.keys(assignments));
+  const availablePods = puzzle.pods.filter(p => !assignedPods.has(p.id));
+
+  const getNodeUsage = (nodeId: string) => {
+    let cpu = 0, mem = 0;
+    Object.entries(assignments).forEach(([podId, nId]) => {
+      if (nId === nodeId) {
+        const pod = puzzle.pods.find(p => p.id === podId);
+        if (pod) { cpu += pod.cpu; mem += pod.mem; }
+      }
+    });
+    return { cpu, mem };
+  };
+
+  const handleNodeClick = (nodeId: string) => {
+    if (isDone || !selectedPod) return;
+    if (puzzle.solution[selectedPod] === nodeId) {
+      setAssignments(prev => {
+        const next = { ...prev, [selectedPod]: nodeId };
+        if (Object.keys(next).length === puzzle.pods.length) onSolve();
+        return next;
+      });
+      setSelectedPod(null);
+    } else {
+      setWrongNode(nodeId);
+      setTimeout(() => setWrongNode(null), 500);
     }
   };
 
@@ -295,334 +595,142 @@ const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Terminal size={14} style={{ color }} />
+          <Container size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        <button onClick={() => { setPlaced([]); setWrongId(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
+        <button onClick={() => { setAssignments({}); setSelectedPod(null); onReset?.(); }}
+          className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer"
+          style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
-      {/* Terminal display */}
-      <div className="rounded-lg overflow-hidden" style={{ background: "#1a1a2e", border: "1px solid #2a2a4a" }}>
-        <div className="flex items-center gap-1.5 px-3 py-1.5" style={{ background: "#12122a" }}>
-          <div className="w-2 h-2 rounded-full" style={{ background: "#ff5f56" }} />
-          <div className="w-2 h-2 rounded-full" style={{ background: "#ffbd2e" }} />
-          <div className="w-2 h-2 rounded-full" style={{ background: "#27c93f" }} />
-          <span className="text-[8px] font-mono ml-2" style={{ color: "#555" }}>compliance-pipeline.sh</span>
-        </div>
-        <div className="px-3 py-2 space-y-1 min-h-[100px]">
-          {placed.map((id, i) => {
-            const cmd = puzzle.commands.find(c => c.id === id)!;
-            return (
-              <motion.div key={id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
-                <p className="text-[10px] font-mono" style={{ color: "#27c93f" }}>{cmd.cmd}</p>
-                <p className="text-[8px] font-mono ml-4" style={{ color: "#555" }}># {cmd.desc}</p>
-              </motion.div>
-            );
-          })}
-          {!isDone && (
-            <motion.span className="text-[10px] font-mono inline-block" style={{ color: "#27c93f" }}
-              animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
-              █
-            </motion.span>
-          )}
-          {isDone && <p className="text-[10px] font-mono mt-1" style={{ color: "#27c93f" }}>✓ Pipeline complete — all stages passed.</p>}
-        </div>
-      </div>
-
-      {/* Command choices */}
-      <div className="grid grid-cols-2 gap-2">
-        {puzzle.commands.map(cmd => {
-          const isPlaced = placed.includes(cmd.id);
-          const isWrong = wrongId === cmd.id;
-          const isNext = cmd.id === nextExpected;
-          return (
-            <motion.button key={cmd.id} onClick={() => handleClick(cmd.id)} disabled={isPlaced || isDone}
-              className="text-left p-2.5 rounded-lg cursor-pointer disabled:cursor-default transition-all"
+      {/* Pod palette */}
+      {!isDone && (
+        <div className="flex flex-wrap gap-1.5 p-2.5 rounded-lg" style={{ background: "rgba(180,140,100,0.04)", border: "1px solid rgba(180,140,100,0.1)" }}>
+          <p className="w-full text-[8px] font-mono uppercase tracking-widest mb-1" style={{ color: "rgba(80,70,60,0.45)" }}>
+            {selectedPod ? "Assign to a node below ↓" : "Select a pod to schedule ↓"}
+          </p>
+          {availablePods.map(pod => (
+            <motion.button key={pod.id}
+              onClick={() => setSelectedPod(pod.id === selectedPod ? null : pod.id)}
+              className="text-[10px] font-mono px-2.5 py-1.5 rounded-lg cursor-pointer transition-all"
               style={{
-                background: isPlaced ? `${color}08` : isWrong ? "rgba(220,50,50,0.06)" : "#fefcf9",
-                border: `1.5px solid ${isPlaced ? `${color}30` : isWrong ? "#dc3232" : isNext ? `${color}40` : "rgba(180,140,100,0.15)"}`,
-                opacity: isPlaced ? 0.5 : 1,
+                background: selectedPod === pod.id ? `${color}15` : "#fefcf9",
+                border: `1.5px solid ${selectedPod === pod.id ? color : "rgba(180,140,100,0.15)"}`,
+                color: selectedPod === pod.id ? color : "#2d2a26",
               }}
-              animate={isWrong ? { x: [0, -4, 4, -2, 2, 0] } : {}}
-              transition={isWrong ? { duration: 0.3 } : {}}>
-              <p className="text-[9px] font-mono truncate" style={{ color: isPlaced ? `${color}80` : "#2d2a26" }}>{cmd.cmd}</p>
-              <p className="text-[8px] font-body mt-0.5 line-clamp-1" style={{ color: "rgba(80,70,60,0.5)" }}>{cmd.desc}</p>
+              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              {pod.icon} {pod.name}
+              <span className="ml-1 opacity-50">({pod.cpu}cpu, {pod.mem}Gi)</span>
             </motion.button>
+          ))}
+        </div>
+      )}
+
+      {/* Nodes */}
+      <div className="space-y-2.5">
+        {puzzle.nodes.map(node => {
+          const usage = getNodeUsage(node.id);
+          const isWrong = wrongNode === node.id;
+          const assignedHere = Object.entries(assignments).filter(([, nId]) => nId === node.id)
+            .map(([pId]) => puzzle.pods.find(p => p.id === pId)!);
+          return (
+            <motion.div key={node.id}
+              onClick={() => handleNodeClick(node.id)}
+              className={`rounded-lg p-3 ${selectedPod ? "cursor-pointer" : ""}`}
+              style={{
+                background: selectedPod ? `${color}04` : "#fefcf9",
+                border: `1.5px solid ${isWrong ? "#dc3232" : selectedPod ? `${color}25` : "rgba(180,140,100,0.15)"}`,
+              }}
+              animate={isWrong ? { x: [0, -3, 3, -2, 2, 0] } : {}}
+              transition={isWrong ? { duration: 0.35 } : {}}>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-mono font-bold" style={{ color: "#2d2a26" }}>🖥️ {node.name}</p>
+                <div className="flex items-center gap-2">
+                  {node.labels.map(l => (
+                    <span key={l} className="text-[8px] font-mono px-1.5 py-0.5 rounded"
+                      style={{ background: `${color}08`, color, border: `1px solid ${color}15` }}>{l}</span>
+                  ))}
+                </div>
+              </div>
+              {/* Capacity bars */}
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                <div>
+                  <div className="flex justify-between text-[8px] font-mono mb-0.5" style={{ color: "rgba(80,70,60,0.5)" }}>
+                    <span>CPU</span><span>{usage.cpu}/{node.cpuCap}</span>
+                  </div>
+                  <div className="h-1.5 rounded-full" style={{ background: "rgba(180,140,100,0.1)" }}>
+                    <motion.div className="h-full rounded-full"
+                      style={{ background: usage.cpu > node.cpuCap ? "#dc3232" : color }}
+                      animate={{ width: `${Math.min((usage.cpu / node.cpuCap) * 100, 100)}%` }} />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-[8px] font-mono mb-0.5" style={{ color: "rgba(80,70,60,0.5)" }}>
+                    <span>Memory</span><span>{usage.mem}/{node.memCap}Gi</span>
+                  </div>
+                  <div className="h-1.5 rounded-full" style={{ background: "rgba(180,140,100,0.1)" }}>
+                    <motion.div className="h-full rounded-full"
+                      style={{ background: usage.mem > node.memCap ? "#dc3232" : color }}
+                      animate={{ width: `${Math.min((usage.mem / node.memCap) * 100, 100)}%` }} />
+                  </div>
+                </div>
+              </div>
+              {/* Assigned pods */}
+              {assignedHere.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {assignedHere.map(p => (
+                    <span key={p.id} className="text-[9px] font-mono px-2 py-0.5 rounded"
+                      style={{ background: `${color}08`, border: `1px solid ${color}15`, color }}>
+                      {p.icon} {p.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </motion.div>
           );
         })}
       </div>
 
       {/* Progress */}
       <div className="flex items-center gap-1.5">
-        {puzzle.correctOrder.map((_, i) => (
-          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300" style={{ background: i < placed.length ? color : "rgba(180,140,100,0.12)" }} />
+        {puzzle.pods.map((p, i) => (
+          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300"
+            style={{ background: assignments[p.id] ? color : "rgba(180,140,100,0.12)" }} />
         ))}
       </div>
 
       {isDone && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
-          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Pipeline Executed</p>
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
+          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ All Pods Scheduled</p>
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
-
       {!isDone && revealButton}
     </div>
   );
 };
 
 /* ═══════════════════════════════════════════════════════════
-   PUZZLE 2: ARCHITECTURE FLOW (enhanced connect-the-nodes)
+   PUZZLE 4: CI/CD PIPELINE BUILDER
    ═══════════════════════════════════════════════════════════ */
 
-const NODE_W = 120;
-const NODE_H = 48;
-const GRID_GAP_X = 150;
-const GRID_GAP_Y = 72;
-const PAD_X = 20;
-const PAD_Y = 30;
-const getNodeCenter = (node: ArchNode) => ({ x: PAD_X + node.col * GRID_GAP_X + NODE_W / 2, y: PAD_Y + node.row * GRID_GAP_Y + NODE_H / 2 });
-
-const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
-  const [connected, setConnected] = useState<string[]>([]);
-  const [wrongId, setWrongId] = useState<string | null>(null);
-  const svgW = PAD_X * 2 + 3 * GRID_GAP_X + NODE_W;
-  const svgH = PAD_Y * 2 + GRID_GAP_Y + NODE_H;
-  const isDone = solved || autoReveal || connected.length === puzzle.sequence.length;
-
-  useEffect(() => { if (autoReveal) setConnected([...puzzle.sequence]); }, [autoReveal, puzzle.sequence]);
-  useEffect(() => { setConnected([]); setWrongId(null); }, [puzzle.title]);
-
-  const nextExpected = puzzle.sequence[connected.length];
-
-  const handleClick = (id: string) => {
-    if (isDone) return;
-    if (id === nextExpected) {
-      const next = [...connected, id];
-      setConnected(next);
-      setWrongId(null);
-      if (next.length === puzzle.sequence.length) onSolve();
-    } else {
-      setWrongId(id);
-      setTimeout(() => setWrongId(null), 500);
-    }
-  };
-
-  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
-  for (let i = 1; i < connected.length; i++) {
-    const from = puzzle.nodes.find(n => n.id === connected[i - 1])!;
-    const to = puzzle.nodes.find(n => n.id === connected[i])!;
-    const a = getNodeCenter(from); const b = getNodeCenter(to);
-    lines.push({ x1: a.x, y1: a.y, x2: b.x, y2: b.y });
-  }
-
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Network size={14} style={{ color }} />
-          <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
-        </div>
-        <button onClick={() => { setConnected([]); setWrongId(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
-      </div>
-      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
-
-      {/* Tier labels */}
-      <div className="flex justify-between px-2">
-        {puzzle.tiers.map(t => (
-          <span key={t} className="text-[8px] font-mono uppercase tracking-widest" style={{ color: `${color}60` }}>{t}</span>
-        ))}
-      </div>
-
-      <div className="relative rounded-xl overflow-hidden" style={{ width: svgW, maxWidth: "100%", height: svgH, background: `${color}03`, border: `1px solid ${color}12` }}>
-        {/* Tier dividers */}
-        {[1, 2, 3].map(i => (
-          <div key={i} className="absolute top-0 bottom-0" style={{ left: PAD_X + i * GRID_GAP_X - GRID_GAP_X / 2 + NODE_W / 2, width: 1, background: `${color}08` }} />
-        ))}
-
-        <svg className="absolute inset-0" width={svgW} height={svgH} style={{ pointerEvents: "none" }}>
-          {lines.map((l, i) => (
-            <motion.line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={color} strokeWidth={2} strokeLinecap="round" strokeDasharray="6,3"
-              initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.7 }} transition={{ duration: 0.4 }} />
-          ))}
-          {connected.map(id => {
-            const node = puzzle.nodes.find(n => n.id === id)!;
-            const c = getNodeCenter(node);
-            return <motion.circle key={id} cx={c.x} cy={c.y} r={4} fill={color} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300 }} />;
-          })}
-        </svg>
-
-        {puzzle.nodes.map(node => {
-          const isConnected = connected.includes(node.id);
-          const isNext = node.id === nextExpected;
-          const isWrong = wrongId === node.id;
-          return (
-            <motion.button key={node.id} className="absolute flex items-center justify-center rounded-md cursor-pointer text-center"
-              style={{
-                left: PAD_X + node.col * GRID_GAP_X, top: PAD_Y + node.row * GRID_GAP_Y, width: NODE_W, height: NODE_H,
-                background: isConnected ? `${color}12` : isWrong ? "rgba(220,50,50,0.06)" : "#fff",
-                border: `1.5px solid ${isConnected ? color : isWrong ? "#dc3232" : isNext ? `${color}50` : "rgba(180,140,100,0.15)"}`,
-                boxShadow: isConnected ? `0 2px 8px ${color}12` : "none", zIndex: 2,
-              }}
-              onClick={() => handleClick(node.id)}
-              whileHover={!isConnected && !isDone ? { scale: 1.05 } : {}}
-              animate={isWrong ? { x: [0, -4, 4, -2, 2, 0] } : {}}
-              transition={isWrong ? { duration: 0.3 } : {}}>
-              <div>
-                {isConnected && <span className="text-[7px] font-mono font-bold block" style={{ color }}>{connected.indexOf(node.id) + 1}</span>}
-                <span className="text-[9px] font-mono leading-tight" style={{ color: isConnected ? color : "#2d2a26" }}>{node.label}</span>
-              </div>
-            </motion.button>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center gap-1.5">
-        {puzzle.sequence.map((_, i) => (
-          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300" style={{ background: i < connected.length ? color : "rgba(180,140,100,0.12)" }} />
-        ))}
-      </div>
-
-      {isDone && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
-          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Architecture Mapped</p>
-          <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
-        </motion.div>
-      )}
-
-      {!isDone && revealButton}
-    </div>
-  );
-};
-
-/* ═══════════════════════════════════════════════════════════
-   PUZZLE 3: GOVERNANCE MATRIX
-   ═══════════════════════════════════════════════════════════ */
-
-const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
-  const [matched, setMatched] = useState<Record<string, string>>({});
-  const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
-  const [wrongPair, setWrongPair] = useState<string | null>(null);
-  const isDone = solved || autoReveal || Object.keys(matched).length === puzzle.accounts.length;
-
-  useEffect(() => { if (autoReveal) setMatched({ ...puzzle.matches }); }, [autoReveal, puzzle.matches]);
-  useEffect(() => { setMatched({}); setSelectedAccount(null); setWrongPair(null); }, [puzzle.title]);
-
-  const handleAccountClick = (accId: string) => {
-    if (isDone || matched[accId]) return;
-    setSelectedAccount(accId);
-  };
-
-  const handleControlClick = (ctrlId: string) => {
-    if (isDone || !selectedAccount) return;
-    if (puzzle.matches[selectedAccount] === ctrlId) {
-      const next = { ...matched, [selectedAccount]: ctrlId };
-      setMatched(next);
-      setSelectedAccount(null);
-      setWrongPair(null);
-      if (Object.keys(next).length === puzzle.accounts.length) onSolve();
-    } else {
-      setWrongPair(ctrlId);
-      setTimeout(() => setWrongPair(null), 500);
-    }
-  };
-
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Grid3X3 size={14} style={{ color }} />
-          <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
-        </div>
-        <button onClick={() => { setMatched({}); setSelectedAccount(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
-      </div>
-      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
-      <p className="text-[9px] font-mono" style={{ color: `${color}80` }}>
-        {selectedAccount ? `Selected: ${puzzle.accounts.find(a => a.id === selectedAccount)?.name} → Now pick the control ▸` : "Click an account type first, then match it to a governance control"}
-      </p>
-
-      <div className="grid grid-cols-2 gap-3">
-        {/* Accounts */}
-        <div className="space-y-2">
-          <p className="text-[8px] font-mono uppercase tracking-widest" style={{ color: `${color}70` }}>Account Types</p>
-          {puzzle.accounts.map(acc => {
-            const isMatched = !!matched[acc.id];
-            const isSelected = selectedAccount === acc.id;
-            return (
-              <motion.button key={acc.id} onClick={() => handleAccountClick(acc.id)} disabled={isMatched || isDone}
-                className="w-full text-left p-3 rounded-lg cursor-pointer disabled:cursor-default transition-all"
-                style={{
-                  background: isMatched ? `${color}08` : isSelected ? `${color}12` : "#fefcf9",
-                  border: `2px solid ${isMatched ? "#2a7d4f" : isSelected ? color : "rgba(180,140,100,0.15)"}`,
-                  opacity: isMatched ? 0.55 : 1,
-                }}
-                whileHover={!isMatched ? { scale: 1.02 } : {}}>
-                <p className="text-xs font-mono font-bold" style={{ color: isMatched ? "#2a7d4f" : "#2d2a26" }}>{acc.name} {isMatched && "✓"}</p>
-                <p className="text-[8px] font-body mt-0.5" style={{ color: "rgba(80,70,60,0.5)" }}>{acc.desc}</p>
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* Controls */}
-        <div className="space-y-2">
-          <p className="text-[8px] font-mono uppercase tracking-widest" style={{ color: `${color}70` }}>Governance Controls</p>
-          {puzzle.controls.map(ctrl => {
-            const isUsed = Object.values(matched).includes(ctrl.id);
-            const isWrong = wrongPair === ctrl.id;
-            return (
-              <motion.button key={ctrl.id} onClick={() => handleControlClick(ctrl.id)} disabled={isUsed || isDone || !selectedAccount}
-                className="w-full text-left p-3 rounded-lg cursor-pointer disabled:cursor-default transition-all"
-                style={{
-                  background: isUsed ? "rgba(42,125,79,0.06)" : isWrong ? "rgba(220,50,50,0.06)" : "#fefcf9",
-                  border: `2px solid ${isUsed ? "#2a7d4f40" : isWrong ? "#dc3232" : selectedAccount ? `${color}30` : "rgba(180,140,100,0.12)"}`,
-                  opacity: isUsed ? 0.55 : 1,
-                }}
-                animate={isWrong ? { x: [0, -4, 4, -2, 2, 0] } : {}}
-                transition={isWrong ? { duration: 0.3 } : {}}
-                whileHover={!isUsed && selectedAccount ? { scale: 1.02 } : {}}>
-                <p className="text-[10px] font-mono" style={{ color: isUsed ? "#2a7d4f" : "#2d2a26" }}>{ctrl.name} {isUsed && "✓"}</p>
-              </motion.button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-1.5">
-        {puzzle.accounts.map((_, i) => (
-          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300" style={{ background: i < Object.keys(matched).length ? "#2a7d4f" : "rgba(180,140,100,0.12)" }} />
-        ))}
-      </div>
-
-      {isDone && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
-          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Governance Applied</p>
-          <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
-        </motion.div>
-      )}
-
-      {!isDone && revealButton}
-    </div>
-  );
-};
-
-/* ═══════════════════════════════════════════════════════════
-   PUZZLE 4: PIPELINE ASSEMBLER
-   ═══════════════════════════════════════════════════════════ */
-
-const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
+const CicdPipelinePuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: {
+  puzzle: CicdPuzzle; color: string; solved: boolean; onSolve: () => void;
+  autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void;
+}) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
-  const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
 
   useEffect(() => { if (autoReveal) setPlaced([...puzzle.correctOrder]); }, [autoReveal, puzzle.correctOrder]);
-  useEffect(() => { setPlaced([]); setWrongId(null); }, [puzzle.title]);
 
+  const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
   const nextExpected = puzzle.correctOrder[placed.length];
+  const placedSet = new Set(placed);
 
   const handleClick = (id: string) => {
-    if (isDone) return;
+    if (isDone || placedSet.has(id)) return;
     if (id === nextExpected) {
       const next = [...placed, id];
       setPlaced(next);
@@ -638,353 +746,82 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Workflow size={14} style={{ color }} />
+          <GitBranch size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        <button onClick={() => { setPlaced([]); setWrongId(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
+        <button onClick={() => { setPlaced([]); setWrongId(null); onReset?.(); }}
+          className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer"
+          style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
-      {/* Pipeline visualization */}
-      <div className="rounded-lg p-3 overflow-x-auto" style={{ background: `${color}04`, border: `1px solid ${color}12` }}>
-        <div className="flex items-center gap-1 min-w-max">
-          {puzzle.correctOrder.map((_, i) => {
-            const stage = placed[i] ? puzzle.stages.find(s => s.id === placed[i]) : null;
+      {/* Placed pipeline */}
+      {placed.length > 0 && (
+        <div className="rounded-lg p-2.5" style={{ background: "#1a1a2e", border: "1px solid #2a2a4a" }}>
+          <div className="flex items-center gap-1.5 mb-2">
+            <div className="w-2 h-2 rounded-full" style={{ background: "#27c93f" }} />
+            <span className="text-[8px] font-mono" style={{ color: "rgba(255,255,255,0.4)" }}>Pipeline ({placed.length}/{puzzle.correctOrder.length})</span>
+          </div>
+          {placed.map((id, i) => {
+            const stage = puzzle.stages.find(s => s.id === id)!;
             return (
-              <div key={i} className="flex items-center">
-                <motion.div className="rounded-lg flex items-center justify-center text-center"
-                  style={{
-                    width: 72, height: 56,
-                    background: stage ? `${color}10` : "rgba(180,140,100,0.04)",
-                    border: `2px dashed ${stage ? color : "rgba(180,140,100,0.2)"}`,
-                  }}
-                  animate={stage ? { borderStyle: "solid" } : {}}>
-                  {stage ? (
-                    <div>
-                      <span className="text-sm">{stage.icon}</span>
-                      <p className="text-[7px] font-mono mt-0.5" style={{ color }}>{stage.label}</p>
-                    </div>
-                  ) : (
-                    <span className="text-[8px] font-mono" style={{ color: "rgba(180,140,100,0.3)" }}>Stage {i + 1}</span>
-                  )}
-                </motion.div>
-                {i < puzzle.correctOrder.length - 1 && (
-                  <div className="mx-0.5" style={{ width: 12, height: 2, background: stage ? color : "rgba(180,140,100,0.15)" }} />
-                )}
-              </div>
+              <motion.div key={id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 py-1 px-2">
+                <span className="text-[9px] font-mono" style={{ color: `${color}80` }}>{i + 1}.</span>
+                <span className="text-xs">{stage.icon}</span>
+                <span className="text-[11px] font-mono" style={{ color: "#7ee8a8" }}>{stage.label}</span>
+                {i < placed.length - 1 && <span className="text-[8px] ml-auto" style={{ color: "rgba(255,255,255,0.2)" }}>→</span>}
+              </motion.div>
             );
           })}
         </div>
-      </div>
+      )}
 
-      {/* Stage choices */}
-      <div className="grid grid-cols-2 gap-2">
-        {puzzle.stages.map(stage => {
-          const isPlaced = placed.includes(stage.id);
-          const isWrong = wrongId === stage.id;
-          return (
-            <motion.button key={stage.id} onClick={() => handleClick(stage.id)} disabled={isPlaced || isDone}
-              className="text-left p-2.5 rounded-lg cursor-pointer disabled:cursor-default flex items-start gap-2 transition-all"
-              style={{
-                background: isPlaced ? `${color}06` : isWrong ? "rgba(220,50,50,0.06)" : "#fefcf9",
-                border: `1.5px solid ${isPlaced ? `${color}25` : isWrong ? "#dc3232" : "rgba(180,140,100,0.15)"}`,
-                opacity: isPlaced ? 0.4 : 1,
-              }}
-              animate={isWrong ? { x: [0, -4, 4, -2, 2, 0] } : {}}
-              transition={isWrong ? { duration: 0.3 } : {}}>
-              <span className="text-sm">{stage.icon}</span>
-              <div>
-                <p className="text-[9px] font-mono font-bold" style={{ color: "#2d2a26" }}>{stage.label}</p>
-                <p className="text-[8px] font-body mt-0.5 line-clamp-2" style={{ color: "rgba(80,70,60,0.5)" }}>{stage.desc}</p>
-              </div>
-            </motion.button>
-          );
-        })}
-      </div>
+      {/* Available stages */}
+      {!isDone && (
+        <div className="space-y-1.5">
+          <p className="text-[8px] font-mono uppercase tracking-widest" style={{ color: "rgba(80,70,60,0.45)" }}>
+            Click the next stage ({placed.length + 1}/{puzzle.correctOrder.length})
+          </p>
+          {puzzle.stages.filter(s => !placedSet.has(s.id)).map(stage => {
+            const isWrong = wrongId === stage.id;
+            return (
+              <motion.button key={stage.id}
+                onClick={() => handleClick(stage.id)}
+                className="w-full text-left p-2.5 rounded-lg cursor-pointer transition-all flex items-start gap-2.5"
+                style={{
+                  background: isWrong ? "rgba(220,50,50,0.06)" : "#fefcf9",
+                  border: `1.5px solid ${isWrong ? "#dc3232" : "rgba(180,140,100,0.15)"}`,
+                }}
+                animate={isWrong ? { x: [0, -3, 3, -2, 2, 0] } : {}}
+                transition={isWrong ? { duration: 0.35 } : {}}
+                whileHover={{ background: `${color}06` }}>
+                <span className="text-base mt-0.5">{stage.icon}</span>
+                <div>
+                  <p className="text-xs font-mono font-bold" style={{ color: "#2d2a26" }}>{stage.label}</p>
+                  <p className="text-[9px] font-body" style={{ color: "rgba(45,42,38,0.55)" }}>{stage.desc}</p>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      )}
 
+      {/* Progress */}
       <div className="flex items-center gap-1.5">
         {puzzle.correctOrder.map((_, i) => (
-          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300" style={{ background: i < placed.length ? color : "rgba(180,140,100,0.12)" }} />
+          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300"
+            style={{ background: i < placed.length ? color : "rgba(180,140,100,0.12)" }} />
         ))}
       </div>
 
       {isDone && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
-          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Pipeline Assembled</p>
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
+          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Pipeline Complete</p>
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
-
-      {!isDone && revealButton}
-    </div>
-  );
-};
-
-/* ═══════════════════════════════════════════════════════════
-   PUZZLE 5: CAPACITY PLANNER
-   ═══════════════════════════════════════════════════════════ */
-
-const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
-  const [assignments, setAssignments] = useState<Record<string, string>>({});
-  const [selectedWorkload, setSelectedWorkload] = useState<string | null>(null);
-  const [wrongRegion, setWrongRegion] = useState<string | null>(null);
-  const isDone = solved || autoReveal || Object.keys(assignments).length === puzzle.workloads.length;
-
-  useEffect(() => { if (autoReveal) setAssignments({ ...puzzle.solution }); }, [autoReveal, puzzle.solution]);
-  useEffect(() => { setAssignments({}); setSelectedWorkload(null); }, [puzzle.title]);
-
-  const getRegionUsage = (regionId: string) => {
-    const assigned = Object.entries(assignments).filter(([, r]) => r === regionId).map(([wId]) => puzzle.workloads.find(w => w.id === wId)!);
-    return { cpu: assigned.reduce((s, w) => s + w.cpu, 0), mem: assigned.reduce((s, w) => s + w.mem, 0) };
-  };
-
-  const handleWorkloadClick = (wId: string) => {
-    if (isDone || assignments[wId]) return;
-    setSelectedWorkload(wId);
-  };
-
-  const handleRegionClick = (rId: string) => {
-    if (isDone || !selectedWorkload) return;
-    if (puzzle.solution[selectedWorkload] === rId) {
-      const next = { ...assignments, [selectedWorkload]: rId };
-      setAssignments(next);
-      setSelectedWorkload(null);
-      setWrongRegion(null);
-      if (Object.keys(next).length === puzzle.workloads.length) onSolve();
-    } else {
-      setWrongRegion(rId);
-      setTimeout(() => setWrongRegion(null), 500);
-    }
-  };
-
-  const latColors: Record<string, string> = { low: "#2a7d4f", med: "#b5850a", high: "#888" };
-
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <BarChart3 size={14} style={{ color }} />
-          <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
-        </div>
-        <button onClick={() => { setAssignments({}); setSelectedWorkload(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
-      </div>
-      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
-
-      {/* Regions with capacity bars */}
-      <div className="grid grid-cols-3 gap-2">
-        {puzzle.regions.map(region => {
-          const usage = getRegionUsage(region.id);
-          const cpuPct = Math.round((usage.cpu / region.cpuCap) * 100);
-          const memPct = Math.round((usage.mem / region.memCap) * 100);
-          const isWrong = wrongRegion === region.id;
-          return (
-            <motion.button key={region.id} onClick={() => handleRegionClick(region.id)} disabled={isDone || !selectedWorkload}
-              className="p-2.5 rounded-lg cursor-pointer disabled:cursor-default text-left transition-all"
-              style={{
-                background: selectedWorkload ? `${color}06` : "#fefcf9",
-                border: `2px solid ${isWrong ? "#dc3232" : selectedWorkload ? `${color}30` : "rgba(180,140,100,0.15)"}`,
-              }}
-              animate={isWrong ? { x: [0, -4, 4, -2, 2, 0] } : {}}
-              transition={isWrong ? { duration: 0.3 } : {}}
-              whileHover={selectedWorkload ? { scale: 1.02 } : {}}>
-              <p className="text-[9px] font-mono font-bold" style={{ color: "#2d2a26" }}>{region.name}</p>
-              <div className="mt-1.5 space-y-1">
-                <div>
-                  <div className="flex justify-between"><span className="text-[7px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>CPU</span><span className="text-[7px] font-mono" style={{ color }}>{usage.cpu}/{region.cpuCap}</span></div>
-                  <div className="h-1.5 rounded-full mt-0.5" style={{ background: "rgba(180,140,100,0.1)" }}>
-                    <motion.div className="h-full rounded-full" style={{ background: cpuPct > 90 ? "#dc3232" : color }} animate={{ width: `${cpuPct}%` }} />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between"><span className="text-[7px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>MEM</span><span className="text-[7px] font-mono" style={{ color }}>{usage.mem}/{region.memCap}GB</span></div>
-                  <div className="h-1.5 rounded-full mt-0.5" style={{ background: "rgba(180,140,100,0.1)" }}>
-                    <motion.div className="h-full rounded-full" style={{ background: memPct > 90 ? "#dc3232" : color }} animate={{ width: `${memPct}%` }} />
-                  </div>
-                </div>
-                <span className="text-[7px] font-mono px-1.5 py-0.5 rounded inline-block mt-0.5" style={{ background: `${latColors[region.latency]}12`, color: latColors[region.latency], border: `1px solid ${latColors[region.latency]}20` }}>
-                  Latency: {region.latency}
-                </span>
-              </div>
-            </motion.button>
-          );
-        })}
-      </div>
-
-      <p className="text-[9px] font-mono" style={{ color: `${color}80` }}>
-        {selectedWorkload ? `Placing: ${puzzle.workloads.find(w => w.id === selectedWorkload)?.name} → Click a region` : "Click a workload, then assign it to a region"}
-      </p>
-
-      {/* Workloads */}
-      <div className="grid grid-cols-2 gap-2">
-        {puzzle.workloads.map(w => {
-          const isAssigned = !!assignments[w.id];
-          const isSelected = selectedWorkload === w.id;
-          const assignedRegion = assignments[w.id] ? puzzle.regions.find(r => r.id === assignments[w.id]) : null;
-          return (
-            <motion.button key={w.id} onClick={() => handleWorkloadClick(w.id)} disabled={isAssigned || isDone}
-              className="text-left p-2.5 rounded-lg cursor-pointer disabled:cursor-default transition-all"
-              style={{
-                background: isAssigned ? "rgba(42,125,79,0.05)" : isSelected ? `${color}10` : "#fefcf9",
-                border: `1.5px solid ${isAssigned ? "#2a7d4f30" : isSelected ? color : "rgba(180,140,100,0.15)"}`,
-                opacity: isAssigned ? 0.5 : 1,
-              }}>
-              <p className="text-[9px] font-mono font-bold" style={{ color: isAssigned ? "#2a7d4f" : "#2d2a26" }}>{w.name} {isAssigned && "✓"}</p>
-              <div className="flex gap-2 mt-1">
-                <span className="text-[7px] font-mono px-1 rounded" style={{ background: `${color}08`, color }}>CPU: {w.cpu}</span>
-                <span className="text-[7px] font-mono px-1 rounded" style={{ background: `${color}08`, color }}>MEM: {w.mem}GB</span>
-                <span className="text-[7px] font-mono px-1 rounded" style={{ background: `${latColors[w.latReq]}10`, color: latColors[w.latReq] }}>Lat: {w.latReq}</span>
-              </div>
-              {assignedRegion && <p className="text-[7px] font-mono mt-1" style={{ color: "#2a7d4f" }}>→ {assignedRegion.name}</p>}
-            </motion.button>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center gap-1.5">
-        {puzzle.workloads.map((_, i) => (
-          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300" style={{ background: i < Object.keys(assignments).length ? "#2a7d4f" : "rgba(180,140,100,0.12)" }} />
-        ))}
-      </div>
-
-      {isDone && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
-          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Capacity Optimized</p>
-          <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
-        </motion.div>
-      )}
-
-      {!isDone && revealButton}
-    </div>
-  );
-};
-
-/* ═══════════════════════════════════════════════════════════
-   PUZZLE 6: AI RISK ASSESSMENT
-   ═══════════════════════════════════════════════════════════ */
-
-const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
-  const [decisions, setDecisions] = useState<Record<string, boolean>>({});
-  const [wrongId, setWrongId] = useState<string | null>(null);
-  const [showReason, setShowReason] = useState<string | null>(null);
-  const isDone = solved || autoReveal || Object.keys(decisions).length === puzzle.models.length;
-
-  useEffect(() => { if (autoReveal) { const d: Record<string, boolean> = {}; puzzle.models.forEach(m => d[m.id] = m.safe); setDecisions(d); setShowReason(puzzle.models[puzzle.models.length - 1].id); } }, [autoReveal, puzzle.models]);
-  useEffect(() => { setDecisions({}); setWrongId(null); setShowReason(null); }, [puzzle.title]);
-
-  const handleDecision = (modelId: string, approve: boolean) => {
-    if (isDone || decisions[modelId] !== undefined) return;
-    const model = puzzle.models.find(m => m.id === modelId)!;
-    if (model.safe === approve) {
-      setDecisions(prev => ({ ...prev, [modelId]: approve }));
-      setShowReason(modelId);
-      setWrongId(null);
-      const nextCount = Object.keys(decisions).length + 1;
-      if (nextCount === puzzle.models.length) setTimeout(onSolve, 600);
-    } else {
-      setWrongId(modelId);
-      setTimeout(() => setWrongId(null), 600);
-    }
-  };
-
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Shield size={14} style={{ color }} />
-          <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
-        </div>
-        <button onClick={() => { setDecisions({}); setWrongId(null); setShowReason(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
-      </div>
-      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
-
-      {/* Criteria reference */}
-      <div className="rounded-lg p-2.5" style={{ background: `${color}04`, border: `1px solid ${color}12` }}>
-        <p className="text-[8px] font-mono uppercase tracking-widest mb-1.5" style={{ color: `${color}80` }}>Compliance Criteria</p>
-        <div className="grid grid-cols-2 gap-1">
-          {puzzle.criteria.map((c, i) => (
-            <p key={i} className="text-[9px] font-mono flex items-start gap-1.5" style={{ color: "rgba(45,42,38,0.7)" }}>
-              <span style={{ color }}>▸</span> {c}
-            </p>
-          ))}
-        </div>
-      </div>
-
-      {/* Model cards */}
-      <div className="space-y-3">
-        {puzzle.models.map(model => {
-          const decided = decisions[model.id] !== undefined;
-          const isWrong = wrongId === model.id;
-          const approved = decisions[model.id];
-          return (
-            <motion.div key={model.id} className="rounded-lg overflow-hidden"
-              style={{
-                border: `1.5px solid ${decided ? (approved ? "#2a7d4f30" : "#dc323230") : isWrong ? "#dc3232" : "rgba(180,140,100,0.15)"}`,
-                background: decided ? (approved ? "rgba(42,125,79,0.03)" : "rgba(220,50,50,0.03)") : "#fefcf9",
-              }}
-              animate={isWrong ? { x: [0, -3, 3, -2, 2, 0] } : {}}
-              transition={isWrong ? { duration: 0.35 } : {}}>
-              <div className="p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-mono font-bold" style={{ color: "#2d2a26" }}>{model.name}</p>
-                  {decided && (
-                    <span className="text-[8px] font-mono px-2 py-0.5 rounded" style={{
-                      background: approved ? "rgba(42,125,79,0.1)" : "rgba(220,50,50,0.1)",
-                      color: approved ? "#2a7d4f" : "#dc3232",
-                      border: `1px solid ${approved ? "#2a7d4f20" : "#dc323220"}`,
-                    }}>
-                      {approved ? "✓ APPROVED" : "✗ REJECTED"}
-                    </span>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                  {Object.entries(model.attributes).map(([key, val]) => (
-                    <div key={key} className="flex items-start gap-1.5">
-                      <span className="text-[8px] font-mono shrink-0" style={{ color: "rgba(80,70,60,0.45)" }}>{key}:</span>
-                      <span className="text-[8px] font-mono" style={{ color: "#2d2a26" }}>{val}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {!decided && (
-                  <div className="flex gap-2 mt-3">
-                    <button onClick={() => handleDecision(model.id, true)}
-                      className="flex-1 text-[9px] font-mono py-1.5 rounded-md cursor-pointer transition-all"
-                      style={{ background: "rgba(42,125,79,0.08)", border: "1px solid rgba(42,125,79,0.2)", color: "#2a7d4f" }}>
-                      ✓ Approve for Production
-                    </button>
-                    <button onClick={() => handleDecision(model.id, false)}
-                      className="flex-1 text-[9px] font-mono py-1.5 rounded-md cursor-pointer transition-all"
-                      style={{ background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.15)", color: "#dc3232" }}>
-                      ✗ Reject — Non-Compliant
-                    </button>
-                  </div>
-                )}
-
-                {decided && showReason === model.id && (
-                  <motion.p initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-                    className="text-[9px] font-body mt-2 p-2 rounded" style={{ background: "rgba(180,140,100,0.05)", color: "rgba(45,42,38,0.7)" }}>
-                    💡 {model.reason}
-                  </motion.p>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center gap-1.5">
-        {puzzle.models.map((_, i) => (
-          <div key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300" style={{ background: i < Object.keys(decisions).length ? "#2a7d4f" : "rgba(180,140,100,0.12)" }} />
-        ))}
-      </div>
-
-      {isDone && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.15)" }}>
-          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>✓ Assessment Complete</p>
-          <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
-        </motion.div>
-      )}
-
       {!isDone && revealButton}
     </div>
   );
@@ -997,17 +834,10 @@ const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
 const RevealButton = ({ onReveal, color, solved }: { onReveal: () => void; color: string; solved: boolean }) => {
   if (solved) return null;
   return (
-    <motion.button
-      onClick={onReveal}
+    <motion.button onClick={onReveal}
       className="flex items-center gap-1.5 text-[9px] font-mono px-3 py-1.5 rounded-lg cursor-pointer transition-all mt-2"
-      style={{
-        color: "rgba(80,70,60,0.5)",
-        background: "rgba(180,140,100,0.04)",
-        border: "1px solid rgba(180,140,100,0.12)",
-      }}
-      whileHover={{ scale: 1.03, background: `${color}08` }}
-      whileTap={{ scale: 0.97 }}
-    >
+      style={{ color: "rgba(80,70,60,0.5)", background: "rgba(180,140,100,0.04)", border: "1px solid rgba(180,140,100,0.12)" }}
+      whileHover={{ scale: 1.03, background: `${color}08` }} whileTap={{ scale: 0.97 }}>
       <Eye size={10} /> Reveal Solution
     </motion.button>
   );
@@ -1017,31 +847,22 @@ const RevealButton = ({ onReveal, color, solved }: { onReveal: () => void; color
    PUZZLE ROUTER
    ═══════════════════════════════════════════════════════════ */
 
-const PuzzleRouter = ({ puzzle, color, solved, onSolve, onUnsolve }: { puzzle: RolePuzzle; color: string; solved: boolean; onSolve: () => void; onUnsolve: () => void }) => {
+const PuzzleRouter = ({ puzzle, color, solved, onSolve, onUnsolve }: {
+  puzzle: RolePuzzle; color: string; solved: boolean; onSolve: () => void; onUnsolve: () => void;
+}) => {
   const [autoReveal, setAutoReveal] = useState(false);
+  const handleReveal = useCallback(() => { setAutoReveal(true); onSolve(); }, [onSolve]);
+  const handleReset = useCallback(() => { setAutoReveal(false); onUnsolve(); }, [onUnsolve]);
 
-  const handleReveal = useCallback(() => {
-    setAutoReveal(true);
-    onSolve();
-  }, [onSolve]);
-
-  const handleReset = useCallback(() => {
-    setAutoReveal(false);
-    onUnsolve();
-  }, [onUnsolve]);
-
-  // Reset autoReveal when puzzle changes
   useEffect(() => { setAutoReveal(false); }, [puzzle.title]);
 
   const revealButton = <RevealButton onReveal={handleReveal} color={color} solved={solved || autoReveal} />;
 
   switch (puzzle.type) {
-    case "terminal-seq": return <TerminalSequencerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
-    case "arch-flow": return <ArchFlowPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
-    case "gov-matrix": return <GovMatrixPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
-    case "pipeline": return <PipelineAssemblerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
-    case "capacity": return <CapacityPlannerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
-    case "risk-assess": return <RiskAssessmentPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "aws-arch": return <AwsArchBuilderPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "terraform-debug": return <TerraformDebuggerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "k8s-scheduler": return <K8sPodSchedulerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "cicd-pipeline": return <CicdPipelinePuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
   }
 };
 
@@ -1049,55 +870,36 @@ const PuzzleRouter = ({ puzzle, color, solved, onSolve, onUnsolve }: { puzzle: R
    MAIN CAREER WORLD
    ═══════════════════════════════════════════════════════════ */
 
+const puzzleLabel: Record<PuzzleType, string> = {
+  "aws-arch": "Build Architecture",
+  "terraform-debug": "Debug Terraform",
+  "k8s-scheduler": "Schedule Pods",
+  "cicd-pipeline": "Build Pipeline",
+};
+
 const AllSolvedTrophy = ({ color }: { color: string }) => (
-  <motion.div
-    className="w-full max-w-3xl mb-6"
-    initial={{ opacity: 0, scale: 0.8, y: 20 }}
-    animate={{ opacity: 1, scale: 1, y: 0 }}
-    transition={{ type: "spring", stiffness: 200, damping: 15 }}
-  >
+  <motion.div className="w-full max-w-3xl mb-6"
+    initial={{ opacity: 0, scale: 0.8, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
+    transition={{ type: "spring", stiffness: 200, damping: 15 }}>
     <div className="rounded-xl p-6 text-center relative overflow-hidden" style={{
       background: "linear-gradient(135deg, rgba(42,125,79,0.08), rgba(212,165,116,0.08))",
       border: "1px solid rgba(42,125,79,0.2)",
     }}>
-      {/* Confetti particles */}
       {Array.from({ length: 12 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1.5 h-1.5 rounded-full"
-          style={{
-            background: ["#2a7d4f", "#b5653a", "#0075BE", "#FF9900", "#005DAA", "#0078D4"][i % 6],
-            left: `${10 + (i * 7) % 80}%`,
-            top: `${10 + (i * 13) % 70}%`,
-          }}
-          animate={{
-            y: [0, -15, 0],
-            opacity: [0.3, 0.8, 0.3],
-            scale: [0.8, 1.2, 0.8],
-          }}
-          transition={{ repeat: Infinity, duration: 2 + i * 0.3, delay: i * 0.15 }}
-        />
+        <motion.div key={i} className="absolute w-1.5 h-1.5 rounded-full"
+          style={{ background: ["#2a7d4f", "#b5653a", "#0075BE", "#FF9900", "#005DAA", "#0078D4"][i % 6], left: `${10 + (i * 7) % 80}%`, top: `${10 + (i * 13) % 70}%` }}
+          animate={{ y: [0, -15, 0], opacity: [0.3, 0.8, 0.3], scale: [0.8, 1.2, 0.8] }}
+          transition={{ repeat: Infinity, duration: 2 + i * 0.3, delay: i * 0.15 }} />
       ))}
-      <motion.div
-        className="text-5xl mb-3"
-        animate={{ rotateY: [0, 360] }}
-        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-      >
-        🏆
-      </motion.div>
-      <h3 className="font-display text-lg font-bold mb-1" style={{ color: "#2a7d4f" }}>
-        All Puzzles Mastered
-      </h3>
+      <motion.div className="text-5xl mb-3" animate={{ rotateY: [0, 360] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}>🏆</motion.div>
+      <h3 className="font-display text-lg font-bold mb-1" style={{ color: "#2a7d4f" }}>All Puzzles Mastered</h3>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.65)" }}>
-        You've completed every cloud engineering challenge — from compliance automation to AI governance.
+        You've completed every cloud engineering challenge — from security automation to Azure AI governance.
       </p>
       <div className="flex justify-center gap-1.5 mt-3">
-        {["🛡️", "🏗️", "📋", "🔄", "📊", "🤖"].map((e, i) => (
-          <motion.span key={i} className="text-sm"
-            initial={{ scale: 0 }} animate={{ scale: 1 }}
-            transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}>
-            {e}
-          </motion.span>
+        {["☁️", "🔧", "📦", "🔄"].map((e, i) => (
+          <motion.span key={i} className="text-sm" initial={{ scale: 0 }} animate={{ scale: 1 }}
+            transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}>{e}</motion.span>
         ))}
       </div>
     </div>
@@ -1124,14 +926,6 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   useEffect(() => { setPanel("overview"); }, [activeStop]);
 
   const stop = stops[activeStop];
-  const puzzleLabel: Record<PuzzleType, string> = {
-    "terminal-seq": "Execute Pipeline",
-    "arch-flow": "Map Architecture",
-    "gov-matrix": "Apply Governance",
-    "pipeline": "Build Pipeline",
-    "capacity": "Plan Capacity",
-    "risk-assess": "Assess Models",
-  };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-start p-4 md:p-6 overflow-y-auto">
@@ -1200,12 +994,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                     </motion.span>
                     {puzzleLabel[stop.puzzle.type]}
                     {!solvedStops.has(activeStop) && (
-                      <motion.span
-                        className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
-                        style={{ background: stop.color }}
-                        animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }}
-                        transition={{ repeat: Infinity, duration: 1.5 }}
-                      />
+                      <motion.span className="absolute -top-1 -right-1 w-2 h-2 rounded-full" style={{ background: stop.color }}
+                        animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }} transition={{ repeat: Infinity, duration: 1.5 }} />
                     )}
                   </span>
                 </button>
