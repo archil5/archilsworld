@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Terminal, Network, Grid3X3, Workflow, BarChart3, Shield } from "lucide-react";
+import { ChevronLeft, ChevronRight, Terminal, Network, Grid3X3, Workflow, BarChart3, Shield, Sparkles, Eye } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 
 /* ═══════════════════════════════════════════════════════════
@@ -269,12 +269,12 @@ const stops: JourneyStop[] = [
    PUZZLE 1: TERMINAL SEQUENCER
    ═══════════════════════════════════════════════════════════ */
 
-const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: TerminalPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: TerminalPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
-  const isDone = solved || placed.length === puzzle.correctOrder.length;
+  const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
 
-  useEffect(() => { setPlaced([]); setWrongId(null); }, [puzzle.title]);
+  useEffect(() => { if (autoReveal) setPlaced([...puzzle.correctOrder]); }, [autoReveal, puzzle.correctOrder]);
 
   const nextExpected = puzzle.correctOrder[placed.length];
 
@@ -366,6 +366,8 @@ const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: T
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
+
+      {!isDone && revealButton}
     </div>
   );
 };
@@ -382,13 +384,14 @@ const PAD_X = 20;
 const PAD_Y = 30;
 const getNodeCenter = (node: ArchNode) => ({ x: PAD_X + node.col * GRID_GAP_X + NODE_W / 2, y: PAD_Y + node.row * GRID_GAP_Y + NODE_H / 2 });
 
-const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [connected, setConnected] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const svgW = PAD_X * 2 + 3 * GRID_GAP_X + NODE_W;
   const svgH = PAD_Y * 2 + GRID_GAP_Y + NODE_H;
-  const isDone = solved || connected.length === puzzle.sequence.length;
+  const isDone = solved || autoReveal || connected.length === puzzle.sequence.length;
 
+  useEffect(() => { if (autoReveal) setConnected([...puzzle.sequence]); }, [autoReveal, puzzle.sequence]);
   useEffect(() => { setConnected([]); setWrongId(null); }, [puzzle.title]);
 
   const nextExpected = puzzle.sequence[connected.length];
@@ -487,6 +490,8 @@ const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: ArchFlowPu
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
+
+      {!isDone && revealButton}
     </div>
   );
 };
@@ -495,12 +500,13 @@ const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: ArchFlowPu
    PUZZLE 3: GOVERNANCE MATRIX
    ═══════════════════════════════════════════════════════════ */
 
-const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [matched, setMatched] = useState<Record<string, string>>({});
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const [wrongPair, setWrongPair] = useState<string | null>(null);
-  const isDone = solved || Object.keys(matched).length === puzzle.accounts.length;
+  const isDone = solved || autoReveal || Object.keys(matched).length === puzzle.accounts.length;
 
+  useEffect(() => { if (autoReveal) setMatched({ ...puzzle.matches }); }, [autoReveal, puzzle.matches]);
   useEffect(() => { setMatched({}); setSelectedAccount(null); setWrongPair(null); }, [puzzle.title]);
 
   const handleAccountClick = (accId: string) => {
@@ -595,6 +601,8 @@ const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: GovMatrix
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
+
+      {!isDone && revealButton}
     </div>
   );
 };
@@ -603,11 +611,12 @@ const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: GovMatrix
    PUZZLE 4: PIPELINE ASSEMBLER
    ═══════════════════════════════════════════════════════════ */
 
-const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
-  const isDone = solved || placed.length === puzzle.correctOrder.length;
+  const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
 
+  useEffect(() => { if (autoReveal) setPlaced([...puzzle.correctOrder]); }, [autoReveal, puzzle.correctOrder]);
   useEffect(() => { setPlaced([]); setWrongId(null); }, [puzzle.title]);
 
   const nextExpected = puzzle.correctOrder[placed.length];
@@ -705,6 +714,8 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: P
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
+
+      {!isDone && revealButton}
     </div>
   );
 };
@@ -713,12 +724,13 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: P
    PUZZLE 5: CAPACITY PLANNER
    ═══════════════════════════════════════════════════════════ */
 
-const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [assignments, setAssignments] = useState<Record<string, string>>({});
   const [selectedWorkload, setSelectedWorkload] = useState<string | null>(null);
   const [wrongRegion, setWrongRegion] = useState<string | null>(null);
-  const isDone = solved || Object.keys(assignments).length === puzzle.workloads.length;
+  const isDone = solved || autoReveal || Object.keys(assignments).length === puzzle.workloads.length;
 
+  useEffect(() => { if (autoReveal) setAssignments({ ...puzzle.solution }); }, [autoReveal, puzzle.solution]);
   useEffect(() => { setAssignments({}); setSelectedWorkload(null); }, [puzzle.title]);
 
   const getRegionUsage = (regionId: string) => {
@@ -840,6 +852,8 @@ const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: Cap
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
+
+      {!isDone && revealButton}
     </div>
   );
 };
@@ -848,12 +862,13 @@ const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: Cap
    PUZZLE 6: AI RISK ASSESSMENT
    ═══════════════════════════════════════════════════════════ */
 
-const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [decisions, setDecisions] = useState<Record<string, boolean>>({});
   const [wrongId, setWrongId] = useState<string | null>(null);
   const [showReason, setShowReason] = useState<string | null>(null);
-  const isDone = solved || Object.keys(decisions).length === puzzle.models.length;
+  const isDone = solved || autoReveal || Object.keys(decisions).length === puzzle.models.length;
 
+  useEffect(() => { if (autoReveal) { const d: Record<string, boolean> = {}; puzzle.models.forEach(m => d[m.id] = m.safe); setDecisions(d); setShowReason(puzzle.models[puzzle.models.length - 1].id); } }, [autoReveal, puzzle.models]);
   useEffect(() => { setDecisions({}); setWrongId(null); setShowReason(null); }, [puzzle.title]);
 
   const handleDecision = (modelId: string, approve: boolean) => {
@@ -969,7 +984,32 @@ const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: Risk
           <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.78)" }}>{puzzle.success}</p>
         </motion.div>
       )}
+
+      {!isDone && revealButton}
     </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   REVEAL SOLUTION BUTTON
+   ═══════════════════════════════════════════════════════════ */
+
+const RevealButton = ({ onReveal, color, solved }: { onReveal: () => void; color: string; solved: boolean }) => {
+  if (solved) return null;
+  return (
+    <motion.button
+      onClick={onReveal}
+      className="flex items-center gap-1.5 text-[9px] font-mono px-3 py-1.5 rounded-lg cursor-pointer transition-all mt-2"
+      style={{
+        color: "rgba(80,70,60,0.5)",
+        background: "rgba(180,140,100,0.04)",
+        border: "1px solid rgba(180,140,100,0.12)",
+      }}
+      whileHover={{ scale: 1.03, background: `${color}08` }}
+      whileTap={{ scale: 0.97 }}
+    >
+      <Eye size={10} /> Reveal Solution
+    </motion.button>
   );
 };
 
@@ -978,13 +1018,25 @@ const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: Risk
    ═══════════════════════════════════════════════════════════ */
 
 const PuzzleRouter = ({ puzzle, color, solved, onSolve }: { puzzle: RolePuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+  const [autoReveal, setAutoReveal] = useState(false);
+
+  const handleReveal = useCallback(() => {
+    setAutoReveal(true);
+    onSolve();
+  }, [onSolve]);
+
+  // Reset autoReveal when puzzle changes
+  useEffect(() => { setAutoReveal(false); }, [puzzle.title]);
+
+  const revealButton = <RevealButton onReveal={handleReveal} color={color} solved={solved || autoReveal} />;
+
   switch (puzzle.type) {
-    case "terminal-seq": return <TerminalSequencerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "arch-flow": return <ArchFlowPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "gov-matrix": return <GovMatrixPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "pipeline": return <PipelineAssemblerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "capacity": return <CapacityPlannerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "risk-assess": return <RiskAssessmentPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
+    case "terminal-seq": return <TerminalSequencerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "arch-flow": return <ArchFlowPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "gov-matrix": return <GovMatrixPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "pipeline": return <PipelineAssemblerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "capacity": return <CapacityPlannerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "risk-assess": return <RiskAssessmentPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
   }
 };
 
@@ -1079,9 +1131,22 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   style={{ color: panel === "overview" ? stop.color : "rgba(80,70,60,0.55)", background: panel === "overview" ? `${stop.color}10` : "rgba(180,140,100,0.04)", border: `1px solid ${panel === "overview" ? `${stop.color}20` : "rgba(180,140,100,0.1)"}` }}>
                   Overview
                 </button>
-                <button onClick={() => setPanel("puzzle")} className="text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
+                <button onClick={() => setPanel("puzzle")} className="relative text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
                   style={{ color: panel === "puzzle" ? stop.color : "rgba(80,70,60,0.55)", background: panel === "puzzle" ? `${stop.color}10` : "rgba(180,140,100,0.04)", border: `1px solid ${panel === "puzzle" ? `${stop.color}20` : "rgba(180,140,100,0.1)"}` }}>
-                  {puzzleLabel[stop.puzzle.type]}
+                  <span className="flex items-center gap-1.5">
+                    <motion.span animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, repeatDelay: 1 }}>
+                      <Sparkles size={10} style={{ color: solvedStops.has(activeStop) ? "#2a7d4f" : stop.color }} />
+                    </motion.span>
+                    {puzzleLabel[stop.puzzle.type]}
+                    {!solvedStops.has(activeStop) && (
+                      <motion.span
+                        className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
+                        style={{ background: stop.color }}
+                        animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                      />
+                    )}
+                  </span>
                 </button>
               </div>
             </div>

@@ -7,6 +7,7 @@ export interface ChapterData {
   title: string;
   subtitle: string;
   narrative: string;
+  tagline: string;
   skills?: string[];
   position: [number, number, number];
   color: string;
@@ -24,6 +25,7 @@ export const CHAPTERS: ChapterData[] = [
     title: "The Kid Who Asked Why",
     subtitle: "Where it all began",
     narrative: "I didn't just play DOS games — I interrogated them. Every pixel, every sound, every menu screen made me ask the same restless question: how did someone make this?",
+    tagline: "The one who took things apart to understand how they worked",
     skills: ["Curiosity", "Problem Solving", "DOS"],
     position: [-5, 0, 0],
     color: "#2d4a7a",
@@ -38,6 +40,7 @@ export const CHAPTERS: ChapterData[] = [
     title: "Building & Connecting",
     subtitle: "From HTML to packets — the full picture",
     narrative: "I found HTML and CSS — and suddenly I wasn't just a consumer anymore. Then networking cracked open the whole machine. I could see how everything talked to everything.",
+    tagline: "Where I stopped consuming and started creating",
     skills: ["HTML", "CSS", "TCP/IP", "Network Architecture", "Web Design"],
     position: [-1.5, 0, -2],
     color: "#E44D26",
@@ -52,6 +55,7 @@ export const CHAPTERS: ChapterData[] = [
     title: "The Academy",
     subtitle: "Dalhousie University · Master's in Applied CS",
     narrative: "Dalhousie wasn't just a degree — it was where curiosity became craft. The Master's programme taught me to think three moves ahead.",
+    tagline: "Where curiosity became craft and thinking sharpened",
     skills: ["Systems Thinking", "Security", "Automation", "Ethical Hacking"],
     position: [2, 0, -3],
     color: "#8B6914",
@@ -66,6 +70,7 @@ export const CHAPTERS: ChapterData[] = [
     title: "The Full Journey",
     subtitle: "RBC → BMO · From DevOps to Principal to AI",
     narrative: "From cybersecurity automation at RBC to architecting enterprise AI platforms at BMO — seven years of building, leading, and transforming at scale.",
+    tagline: "Seven years of building what banks run on",
     skills: ["AWS", "Azure", "Kubernetes", "Terraform", "AI/ML", "Leadership"],
     position: [5.5, 0, -1],
     color: "#0075BE",
@@ -80,6 +85,7 @@ export const CHAPTERS: ChapterData[] = [
     title: "Let's Connect",
     subtitle: "The next chapter starts with a conversation",
     narrative: "I'm always open to connecting — whether it's about cloud architecture, AI, leadership, or the next big thing.",
+    tagline: "The next move is yours — let's talk",
     position: [9, 0, -3],
     color: "#b5653a",
     image: "archil",
