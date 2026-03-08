@@ -32,22 +32,20 @@ const BoardSurface = () => {
 
   return (
     <group>
-      {/* Base plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3, -0.2, -1.5]} receiveShadow>
         <planeGeometry args={[40, 20]} />
-        <meshStandardMaterial color="#2a1f14" roughness={0.9} metalness={0.0} />
+        <meshStandardMaterial color="#0a0e14" roughness={0.9} metalness={0.1} />
       </mesh>
 
-      {/* Hex grid background tiles */}
       {hexPositions.map((pos, i) => (
         <mesh key={i} position={pos} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
           <shapeGeometry args={[hexShape]} />
           <meshStandardMaterial
-            color="#3a2a1a"
+            color="#0f1722"
             roughness={0.85}
-            metalness={0.05}
+            metalness={0.1}
             transparent
-            opacity={0.4}
+            opacity={0.5}
           />
         </mesh>
       ))}
