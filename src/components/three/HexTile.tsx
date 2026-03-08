@@ -91,7 +91,7 @@ const HexTile = ({
       >
         <extrudeGeometry args={[hexShape, extrudeSettings]} />
         <meshStandardMaterial
-          color={isActive ? color : isVisited ? "#c9a96e" : "#e8d5b0"}
+          color={isActive ? color : isVisited ? "#1e3a5f" : "#152238"}
           roughness={isActive ? 0.2 : 0.5}
           metalness={isActive ? 0.5 : 0.1}
           emissive={isActive ? color : "#000000"}
