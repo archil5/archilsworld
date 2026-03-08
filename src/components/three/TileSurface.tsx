@@ -1,10 +1,9 @@
-import { Decal, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useMemo } from "react";
 
-const usePreparedTexture = (textureUrl: string) => {
-  const texture = useTexture(textureUrl);
-
+const usePreparedTexture = (url: string) => {
+  const texture = useTexture(url);
   useMemo(() => {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -12,18 +11,18 @@ const usePreparedTexture = (textureUrl: string) => {
     texture.anisotropy = 8;
     texture.needsUpdate = true;
   }, [texture]);
-
   return texture;
 };
 
 /**
- * Reliable logo surface: projects as decal + visible top inlay plane fallback.
- * Render this INSIDE the hex mesh (local Z is tile depth).
+ * Simple textured circle placed just above the hex extrusion top face.
+ * Parent mesh is rotated -PI/2 around X, so local Z = world Y (up).
+ * Extrude depth is 0.15, so z=0.16 sits flush on top.
  */
 const TileSurface = ({
   textureUrl,
   isActive,
-  size = 0.72,
+  size = 0.5,
 }: {
   textureUrl: string;
   isActive: boolean;
@@ -32,31 +31,17 @@ const TileSurface = ({
   const texture = usePreparedTexture(textureUrl);
 
   return (
-    <group>
-      <Decal position={[0, 0, 0.145]} scale={[size, size, size]}>
-        <meshStandardMaterial
-          map={texture}
-          transparent
-          roughness={isActive ? 0.35 : 0.75}
-          metalness={isActive ? 0.08 : 0.02}
-          polygonOffset
-          polygonOffsetFactor={-2}
-        />
-      </Decal>
-
-      {/* Inlay plate fallback (guarantees visibility) */}
-      <mesh position={[0, 0, 0.158]} renderOrder={10}>
-        <circleGeometry args={[size * 0.47, 64]} />
-        <meshBasicMaterial
-          map={texture}
-          transparent
-          opacity={0.96}
-          toneMapped={false}
-          depthTest
-          depthWrite={false}
-        />
-      </mesh>
-    </group>
+    <mesh position={[0, 0, 0.16]} renderOrder={10}>
+      <planeGeometry args={[size * 2, size * 2]} />
+      <meshBasicMaterial
+        map={texture}
+        transparent
+        opacity={isActive ? 1 : 0.85}
+        toneMapped={false}
+        depthWrite={false}
+        side={THREE.FrontSide}
+      />
+    </mesh>
   );
 };
 
@@ -73,32 +58,18 @@ export const CareerSplitSurface = ({
   const rightTex = usePreparedTexture(rightUrl);
 
   return (
-    <group>
-      <Decal position={[0, 0, 0.145]} scale={[0.88, 0.88, 0.88]}>
-        <meshStandardMaterial
-          color="#dfd7cb"
-          roughness={isActive ? 0.35 : 0.75}
-          metalness={isActive ? 0.08 : 0.02}
-          polygonOffset
-          polygonOffsetFactor={-2}
-        />
-      </Decal>
-
-      {/* Left half (RBC) */}
-      <mesh position={[-0.26, 0, 0.158]} renderOrder={11}>
-        <circleGeometry args={[0.29, 64]} />
-        <meshBasicMaterial map={leftTex} transparent opacity={0.96} toneMapped={false} depthWrite={false} />
+    <group position={[0, 0, 0.16]}>
+      <mesh position={[-0.26, 0, 0]} renderOrder={10}>
+        <planeGeometry args={[0.52, 0.52]} />
+        <meshBasicMaterial map={leftTex} transparent opacity={isActive ? 1 : 0.85} toneMapped={false} depthWrite={false} />
       </mesh>
-
-      {/* Right half (BMO) */}
-      <mesh position={[0.26, 0, 0.158]} renderOrder={11}>
-        <circleGeometry args={[0.29, 64]} />
-        <meshBasicMaterial map={rightTex} transparent opacity={0.96} toneMapped={false} depthWrite={false} />
+      <mesh position={[0.26, 0, 0]} renderOrder={10}>
+        <planeGeometry args={[0.52, 0.52]} />
+        <meshBasicMaterial map={rightTex} transparent opacity={isActive ? 1 : 0.85} toneMapped={false} depthWrite={false} />
       </mesh>
-
-      <mesh position={[0, 0, 0.159]} renderOrder={12}>
-        <planeGeometry args={[0.02, 0.72]} />
-        <meshBasicMaterial color="#b0a898" transparent opacity={0.45} toneMapped={false} depthWrite={false} />
+      <mesh position={[0, 0, 0.001]} renderOrder={11}>
+        <planeGeometry args={[0.02, 0.7]} />
+        <meshBasicMaterial color="#b0a898" transparent opacity={0.4} toneMapped={false} depthWrite={false} />
       </mesh>
     </group>
   );
