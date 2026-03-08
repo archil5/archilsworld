@@ -337,6 +337,29 @@ const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
+      {/* Extreme difficulty warning */}
+      {puzzle.extreme && !isDone && (
+        <motion.div
+          className="rounded-lg p-3 flex items-start gap-2.5"
+          style={{ background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.2)" }}
+          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}>
+          <motion.span className="text-lg shrink-0"
+            animate={{ rotate: [0, -10, 10, -10, 0], scale: [1, 1.15, 1] }}
+            transition={{ repeat: Infinity, duration: 2, repeatDelay: 1 }}>⚠️</motion.span>
+          <div>
+            <p className="text-[10px] font-mono font-bold uppercase tracking-wider mb-0.5" style={{ color: "#dc3232" }}>
+              Extreme Difficulty — Architect Level
+            </p>
+            <p className="text-[9px] font-body" style={{ color: "rgba(45,42,38,0.65)" }}>
+              10 Azure services across 6 tiers. This is a real enterprise RAG architecture used in banking.
+              You'll need to understand identity, networking, data pipelines, vector search, and AI inference to place every service correctly.
+              <span className="font-bold" style={{ color: "#dc3232" }}> Good luck.</span>
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Service palette */}
       {!isDone && (
         <div className="flex flex-wrap gap-1.5 p-2.5 rounded-lg" style={{ background: "rgba(180,140,100,0.04)", border: "1px solid rgba(180,140,100,0.1)" }}>
