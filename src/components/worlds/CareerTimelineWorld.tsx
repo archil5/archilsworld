@@ -1197,7 +1197,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
             ) : (
               <div className="p-6 overflow-y-auto" style={{ background: "#fefcf9", maxHeight: "60vh" }}>
                 <PuzzleRouter puzzle={stop.puzzle} color={stop.color} solved={solvedStops.has(activeStop)}
-                  onSolve={() => setSolvedStops(prev => new Set(prev).add(activeStop))} />
+                  onSolve={() => setSolvedStops(prev => new Set(prev).add(activeStop))}
+                  onUnsolve={() => setSolvedStops(prev => { const next = new Set(prev); next.delete(activeStop); return next; })} />
               </div>
             )}
 
