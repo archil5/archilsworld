@@ -78,7 +78,7 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
-  const tileSize = 120;
+  const tileSize = 140;
 
   return (
     <group position={position}>
