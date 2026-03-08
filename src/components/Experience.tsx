@@ -123,6 +123,7 @@ const Experience = () => {
         shadows
         camera={{ fov: 50, near: 0.1, far: 100, position: [0, 8, 8] }}
         className="absolute inset-0"
+        style={{ visibility: isDiving ? "hidden" : "visible" }}
         gl={{ antialias: true, toneMapping: 3 }}
       >
         <Suspense fallback={null}>
