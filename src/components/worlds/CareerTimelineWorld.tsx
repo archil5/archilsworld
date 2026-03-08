@@ -1,85 +1,191 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
+/* ── Board-game mechanic: WORKER PLACEMENT + RESOURCE TRACKER ──
+   Each role is a "placement" on the board. Clicking reveals milestones as
+   resource cards you've collected. Track XP, skills, and achievements. */
+
+interface Milestone {
+  title: string;
+  desc: string;
+  icon: string;
+}
 
 interface TimelineRole {
   company: string;
   title: string;
   period: string;
   narrative: string;
-  skills: string[];
   color: string;
   icon: string;
+  techStack: string[];
+  skillsGained: string[];
+  milestones: Milestone[];
+  valueDelivered: string[];
+  gameMechanic: string;
+  mechanicIcon: string;
 }
 
 const roles: TimelineRole[] = [
   {
     company: "RBC", title: "DevOps Engineer — Cyber Security",
     period: "Sep–Dec 2018", icon: "🛡️", color: "#4a9eff",
-    narrative: "My first move on the board. I walked into one of the largest banks in the country and built automation for cybersecurity compliance.",
-    skills: ["Ansible", "Python", "Jenkins"],
+    gameMechanic: "First Placement", mechanicIcon: "♟️",
+    narrative: "My first move on the board. I walked into one of the largest banks in the country and built automation for cybersecurity compliance. Trial by fire in enterprise-grade security.",
+    techStack: ["Ansible", "Python", "Jenkins", "Palo Alto Firewalls", "Splunk", "Linux"],
+    skillsGained: ["Security Automation", "Configuration Management", "CI Pipeline Design", "Compliance Scripting"],
+    milestones: [
+      { title: "First Enterprise Code", desc: "Deployed automation to production within first month", icon: "🚀" },
+      { title: "Firewall Automation", desc: "Automated Palo Alto firewall rule management", icon: "🔥" },
+      { title: "Compliance Engine", desc: "Built compliance checking scripts saving 20+ hours/week", icon: "⚡" },
+    ],
+    valueDelivered: [
+      "Automated cybersecurity compliance checks across 500+ endpoints",
+      "Reduced manual firewall audit time by 60%",
+      "Introduced Ansible-based config management to the security team",
+    ],
   },
   {
     company: "BMO", title: "Cloud Infrastructure Engineer",
     period: "Mar 2019–May 2020", icon: "☁️", color: "#d4883a",
-    narrative: "The foundation year. High-pressure cloud migrations. I learned that the best architecture is the one nobody notices.",
-    skills: ["AWS", "Azure", "Terraform"],
+    gameMechanic: "Resource Gathering", mechanicIcon: "💰",
+    narrative: "The foundation year. High-pressure cloud migrations, wiring up network connectivity, establishing Infrastructure as Code as the standard. I learned that the best architecture is the one nobody notices — because it just works.",
+    techStack: ["AWS", "Azure", "Terraform", "CloudFormation", "Python", "Bash", "Jenkins", "Ansible", "Docker"],
+    skillsGained: ["Cloud Architecture", "IaC", "Network Design", "Migration Strategy", "Cost Optimization"],
+    milestones: [
+      { title: "First Cloud Migration", desc: "Migrated 15 workloads from on-prem to AWS", icon: "☁️" },
+      { title: "IaC Standard", desc: "Established Terraform as the bank's IaC standard", icon: "📜" },
+      { title: "Network Wiring", desc: "Designed VPC peering & Transit Gateway architecture", icon: "🔌" },
+    ],
+    valueDelivered: [
+      "Migrated 50+ applications to cloud, zero downtime",
+      "Reduced infrastructure provisioning from weeks to hours",
+      "Established IaC patterns adopted by 10+ teams",
+      "Cut cloud costs by 30% through right-sizing and reserved instances",
+    ],
   },
   {
     company: "BMO", title: "Senior Cloud Engineer",
     period: "Jun 2020–Apr 2021", icon: "📐", color: "#d4883a",
-    narrative: "I stopped building and started designing. The pivot from implementation to architecture.",
-    skills: ["Architecture", "Consulting", "SLA"],
+    gameMechanic: "Strategy Phase", mechanicIcon: "🗺️",
+    narrative: "I stopped building and started designing. The pivot from implementation to architecture — translating infrastructure complexity into decisions that leadership could act on. Reactive firefighting became proactive optimization.",
+    techStack: ["AWS", "Azure", "Terraform", "Kubernetes", "Helm", "Datadog", "PagerDuty", "Confluence"],
+    skillsGained: ["Solution Architecture", "Technical Consulting", "SLA Design", "Stakeholder Management", "Capacity Planning"],
+    milestones: [
+      { title: "Architecture Reviews", desc: "Became the go-to reviewer for all cloud designs", icon: "📐" },
+      { title: "SLA Framework", desc: "Designed SLA tiers adopted across all cloud workloads", icon: "📊" },
+      { title: "Cost Dashboard", desc: "Built real-time cost visibility for 200+ accounts", icon: "💡" },
+    ],
+    valueDelivered: [
+      "Designed architecture patterns reducing deployment failures by 40%",
+      "Translated technical complexity into executive-ready decision frameworks",
+      "Established SLA optimization program saving $2M annually",
+    ],
   },
   {
     company: "BMO", title: "Team Lead",
     period: "May 2021–Jul 2022", icon: "👥", color: "#d4883a",
-    narrative: "Leading the squad. Container deployments from days to hours. Zero critical audit findings.",
-    skills: ["Leadership", "CI/CD", "Security"],
+    gameMechanic: "Alliance Building", mechanicIcon: "🤝",
+    narrative: "Leading the squad. We turned container deployments from days into hours. Built CI/CD pipelines that sailed through audits with zero critical findings. The shift from 'I can build this' to 'I can help everyone build this.'",
+    techStack: ["Kubernetes", "EKS", "Docker", "Terraform", "GitHub Actions", "ArgoCD", "Vault", "Istio"],
+    skillsGained: ["Team Leadership", "Mentoring", "Agile/Scrum", "Security Automation", "Audit Readiness"],
+    milestones: [
+      { title: "Team Formation", desc: "Built and led a team of 6 cloud engineers", icon: "👥" },
+      { title: "Zero Audit Findings", desc: "CI/CD pipelines passed audit with zero critical findings", icon: "✅" },
+      { title: "Deployment Velocity", desc: "Container deployments: days → hours", icon: "⚡" },
+    ],
+    valueDelivered: [
+      "Led team of 6 engineers, 100% retention rate",
+      "Reduced container deployment time from 5 days to 2 hours",
+      "Achieved zero critical audit findings across all pipelines",
+      "Mentored 3 engineers to senior-level promotions",
+    ],
   },
   {
     company: "BMO", title: "Principal — Serverless & Containers",
     period: "Jul 2022–Aug 2025", icon: "🏗️", color: "#d4883a",
-    narrative: "Owning the platform. Multi-region. The shift from 'servers' to 'services.'",
-    skills: ["Kubernetes", "Serverless", "Platform"],
+    gameMechanic: "Empire Building", mechanicIcon: "🏰",
+    narrative: "Owning the platform. Multi-region architectures supporting thousands of developers. I led the shift from a 'servers' mindset to a 'services' mindset — reducing complexity across hundreds of teams while keeping pace fast.",
+    techStack: ["Kubernetes", "EKS", "Lambda", "Step Functions", "API Gateway", "Terraform", "CDK", "Datadog", "Grafana", "Prometheus"],
+    skillsGained: ["Platform Engineering", "Multi-Region Design", "Developer Experience", "Serverless Patterns", "Capacity at Scale"],
+    milestones: [
+      { title: "Multi-Region", desc: "Architected active-active multi-region platform", icon: "🌍" },
+      { title: "1000+ Developers", desc: "Platform serving 1000+ developers across the bank", icon: "👨‍💻" },
+      { title: "Servers → Services", desc: "Led cultural + technical shift to serverless-first", icon: "🔄" },
+      { title: "Golden Paths", desc: "Created standardized deployment blueprints", icon: "✨" },
+    ],
+    valueDelivered: [
+      "Architected platform supporting 1000+ developers across BMO",
+      "Reduced infrastructure complexity by 60% via serverless patterns",
+      "Designed multi-region active-active architecture for critical services",
+      "Created golden-path templates reducing new service setup from weeks to minutes",
+    ],
   },
   {
     company: "BMO", title: "Principal — AI",
     period: "Jun 2025–Present", icon: "🤖", color: "#9b59b6",
-    narrative: "Architecting the secure backbone for enterprise AI. The board keeps expanding.",
-    skills: ["RAG", "MLOps", "Azure AI"],
+    gameMechanic: "Endgame Boss", mechanicIcon: "🐉",
+    narrative: "Architecting the secure backbone for enterprise AI. Azure-based AI platforms integrating enterprise data services under strict model governance. The board keeps expanding. The questions keep getting better.",
+    techStack: ["Azure OpenAI", "Azure AI Studio", "LangChain", "Vector DBs", "Kubernetes", "MLflow", "Terraform", "Python"],
+    skillsGained: ["RAG Architecture", "MLOps", "LLMOps", "Model Governance", "AI Security", "Prompt Engineering"],
+    milestones: [
+      { title: "AI Platform", desc: "Designed enterprise AI platform architecture", icon: "🧠" },
+      { title: "Model Governance", desc: "Built governance framework for LLM deployment", icon: "📋" },
+      { title: "RAG Pipeline", desc: "Architected retrieval-augmented generation at scale", icon: "🔗" },
+    ],
+    valueDelivered: [
+      "Architecting secure enterprise AI platform for Canada's 4th largest bank",
+      "Designed model governance framework ensuring compliance with banking regulations",
+      "Building RAG pipelines integrating petabytes of enterprise data",
+      "Establishing AI security standards adopted organization-wide",
+    ],
   },
 ];
 
 const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [activeRole, setActiveRole] = useState(0);
   const [revealed, setRevealed] = useState(0);
+  const [activeTab, setActiveTab] = useState<"story" | "tech" | "milestones" | "value">("story");
+  const [revealedMilestones, setRevealedMilestones] = useState<Set<number>>(new Set());
 
-  // Find starting index based on which tile was clicked
   useEffect(() => {
     if (startRole) {
       const map: Record<string, number> = {
         rbc: 0, "bmo-infra": 1, "bmo-senior": 2,
         "bmo-lead": 3, "bmo-principal": 4, "bmo-ai": 5,
       };
-      const idx = map[startRole] ?? 0;
-      setActiveRole(idx);
+      setActiveRole(map[startRole] ?? 0);
     }
   }, [startRole]);
 
   useEffect(() => {
     const timers = roles.map((_, i) =>
-      setTimeout(() => setRevealed(i + 1), 300 + i * 400)
+      setTimeout(() => setRevealed(i + 1), 300 + i * 350)
     );
     return () => timers.forEach(clearTimeout);
   }, []);
 
+  // Reset tab state on role change
+  useEffect(() => {
+    setActiveTab("story");
+    setRevealedMilestones(new Set());
+  }, [activeRole]);
+
   const role = roles[activeRole];
 
+  const handleFlipMilestone = (idx: number) => {
+    setRevealedMilestones(prev => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx); else next.add(idx);
+      return next;
+    });
+  };
+
   return (
-    <div className="w-full h-full flex items-center justify-center p-6">
-      <div className="flex flex-col lg:flex-row gap-8 max-w-5xl w-full items-center">
+    <div className="w-full h-full flex items-center justify-center p-4 md:p-6 overflow-y-auto">
+      <div className="flex flex-col lg:flex-row gap-6 max-w-6xl w-full items-start">
         {/* Timeline rail */}
-        <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible no-scrollbar py-2">
+        <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible no-scrollbar py-2 lg:min-w-[180px]">
           {roles.slice(0, revealed).map((r, i) => (
             <motion.button
               key={i}
@@ -87,7 +193,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               onClick={() => setActiveRole(i)}
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.08 }}
               style={{
                 background: i === activeRole ? `${r.color}20` : "rgba(40,30,20,0.4)",
                 border: `1px solid ${i === activeRole ? r.color : "rgba(232,196,96,0.1)"}`,
@@ -96,11 +202,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
             >
               <span className="text-lg">{r.icon}</span>
               <div className="text-left">
-                <p className="text-[10px] font-mono" style={{ color: "rgba(232,196,96,0.5)" }}>
-                  {r.period}
-                </p>
+                <p className="text-[10px] font-mono" style={{ color: "rgba(232,196,96,0.5)" }}>{r.period}</p>
                 <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#e8c460" : "rgba(232,196,96,0.5)" }}>
-                  {r.company}
+                  {r.company} — {r.mechanicIcon}
                 </p>
               </div>
             </motion.button>
@@ -110,64 +214,151 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
         {/* Active role detail */}
         <motion.div
           key={activeRole}
-          className="flex-1 max-w-lg"
-          initial={{ opacity: 0, y: 30, rotateX: -10 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ duration: 0.5, type: "spring" }}
-          style={{ perspective: 800 }}
+          className="flex-1 max-w-2xl"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, type: "spring" }}
         >
-          <div
-            className="rounded-xl p-8"
-            style={{
-              background: "rgba(40,30,20,0.6)",
-              border: `1px solid ${role.color}40`,
-              boxShadow: `0 0 40px ${role.color}15`,
-            }}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-4xl">{role.icon}</span>
-              <div>
-                <p className="font-display text-sm uppercase tracking-widest" style={{ color: role.color }}>
-                  {role.company}
-                </p>
-                <p className="font-mono text-xs" style={{ color: "rgba(232,196,96,0.4)" }}>
-                  {role.period}
-                </p>
+          {/* Header */}
+          <div className="rounded-t-xl px-6 py-4" style={{ background: `${role.color}12`, borderBottom: `1px solid ${role.color}30` }}>
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">{role.icon}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="font-display text-sm uppercase tracking-widest" style={{ color: role.color }}>{role.company}</p>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded" style={{ background: `${role.color}15`, color: role.color }}>
+                    {role.mechanicIcon} {role.gameMechanic}
+                  </span>
+                </div>
+                <h3 className="font-display text-lg md:text-xl font-bold" style={{ color: "#f0e6d0" }}>{role.title}</h3>
+                <p className="font-mono text-xs" style={{ color: "rgba(232,196,96,0.4)" }}>{role.period}</p>
               </div>
             </div>
+          </div>
 
-            <h3 className="font-display text-xl md:text-2xl font-bold mb-4" style={{ color: "#f0e6d0" }}>
-              {role.title}
-            </h3>
+          {/* Tab bar */}
+          <div className="flex" style={{ background: "rgba(40,30,20,0.5)" }}>
+            {(["story", "tech", "milestones", "value"] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className="flex-1 py-2.5 text-[11px] font-mono uppercase tracking-wider cursor-pointer transition-all"
+                style={{
+                  color: activeTab === tab ? "#e8c460" : "rgba(232,196,96,0.3)",
+                  borderBottom: activeTab === tab ? `2px solid ${role.color}` : "2px solid transparent",
+                  background: activeTab === tab ? "rgba(232,196,96,0.05)" : "transparent",
+                }}
+              >
+                {tab === "story" ? "📖 Story" : tab === "tech" ? "⚡ Stack" : tab === "milestones" ? "🏆 Wins" : "💎 Value"}
+              </button>
+            ))}
+          </div>
 
-            <p className="font-body text-base italic leading-relaxed mb-6" style={{ color: "rgba(240,230,208,0.75)" }}>
-              {role.narrative}
-            </p>
+          {/* Tab content */}
+          <div className="rounded-b-xl p-6" style={{ background: "rgba(40,30,20,0.6)", border: `1px solid ${role.color}15`, borderTop: "none" }}>
+            <AnimatePresence mode="wait">
+              {activeTab === "story" && (
+                <motion.div key="story" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <p className="font-body text-base italic leading-relaxed mb-4" style={{ color: "rgba(240,230,208,0.8)" }}>
+                    "{role.narrative}"
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {role.skillsGained.map((skill, i) => (
+                      <span key={skill} className="text-[11px] font-mono px-2.5 py-1 rounded"
+                        style={{ color: role.color, background: `${role.color}12`, border: `1px solid ${role.color}25` }}>
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
 
-            <div className="flex flex-wrap gap-2">
-              {role.skills.map((skill, i) => (
-                <motion.span
-                  key={skill}
-                  className="text-[11px] font-mono px-2.5 py-1 rounded"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  style={{
-                    color: role.color,
-                    background: `${role.color}15`,
-                    border: `1px solid ${role.color}30`,
-                  }}
-                >
-                  {skill}
-                </motion.span>
-              ))}
-            </div>
+              {activeTab === "tech" && (
+                <motion.div key="tech" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <div className="grid grid-cols-3 gap-2">
+                    {role.techStack.map((tech, i) => (
+                      <motion.div
+                        key={tech}
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.05 }}
+                        style={{ background: `${role.color}08`, border: `1px solid ${role.color}20` }}
+                      >
+                        <span className="text-xs" style={{ color: role.color }}>◆</span>
+                        <span className="text-xs font-mono" style={{ color: role.color }}>{tech}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === "milestones" && (
+                <motion.div key="milestones" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <p className="text-[10px] font-mono mb-3" style={{ color: "rgba(232,196,96,0.3)" }}>
+                    Click cards to flip and reveal achievements
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {role.milestones.map((m, i) => {
+                      const flipped = revealedMilestones.has(i);
+                      return (
+                        <motion.div
+                          key={i}
+                          className="cursor-pointer rounded-lg p-4 min-h-[80px] flex items-center justify-center"
+                          onClick={() => handleFlipMilestone(i)}
+                          initial={{ opacity: 0, rotateY: 180 }}
+                          animate={{ opacity: 1, rotateY: flipped ? 0 : 180 }}
+                          transition={{ duration: 0.5, type: "spring" }}
+                          style={{
+                            background: flipped ? `${role.color}10` : "rgba(232,196,96,0.05)",
+                            border: `1px solid ${flipped ? `${role.color}30` : "rgba(232,196,96,0.1)"}`,
+                            perspective: 600,
+                            transformStyle: "preserve-3d",
+                          }}
+                        >
+                          {flipped ? (
+                            <div className="text-center" style={{ transform: "rotateY(0deg)" }}>
+                              <span className="text-2xl">{m.icon}</span>
+                              <p className="text-xs font-display mt-1" style={{ color: "#e8c460" }}>{m.title}</p>
+                              <p className="text-[10px] font-body mt-1" style={{ color: "rgba(240,230,208,0.6)" }}>{m.desc}</p>
+                            </div>
+                          ) : (
+                            <div className="text-center" style={{ transform: "rotateY(180deg)" }}>
+                              <span className="text-2xl">🎴</span>
+                              <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(232,196,96,0.3)" }}>Click to reveal</p>
+                            </div>
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === "value" && (
+                <motion.div key="value" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+                  {role.valueDelivered.map((v, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-start gap-3 p-3 rounded-lg"
+                      initial={{ opacity: 0, x: -15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.12 }}
+                      style={{ background: "rgba(232,196,96,0.04)", border: "1px solid rgba(232,196,96,0.1)" }}
+                    >
+                      <span className="text-sm mt-0.5">💎</span>
+                      <span className="text-sm font-body" style={{ color: "rgba(240,230,208,0.8)" }}>{v}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Navigate hint */}
           {activeRole < roles.length - 1 && (
             <motion.button
-              className="mt-4 text-xs font-display tracking-wider flex items-center gap-2 mx-auto cursor-pointer"
+              className="mt-3 text-xs font-display tracking-wider flex items-center gap-2 mx-auto cursor-pointer"
               style={{ color: "rgba(232,196,96,0.4)" }}
               onClick={() => setActiveRole(prev => Math.min(prev + 1, roles.length - 1))}
               animate={{ x: [0, 5, 0] }}
