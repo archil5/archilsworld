@@ -210,8 +210,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 }}>{r.company}</span>
               )}
               <div className="text-left">
-                <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{r.period}</p>
-                <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#2d2a26" : "rgba(80,70,60,0.45)" }}>
+                <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.6)" }}>{r.period}</p>
+                <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#2d2a26" : "rgba(80,70,60,0.6)" }}>
                   {r.mechanicIcon} {r.gameMechanic}
                 </p>
               </div>
