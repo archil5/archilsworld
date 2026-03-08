@@ -286,8 +286,9 @@ const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
   autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void;
 }) => {
   const [placements, setPlacements] = useState<Record<string, string>>({});
-  const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [wrongSlot, setWrongSlot] = useState<string | null>(null);
+  const [draggedService, setDraggedService] = useState<string | null>(null);
+  const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
+  const [wrongFeedback, setWrongFeedback] = useState<{ slotId: string; serviceName: string; slotLabel: string } | null>(null);
 
   useEffect(() => {
     if (autoReveal) {
@@ -298,15 +299,66 @@ const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
   }, [autoReveal, puzzle.slots]);
 
   const isDone = solved || autoReveal || Object.keys(placements).length === puzzle.slots.length;
-
   const placedServices = new Set(Object.values(placements));
   const availableServices = puzzle.services.filter(s => !placedServices.has(s.id));
 
+  const handleDragStart = (e: React.DragEvent, serviceId: string) => {
+    setDraggedService(serviceId);
+    setWrongFeedback(null);
+    e.dataTransfer.setData("text/plain", serviceId);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: React.DragEvent, slotId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverSlot(slotId);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverSlot(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, slotId: string) => {
+    e.preventDefault();
+    setDragOverSlot(null);
+    setDraggedService(null);
+    const serviceId = e.dataTransfer.getData("text/plain");
+    if (!serviceId || isDone) return;
+
+    const slot = puzzle.slots.find(s => s.id === slotId);
+    if (!slot) return;
+
+    if (serviceId === slot.correctService) {
+      setWrongFeedback(null);
+      setPlacements(prev => {
+        const next = { ...prev, [slotId]: serviceId };
+        if (Object.keys(next).length === puzzle.slots.length) onSolve();
+        return next;
+      });
+    } else {
+      const svc = puzzle.services.find(s => s.id === serviceId);
+      setWrongFeedback({
+        slotId,
+        serviceName: svc?.name || serviceId,
+        slotLabel: slot.label,
+      });
+      setTimeout(() => setWrongFeedback(null), 4000);
+    }
+  };
+
+  // Also support click-based for mobile
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const handleServiceClick = (serviceId: string) => {
+    setWrongFeedback(null);
+    setSelectedService(serviceId === selectedService ? null : serviceId);
+  };
   const handleSlotClick = (slotId: string) => {
     if (isDone || !selectedService) return;
     const slot = puzzle.slots.find(s => s.id === slotId);
     if (!slot) return;
     if (selectedService === slot.correctService) {
+      setWrongFeedback(null);
       setPlacements(prev => {
         const next = { ...prev, [slotId]: selectedService };
         if (Object.keys(next).length === puzzle.slots.length) onSolve();
@@ -314,8 +366,9 @@ const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
       });
       setSelectedService(null);
     } else {
-      setWrongSlot(slotId);
-      setTimeout(() => setWrongSlot(null), 500);
+      const svc = puzzle.services.find(s => s.id === selectedService);
+      setWrongFeedback({ slotId, serviceName: svc?.name || selectedService, slotLabel: slot.label });
+      setTimeout(() => setWrongFeedback(null), 4000);
     }
   };
 
@@ -331,7 +384,7 @@ const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
           <Cloud size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        <button onClick={() => { setPlacements({}); setSelectedService(null); onReset?.(); }}
+        <button onClick={() => { setPlacements({}); setSelectedService(null); setWrongFeedback(null); onReset?.(); }}
           className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer"
           style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
@@ -352,69 +405,130 @@ const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
               Extreme Difficulty — Architect Level
             </p>
             <p className="text-[9px] font-body" style={{ color: "rgba(45,42,38,0.65)" }}>
-              10 Azure services across 6 tiers. This is a real enterprise RAG architecture used in banking.
-              You'll need to understand identity, networking, data pipelines, vector search, and AI inference to place every service correctly.
+              {puzzle.services.length} services across {puzzle.tiers.length} tiers. Drag each service to its correct architecture slot.
+              Wrong placements will tell you why it doesn't fit.
               <span className="font-bold" style={{ color: "#dc3232" }}> Good luck.</span>
             </p>
           </div>
         </motion.div>
       )}
 
-      {/* Service palette */}
+      {/* Wrong placement feedback */}
+      <AnimatePresence>
+        {wrongFeedback && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, height: 0 }} animate={{ opacity: 1, y: 0, height: "auto" }}
+            exit={{ opacity: 0, y: -8, height: 0 }}
+            className="rounded-lg p-2.5 flex items-start gap-2"
+            style={{ background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.2)" }}>
+            <span className="text-sm shrink-0">❌</span>
+            <div>
+              <p className="text-[10px] font-mono font-bold" style={{ color: "#dc3232" }}>Wrong placement</p>
+              <p className="text-[9px] font-body" style={{ color: "rgba(45,42,38,0.65)" }}>
+                <strong>{wrongFeedback.serviceName}</strong> doesn't belong in <strong>"{wrongFeedback.slotLabel}"</strong>.
+                Think about what this slot actually needs — read the service descriptions carefully.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Draggable service cards */}
       {!isDone && (
-        <div className="flex flex-wrap gap-1.5 p-2.5 rounded-lg" style={{ background: "rgba(180,140,100,0.04)", border: "1px solid rgba(180,140,100,0.1)" }}>
-          <p className="w-full text-[8px] font-mono uppercase tracking-widest mb-1" style={{ color: "rgba(80,70,60,0.45)" }}>
-            {selectedService ? "Now click a slot below ↓" : "Select a service to place ↓"}
+        <div className="p-3 rounded-lg" style={{ background: "rgba(180,140,100,0.04)", border: "1px solid rgba(180,140,100,0.1)" }}>
+          <p className="text-[8px] font-mono uppercase tracking-widest mb-2" style={{ color: "rgba(80,70,60,0.45)" }}>
+            ✋ Drag a service card → drop it on a slot below {availableServices.length > 0 && `(${availableServices.length} remaining)`}
           </p>
-          {availableServices.map(svc => (
-            <motion.button key={svc.id}
-              onClick={() => setSelectedService(svc.id === selectedService ? null : svc.id)}
-              className="text-[10px] font-mono px-2.5 py-1.5 rounded-lg cursor-pointer transition-all"
-              style={{
-                background: selectedService === svc.id ? `${color}15` : "#fefcf9",
-                border: `1.5px solid ${selectedService === svc.id ? color : "rgba(180,140,100,0.15)"}`,
-                color: selectedService === svc.id ? color : "#2d2a26",
-                boxShadow: selectedService === svc.id ? `0 0 8px ${color}15` : "none",
-              }}
-              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              {svc.icon} {svc.name}
-            </motion.button>
-          ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {availableServices.map(svc => (
+              <motion.div key={svc.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e as unknown as React.DragEvent, svc.id)}
+                onDragEnd={() => { setDraggedService(null); setDragOverSlot(null); }}
+                onClick={() => handleServiceClick(svc.id)}
+                className="p-2.5 rounded-lg cursor-grab active:cursor-grabbing transition-all select-none"
+                style={{
+                  background: selectedService === svc.id ? `${color}12` : "#fefcf9",
+                  border: `1.5px solid ${selectedService === svc.id ? color : draggedService === svc.id ? `${color}60` : "rgba(180,140,100,0.2)"}`,
+                  boxShadow: selectedService === svc.id ? `0 0 12px ${color}18` : draggedService === svc.id ? "0 4px 16px rgba(0,0,0,0.12)" : "0 1px 3px rgba(0,0,0,0.04)",
+                  opacity: draggedService === svc.id ? 0.5 : 1,
+                }}
+                whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
+                whileTap={{ scale: 0.98 }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-base">{svc.icon}</span>
+                  <span className="text-[11px] font-mono font-bold" style={{ color: "#2d2a26" }}>{svc.name}</span>
+                </div>
+                <p className="text-[9px] font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.55)" }}>{svc.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Architecture slots by tier */}
-      <div className="space-y-2">
-        {groupedSlots.map(({ tier, slots }) => (
-          <div key={tier}>
-            <p className="text-[8px] font-mono uppercase tracking-widest mb-1.5" style={{ color: `${color}80` }}>{tier}</p>
-            <div className="grid grid-cols-2 gap-2">
-              {slots.map(slot => {
-                const placed = placements[slot.id];
-                const service = placed ? puzzle.services.find(s => s.id === placed) : null;
-                const isWrong = wrongSlot === slot.id;
-                return (
-                  <motion.div key={slot.id}
-                    onClick={() => handleSlotClick(slot.id)}
-                    className="p-2.5 rounded-lg cursor-pointer transition-all"
-                    style={{
-                      background: placed ? `${color}06` : selectedService ? `${color}04` : "#fefcf9",
-                      border: `1.5px dashed ${placed ? `${color}40` : isWrong ? "#dc3232" : selectedService ? `${color}30` : "rgba(180,140,100,0.2)"}`,
-                    }}
-                    animate={isWrong ? { x: [0, -3, 3, -2, 2, 0] } : {}}
-                    transition={isWrong ? { duration: 0.35 } : {}}>
-                    <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>{slot.label}</p>
-                    {service ? (
-                      <p className="text-xs font-mono font-bold mt-0.5" style={{ color }}>{service.icon} {service.name}</p>
-                    ) : (
-                      <p className="text-[10px] font-mono mt-0.5" style={{ color: "rgba(180,140,100,0.3)" }}>Drop service here</p>
-                    )}
-                  </motion.div>
-                );
-              })}
+      {/* Architecture diagram — drop zones by tier */}
+      <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${color}20`, background: `${color}03` }}>
+        <div className="px-3 py-2 flex items-center gap-2" style={{ background: `${color}06`, borderBottom: `1px solid ${color}12` }}>
+          <Cloud size={12} style={{ color }} />
+          <span className="text-[9px] font-mono font-bold uppercase tracking-wider" style={{ color }}>Architecture Diagram</span>
+          <span className="text-[8px] font-mono ml-auto" style={{ color: "rgba(80,70,60,0.35)" }}>{Object.keys(placements).length}/{puzzle.slots.length} placed</span>
+        </div>
+        <div className="p-3 space-y-3">
+          {groupedSlots.map(({ tier, slots }, tierIdx) => (
+            <div key={tier}>
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-1 h-4 rounded-full" style={{ background: color }} />
+                <p className="text-[9px] font-mono font-bold uppercase tracking-wider" style={{ color }}>{tier}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 pl-3" style={{ borderLeft: `2px solid ${color}15` }}>
+                {slots.map(slot => {
+                  const placed = placements[slot.id];
+                  const service = placed ? puzzle.services.find(s => s.id === placed) : null;
+                  const isOver = dragOverSlot === slot.id;
+                  const isWrongSlot = wrongFeedback?.slotId === slot.id;
+                  return (
+                    <motion.div key={slot.id}
+                      onDragOver={(e) => handleDragOver(e as unknown as React.DragEvent, slot.id)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e as unknown as React.DragEvent, slot.id)}
+                      onClick={() => handleSlotClick(slot.id)}
+                      className={`p-2.5 rounded-lg transition-all ${!placed && !isDone ? "cursor-pointer" : ""}`}
+                      style={{
+                        background: placed ? `${color}08` : isOver ? `${color}12` : isWrongSlot ? "rgba(220,50,50,0.06)" : "#fefcf9",
+                        border: `2px dashed ${placed ? `${color}50` : isOver ? color : isWrongSlot ? "#dc3232" : selectedService ? `${color}30` : "rgba(180,140,100,0.2)"}`,
+                        minHeight: 52,
+                      }}
+                      animate={isWrongSlot ? { x: [0, -4, 4, -3, 3, 0] } : isOver ? { scale: 1.02 } : {}}
+                      transition={isWrongSlot ? { duration: 0.35 } : { duration: 0.15 }}>
+                      <p className="text-[8px] font-mono uppercase tracking-wider mb-0.5" style={{ color: placed ? `${color}90` : "rgba(80,70,60,0.4)" }}>{slot.label}</p>
+                      {service ? (
+                        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+                          className="flex items-center gap-1.5 mt-1">
+                          <span className="text-sm">{service.icon}</span>
+                          <span className="text-[11px] font-mono font-bold" style={{ color }}>{service.name}</span>
+                          <span className="text-[8px] ml-auto" style={{ color: "#2a7d4f" }}>✓</span>
+                        </motion.div>
+                      ) : (
+                        <p className="text-[9px] font-mono mt-1" style={{ color: isOver ? color : "rgba(180,140,100,0.25)" }}>
+                          {isOver ? "Release to place ↓" : "Drop service here"}
+                        </p>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+              {/* Tier connector arrow */}
+              {tierIdx < groupedSlots.length - 1 && (
+                <div className="flex justify-center py-1">
+                  <motion.span className="text-[10px]" style={{ color: `${color}30` }}
+                    animate={{ y: [0, 3, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+                    ▼
+                  </motion.span>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Progress */}
