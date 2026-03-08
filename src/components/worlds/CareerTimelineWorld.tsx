@@ -384,13 +384,14 @@ const PAD_X = 20;
 const PAD_Y = 30;
 const getNodeCenter = (node: ArchNode) => ({ x: PAD_X + node.col * GRID_GAP_X + NODE_W / 2, y: PAD_Y + node.row * GRID_GAP_Y + NODE_H / 2 });
 
-const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [connected, setConnected] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const svgW = PAD_X * 2 + 3 * GRID_GAP_X + NODE_W;
   const svgH = PAD_Y * 2 + GRID_GAP_Y + NODE_H;
-  const isDone = solved || connected.length === puzzle.sequence.length;
+  const isDone = solved || autoReveal || connected.length === puzzle.sequence.length;
 
+  useEffect(() => { if (autoReveal) setConnected([...puzzle.sequence]); }, [autoReveal, puzzle.sequence]);
   useEffect(() => { setConnected([]); setWrongId(null); }, [puzzle.title]);
 
   const nextExpected = puzzle.sequence[connected.length];
