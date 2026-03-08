@@ -4,7 +4,11 @@ import { useMemo } from "react";
 
 /**
  * Renders a logo/image as a texture mapped onto a circular disc
- * that sits flush on top of the hex tile — looks physically carved/engraved.
+ * flush on the hex tile top surface.
+ * 
+ * NOTE: This is rendered as a CHILD of the hex mesh which already has
+ * rotation={[-Math.PI/2, 0, 0]}. So we do NOT rotate again.
+ * The extrude depth is 0.15 along local Z. We place the disc just above at z=0.16.
  */
 const TileSurface = ({
   textureUrl,
@@ -24,7 +28,7 @@ const TileSurface = ({
   }, [texture]);
 
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.165, 0]}>
+    <mesh position={[0, 0, 0.16]}>
       <circleGeometry args={[size, 48]} />
       <meshStandardMaterial
         map={texture}
@@ -39,7 +43,7 @@ const TileSurface = ({
 };
 
 /**
- * Career tile: two half-disc textures side by side (RBC | BMO).
+ * Career tile: two side-by-side logo discs (RBC | BMO).
  */
 export const CareerSplitSurface = ({
   leftUrl,
@@ -61,20 +65,20 @@ export const CareerSplitSurface = ({
     });
   }, [leftTex, rightTex]);
 
-  // Two circles side by side, slightly offset
+  const matProps = {
+    transparent: true,
+    roughness: isActive ? 0.45 : 0.85,
+    metalness: isActive ? 0.1 : 0.03,
+    color: isActive ? "#e8e0d4" : "#d5cfc5",
+    toneMapped: true,
+  };
+
   return (
-    <group position={[0, 0.165, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+    <group position={[0, 0, 0.16]}>
       {/* Left logo - RBC */}
       <mesh position={[-0.28, 0, 0]}>
         <circleGeometry args={[0.32, 48]} />
-        <meshStandardMaterial
-          map={leftTex}
-          transparent
-          roughness={isActive ? 0.45 : 0.85}
-          metalness={isActive ? 0.1 : 0.03}
-          color={isActive ? "#e8e0d4" : "#d5cfc5"}
-          toneMapped
-        />
+        <meshStandardMaterial map={leftTex} {...matProps} />
       </mesh>
       {/* Divider groove */}
       <mesh position={[0, 0, 0.001]}>
@@ -84,14 +88,7 @@ export const CareerSplitSurface = ({
       {/* Right logo - BMO */}
       <mesh position={[0.28, 0, 0]}>
         <circleGeometry args={[0.32, 48]} />
-        <meshStandardMaterial
-          map={rightTex}
-          transparent
-          roughness={isActive ? 0.45 : 0.85}
-          metalness={isActive ? 0.1 : 0.03}
-          color={isActive ? "#e8e0d4" : "#d5cfc5"}
-          toneMapped
-        />
+        <meshStandardMaterial map={rightTex} {...matProps} />
       </mesh>
     </group>
   );
