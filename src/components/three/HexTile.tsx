@@ -183,13 +183,13 @@ const HexTile = ({
               border: isActive ? `2px solid ${color}40` : "none",
               boxShadow: isActive ? `0 0 16px ${color}30` : "none",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <img src={careerLogos.RBC} alt="RBC" style={{
-                  height: 44,
+                  height: 56,
                   objectFit: "contain",
                 }} />
                 <img src={careerLogos.BMO} alt="BMO" style={{
-                  height: 44,
+                  height: 56,
                   objectFit: "contain",
                 }} />
               </div>
