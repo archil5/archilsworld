@@ -8,6 +8,12 @@ import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/
    TYPES & DATA
    ═══════════════════════════════════════════════════════════ */
 
+interface ProjectShowcase {
+  name: string;
+  description: string;
+  highlights: string[];
+}
+
 interface RoleStop {
   company: string;
   title: string;
@@ -18,6 +24,7 @@ interface RoleStop {
   impact: string;
   techStack: string[];
   wins: string[];
+  project: ProjectShowcase;
   diagramPuzzle: DiagramPuzzleData;
 }
 
