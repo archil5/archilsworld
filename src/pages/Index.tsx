@@ -110,12 +110,13 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.9 }}
         >
           <p className="text-xs font-mono uppercase tracking-wider mb-3" style={{ color: "#b5653a" }}>
-            Why a Board Game?
+            How I Think
           </p>
           <p className="font-body text-sm leading-relaxed" style={{ color: "rgba(245,240,232,0.7)" }}>
-            I've always loved board games, puzzles, and riddles — the thrill of solving complex problems
-            one move at a time. This portfolio is my personal game board. Each tile is a chapter.
-            Each world is a story. Scroll through my journey like you'd explore a strategy map.
+            I take things apart to understand how they work — then build them back better.
+            Whether it's a board game, a cloud architecture, or a stubborn bug, I think three moves ahead
+            and treat every problem like a puzzle waiting to be cracked. This portfolio is my game board —
+            each tile is a chapter, each world is a challenge. Explore my journey like a strategy map.
           </p>
         </motion.div>
 
@@ -126,7 +127,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1 }}
         >
-          {["Board Games", "Puzzles", "Riddles", "Strategy", "Cloud"].map((tag, i) => (
+          {["Problem Solver", "Builder", "Strategic Thinker", "Lifelong Learner", "Cloud"].map((tag, i) => (
             <motion.span
               key={tag}
               className="text-[11px] font-mono px-3 py-1.5 rounded-full"
