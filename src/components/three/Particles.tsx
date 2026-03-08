@@ -37,7 +37,7 @@ const Particles = ({ count = 200 }: { count?: number }) => {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial color="#e8c460" transparent opacity={0.6} />
+      <meshBasicMaterial color="#c8956c" transparent opacity={0.35} />
     </instancedMesh>
   );
 };

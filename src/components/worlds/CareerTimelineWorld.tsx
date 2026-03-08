@@ -196,9 +196,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.08 }}
               style={{
-                background: i === activeRole ? `${r.brandColor}18` : "rgba(15,23,42,0.4)",
-                border: `1px solid ${i === activeRole ? r.brandColor : "rgba(148,163,184,0.1)"}`,
-                boxShadow: i === activeRole ? `0 0 20px ${r.brandColor}25` : "none",
+                background: i === activeRole ? `${r.brandColor}10` : "#fefcf9",
+                border: `1px solid ${i === activeRole ? `${r.brandColor}40` : "rgba(180,140,100,0.12)"}`,
+                boxShadow: i === activeRole ? `0 2px 12px ${r.brandColor}12` : "none",
               }}
             >
               <span className="text-sm font-bold px-1.5 py-0.5 rounded" style={{
@@ -207,8 +207,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 fontSize: "9px",
               }}>{r.company}</span>
               <div className="text-left">
-                <p className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.5)" }}>{r.period}</p>
-                <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#e2e8f0" : "rgba(148,163,184,0.5)" }}>
+                <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{r.period}</p>
+                <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#2d2a26" : "rgba(80,70,60,0.45)" }}>
                   {r.mechanicIcon} {r.gameMechanic}
                 </p>
               </div>
@@ -225,7 +225,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           transition={{ duration: 0.4, type: "spring" }}
         >
           {/* Header */}
-          <div className="rounded-t-xl px-6 py-4" style={{ background: `${role.brandColor}10`, borderBottom: `1px solid ${role.brandColor}30` }}>
+          <div className="rounded-t-xl px-6 py-4" style={{ background: `${role.brandColor}08`, borderBottom: `1px solid ${role.brandColor}20` }}>
             <div className="flex items-center gap-3">
               <span className="text-sm font-bold px-2 py-1 rounded" style={{
                 color: "#fff",
@@ -233,25 +233,25 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               }}>{role.company}</span>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded" style={{ background: `${role.brandColor}15`, color: role.brandColor }}>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded" style={{ background: `${role.brandColor}10`, color: role.brandColor }}>
                     {role.mechanicIcon} {role.gameMechanic}
                   </span>
                 </div>
-                <h3 className="font-display text-lg md:text-xl font-bold" style={{ color: "#e2e8f0" }}>{role.title}</h3>
-                <p className="font-mono text-xs" style={{ color: "rgba(148,163,184,0.5)" }}>{role.period}</p>
+                <h3 className="font-display text-lg md:text-xl font-bold" style={{ color: "#2d2a26" }}>{role.title}</h3>
+                <p className="font-mono text-xs" style={{ color: "rgba(80,70,60,0.45)" }}>{role.period}</p>
               </div>
             </div>
           </div>
 
           {/* Tab bar */}
-          <div className="flex" style={{ background: "rgba(15,23,42,0.5)" }}>
+          <div className="flex" style={{ background: "#fefcf9", borderLeft: "1px solid rgba(180,140,100,0.1)", borderRight: "1px solid rgba(180,140,100,0.1)" }}>
             {(["story", "tech", "milestones", "value"] as const).map(tab => (
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className="flex-1 py-2.5 text-[11px] font-mono uppercase tracking-wider cursor-pointer transition-all"
                 style={{
-                  color: activeTab === tab || (activeTab === "all") ? "#e2e8f0" : "rgba(148,163,184,0.3)",
+                  color: activeTab === tab || (activeTab === "all") ? "#2d2a26" : "rgba(80,70,60,0.3)",
                   borderBottom: activeTab === tab ? `2px solid ${role.brandColor}` : "2px solid transparent",
-                  background: activeTab === tab ? "rgba(148,163,184,0.05)" : "transparent",
+                  background: activeTab === tab ? `${role.brandColor}06` : "transparent",
                 }}>
                 {tab === "story" ? "📖 Story" : tab === "tech" ? "⚡ Stack" : tab === "milestones" ? "🏆 Wins" : "💎 Value"}
               </button>
@@ -259,26 +259,26 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
             <button onClick={handleShowAll}
               className="px-3 py-2.5 text-[11px] font-mono uppercase tracking-wider cursor-pointer transition-all"
               style={{
-                color: activeTab === "all" ? "#FFD700" : "rgba(255,215,0,0.4)",
-                borderBottom: activeTab === "all" ? "2px solid #FFD700" : "2px solid transparent",
-                background: activeTab === "all" ? "rgba(255,215,0,0.05)" : "transparent",
+                color: activeTab === "all" ? "#b5653a" : "rgba(181,101,58,0.35)",
+                borderBottom: activeTab === "all" ? "2px solid #b5653a" : "2px solid transparent",
+                background: activeTab === "all" ? "rgba(181,101,58,0.04)" : "transparent",
               }}>
               ⚡ All
             </button>
           </div>
 
           {/* Tab content */}
-          <div className="rounded-b-xl p-6 max-h-[60vh] overflow-y-auto" style={{ background: "rgba(15,23,42,0.6)", border: `1px solid ${role.brandColor}12`, borderTop: "none" }}>
+          <div className="rounded-b-xl p-6 max-h-[60vh] overflow-y-auto" style={{ background: "#fefcf9", border: `1px solid rgba(180,140,100,0.1)`, borderTop: "none" }}>
             <AnimatePresence mode="wait">
               {activeTab === "story" && (
                 <motion.div key="story" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <p className="font-body text-base italic leading-relaxed mb-4" style={{ color: "rgba(226,232,240,0.8)" }}>
+                  <p className="font-body text-base italic leading-relaxed mb-4" style={{ color: "rgba(45,42,38,0.8)" }}>
                     "{role.narrative}"
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {role.skillsGained.map(skill => (
                       <span key={skill} className="text-[11px] font-mono px-2.5 py-1 rounded"
-                        style={{ color: role.brandColor, background: `${role.brandColor}10`, border: `1px solid ${role.brandColor}25` }}>
+                        style={{ color: role.brandColor, background: `${role.brandColor}08`, border: `1px solid ${role.brandColor}18` }}>
                         {skill}
                       </span>
                     ))}
@@ -292,7 +292,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                     {role.techStack.map((tech, i) => (
                       <motion.div key={tech} className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
                         initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}
-                        style={{ background: `${role.brandColor}08`, border: `1px solid ${role.brandColor}20` }}>
+                        style={{ background: `${role.brandColor}06`, border: `1px solid ${role.brandColor}15` }}>
                         <span className="text-xs" style={{ color: role.brandColor }}>◆</span>
                         <span className="text-xs font-mono" style={{ color: role.brandColor }}>{tech}</span>
                       </motion.div>
@@ -304,11 +304,11 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               {activeTab === "milestones" && (
                 <motion.div key="milestones" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.3)" }}>Click cards to reveal</p>
+                    <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>Click cards to reveal</p>
                     {revealedMilestones.size < role.milestones.length && (
                       <button onClick={() => setRevealedMilestones(new Set(role.milestones.map((_, i) => i)))}
                         className="text-[10px] font-mono px-2 py-1 rounded cursor-pointer"
-                        style={{ color: "#FFD700", background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.2)" }}>
+                        style={{ color: "#b5653a", background: "rgba(181,101,58,0.06)", border: "1px solid rgba(181,101,58,0.15)" }}>
                         ⚡ Flip All
                       </button>
                     )}
@@ -322,19 +322,19 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                           initial={{ opacity: 0, rotateY: 180 }} animate={{ opacity: 1, rotateY: flipped ? 0 : 180 }}
                           transition={{ duration: 0.5, type: "spring" }}
                           style={{
-                            background: flipped ? `${role.brandColor}10` : "rgba(148,163,184,0.05)",
-                            border: `1px solid ${flipped ? `${role.brandColor}30` : "rgba(148,163,184,0.1)"}`,
+                            background: flipped ? `${role.brandColor}06` : "rgba(180,140,100,0.04)",
+                            border: `1px solid ${flipped ? `${role.brandColor}20` : "rgba(180,140,100,0.1)"}`,
                           }}>
                           {flipped ? (
                             <div className="text-center">
                               <span className="text-2xl">{m.icon}</span>
-                              <p className="text-xs font-display mt-1" style={{ color: "#e2e8f0" }}>{m.title}</p>
-                              <p className="text-[10px] font-body mt-1" style={{ color: "rgba(226,232,240,0.6)" }}>{m.desc}</p>
+                              <p className="text-xs font-display mt-1" style={{ color: "#2d2a26" }}>{m.title}</p>
+                              <p className="text-[10px] font-body mt-1" style={{ color: "rgba(45,42,38,0.6)" }}>{m.desc}</p>
                             </div>
                           ) : (
                             <div className="text-center" style={{ transform: "rotateY(180deg)" }}>
                               <span className="text-2xl">🎴</span>
-                              <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(148,163,184,0.3)" }}>Click to reveal</p>
+                              <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.3)" }}>Click to reveal</p>
                             </div>
                           )}
                         </motion.div>
@@ -349,9 +349,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   {role.valueDelivered.map((v, i) => (
                     <motion.div key={i} className="flex items-start gap-3 p-3 rounded-lg"
                       initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.12 }}
-                      style={{ background: "rgba(148,163,184,0.04)", border: "1px solid rgba(148,163,184,0.1)" }}>
+                      style={{ background: "rgba(80,70,60,0.03)", border: "1px solid rgba(180,140,100,0.1)" }}>
                       <span className="text-sm mt-0.5">💎</span>
-                      <span className="text-sm font-body" style={{ color: "rgba(226,232,240,0.8)" }}>{v}</span>
+                      <span className="text-sm font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{v}</span>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -359,66 +359,61 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
               {activeTab === "all" && (
                 <motion.div key="all" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
-                  {/* Narrative */}
                   <div>
                     <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: role.brandColor }}>📖 Story</p>
-                    <p className="font-body text-base italic leading-relaxed" style={{ color: "rgba(226,232,240,0.8)" }}>
+                    <p className="font-body text-base italic leading-relaxed" style={{ color: "rgba(45,42,38,0.8)" }}>
                       "{role.narrative}"
                     </p>
                   </div>
 
-                  {/* Tech Stack */}
                   <div>
                     <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: role.brandColor }}>⚡ Tech Stack</p>
                     <div className="flex flex-wrap gap-2">
                       {role.techStack.map(tech => (
                         <span key={tech} className="text-[11px] font-mono px-2.5 py-1 rounded"
-                          style={{ color: role.brandColor, background: `${role.brandColor}10`, border: `1px solid ${role.brandColor}20` }}>
+                          style={{ color: role.brandColor, background: `${role.brandColor}08`, border: `1px solid ${role.brandColor}15` }}>
                           {tech}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  {/* Skills */}
                   <div>
                     <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: role.brandColor }}>🎯 Skills Gained</p>
                     <div className="flex flex-wrap gap-2">
                       {role.skillsGained.map(skill => (
                         <span key={skill} className="text-[11px] font-mono px-2.5 py-1 rounded"
-                          style={{ color: "#e2e8f0", background: "rgba(148,163,184,0.08)", border: "1px solid rgba(148,163,184,0.15)" }}>
+                          style={{ color: "#2d2a26", background: "rgba(80,70,60,0.05)", border: "1px solid rgba(180,140,100,0.12)" }}>
                           {skill}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  {/* Milestones */}
                   <div>
                     <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: role.brandColor }}>🏆 Key Wins</p>
                     <div className="space-y-2">
                       {role.milestones.map((m, i) => (
                         <div key={i} className="flex items-start gap-3 p-2 rounded"
-                          style={{ background: `${role.brandColor}08`, border: `1px solid ${role.brandColor}15` }}>
+                          style={{ background: `${role.brandColor}05`, border: `1px solid ${role.brandColor}10` }}>
                           <span className="text-lg">{m.icon}</span>
                           <div>
-                            <p className="text-xs font-display" style={{ color: "#e2e8f0" }}>{m.title}</p>
-                            <p className="text-[10px] font-body" style={{ color: "rgba(226,232,240,0.6)" }}>{m.desc}</p>
+                            <p className="text-xs font-display" style={{ color: "#2d2a26" }}>{m.title}</p>
+                            <p className="text-[10px] font-body" style={{ color: "rgba(45,42,38,0.6)" }}>{m.desc}</p>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Value */}
                   <div>
-                    <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#FFD700" }}>💎 Value Delivered</p>
+                    <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#b5653a" }}>💎 Value Delivered</p>
                     <div className="space-y-2">
                       {role.valueDelivered.map((v, i) => (
                         <div key={i} className="flex items-start gap-2 p-2 rounded"
-                          style={{ background: "rgba(255,215,0,0.04)", border: "1px solid rgba(255,215,0,0.1)" }}>
+                          style={{ background: "rgba(181,101,58,0.03)", border: "1px solid rgba(181,101,58,0.08)" }}>
                           <span className="text-xs mt-0.5">◆</span>
-                          <span className="text-xs font-body" style={{ color: "rgba(226,232,240,0.8)" }}>{v}</span>
+                          <span className="text-xs font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{v}</span>
                         </div>
                       ))}
                     </div>
@@ -431,7 +426,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           {activeRole < roles.length - 1 && (
             <motion.button
               className="mt-3 text-xs font-display tracking-wider flex items-center gap-2 mx-auto cursor-pointer"
-              style={{ color: "rgba(148,163,184,0.4)" }}
+              style={{ color: "rgba(80,70,60,0.4)" }}
               onClick={() => setActiveRole(prev => Math.min(prev + 1, roles.length - 1))}
               animate={{ x: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}

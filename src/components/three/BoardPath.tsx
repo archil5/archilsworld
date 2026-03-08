@@ -13,10 +13,10 @@ const BoardPath = ({ chapters }: { chapters: ChapterData[] }) => {
   return (
     <Line
       points={points}
-      color="#c9a96e"
+      color="#c4a882"
       lineWidth={1.5}
       transparent
-      opacity={0.3}
+      opacity={0.4}
     />
   );
 };

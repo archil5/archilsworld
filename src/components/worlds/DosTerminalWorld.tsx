@@ -156,16 +156,16 @@ const DosTerminalWorld = () => {
 
   const getColor = (type: string) => {
     switch (type) {
-      case "command": return "#e2e8f0";
-      case "output": return "#00C853";
-      case "highlight": return "#FFD700";
-      case "system": return "#0078D4";
-      case "hint": return "#64748b";
-      case "error": return "#ef4444";
-      case "skill": return "#0078D4";
-      case "value": return "#FF9900";
-      case "box": return "#94a3b8";
-      default: return "#64748b";
+      case "command": return "#2d2a26";
+      case "output": return "#2a7d4f";
+      case "highlight": return "#b5653a";
+      case "system": return "#3d7aaf";
+      case "hint": return "#8a8078";
+      case "error": return "#c44040";
+      case "skill": return "#3d7aaf";
+      case "value": return "#b5653a";
+      case "box": return "#6b6560";
+      default: return "#8a8078";
     }
   };
 
@@ -174,60 +174,59 @@ const DosTerminalWorld = () => {
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-3xl flex flex-col gap-4">
-        {/* Progress + Reveal All */}
         <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
-          <span className="text-[10px] font-mono" style={{ color: "#0078D4" }}>
+          <span className="text-[10px] font-mono" style={{ color: "#3d7aaf" }}>
             DISCOVERY: {commandsUsed.size}/{validCommands.length}
           </span>
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(0,120,212,0.1)" }}>
-            <motion.div className="h-full rounded-full" style={{ background: "#0078D4" }}
+          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(61,122,175,0.1)" }}>
+            <motion.div className="h-full rounded-full" style={{ background: "#3d7aaf" }}
               animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
           </div>
           {progress < 100 && (
             <button onClick={handleRevealAll}
               className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer transition-all"
-              style={{ color: "#FFD700", background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.25)" }}>
+              style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
               ⚡ Reveal All
             </button>
           )}
           {progress === 100 && (
-            <motion.span className="text-[10px] font-mono" style={{ color: "#FFD700" }}
+            <motion.span className="text-[10px] font-mono" style={{ color: "#b5653a" }}
               initial={{ scale: 0 }} animate={{ scale: 1 }}>★ COMPLETE</motion.span>
           )}
         </motion.div>
 
-        <motion.div className="rounded-lg overflow-hidden shadow-2xl"
+        <motion.div className="rounded-xl overflow-hidden"
           initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, type: "spring" }}
-          style={{ background: "#0a0e14", border: "2px solid #1e293b",
-            boxShadow: "0 0 60px rgba(0,120,212,0.1), inset 0 0 100px rgba(0,0,0,0.5)" }}
+          style={{ background: "#1e1e1e", border: "1px solid #e0d8cc",
+            boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}
           onClick={() => inputRef.current?.focus()}>
-          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "#0f172a", borderBottom: "1px solid #1e293b" }}>
-            <div className="w-3 h-3 rounded-full bg-red-500/70" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-            <div className="w-3 h-3 rounded-full bg-green-500/70" />
-            <span className="ml-2 text-xs font-mono text-slate-500">ARCHIL-DOS — Interactive Terminal</span>
+          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "#282828", borderBottom: "1px solid #3a3a3a" }}>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#ff5f57" }} />
+            <div className="w-3 h-3 rounded-full" style={{ background: "#febc2e" }} />
+            <div className="w-3 h-3 rounded-full" style={{ background: "#28c840" }} />
+            <span className="ml-2 text-xs font-mono" style={{ color: "#888" }}>ARCHIL-DOS — Interactive Terminal</span>
           </div>
 
           <div ref={containerRef} className="p-6 font-mono text-sm leading-relaxed overflow-y-auto"
-            style={{ height: 400, background: "linear-gradient(180deg, #0a0e14, #0f172a)" }}>
+            style={{ height: 400, background: "#1e1e1e" }}>
             {history.map((line, i) => (
               <div key={i} className="min-h-[1.4em]">
                 <span style={{ color: getColor(line.type),
-                  textShadow: line.type === "highlight" ? "0 0 10px rgba(255,215,0,0.5)" : undefined,
+                  textShadow: line.type === "highlight" ? "0 0 6px rgba(181,101,58,0.3)" : undefined,
                   fontStyle: line.type === "value" ? "italic" : undefined }}>
                   {line.text}
                 </span>
               </div>
             ))}
             <div className="flex items-center min-h-[1.4em]">
-              <span style={{ color: "#64748b" }}>C:\&gt;&nbsp;</span>
+              <span style={{ color: "#888" }}>C:\&gt;&nbsp;</span>
               <input ref={inputRef} value={input}
                 onChange={(e) => setInput(e.target.value.toUpperCase())}
                 onKeyDown={(e) => { if (e.key === "Enter" && input.trim()) executeCommand(input); }}
                 className="bg-transparent border-none outline-none font-mono text-sm flex-1"
-                style={{ color: "#e2e8f0", caretColor: "#0078D4" }} autoFocus spellCheck={false} />
-              {cursorBlink && !input && <span className="inline-block w-2 h-4" style={{ background: "#0078D4" }} />}
+                style={{ color: "#e0e0e0", caretColor: "#28c840" }} autoFocus spellCheck={false} />
+              {cursorBlink && !input && <span className="inline-block w-2 h-4" style={{ background: "#28c840" }} />}
             </div>
           </div>
         </motion.div>
@@ -237,9 +236,9 @@ const DosTerminalWorld = () => {
             <button key={cmd} onClick={() => executeCommand(cmd)}
               className="text-[10px] font-mono px-2 py-1 rounded cursor-pointer transition-all"
               style={{
-                color: commandsUsed.has(cmd) ? "#00C853" : "rgba(0,200,83,0.4)",
-                background: commandsUsed.has(cmd) ? "rgba(0,200,83,0.1)" : "rgba(0,200,83,0.05)",
-                border: `1px solid ${commandsUsed.has(cmd) ? "rgba(0,200,83,0.3)" : "rgba(0,200,83,0.1)"}`,
+                color: commandsUsed.has(cmd) ? "#2a7d4f" : "rgba(42,125,79,0.5)",
+                background: commandsUsed.has(cmd) ? "rgba(42,125,79,0.08)" : "rgba(42,125,79,0.04)",
+                border: `1px solid ${commandsUsed.has(cmd) ? "rgba(42,125,79,0.25)" : "rgba(42,125,79,0.1)"}`,
                 textDecoration: commandsUsed.has(cmd) ? "line-through" : "none",
               }}>
               {cmd}

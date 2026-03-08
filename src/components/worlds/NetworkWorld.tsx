@@ -63,7 +63,7 @@ const NetworkWorld = () => {
     const interval = setInterval(() => {
       const conn = connections[Math.floor(Math.random() * connections.length)];
       const reverse = Math.random() > 0.5;
-      const colors = ["#0078D4", "#FF9900", "#00C853", "#E44D26"];
+      const colors = ["#3d7aaf", "#b5653a", "#2a7d4f", "#E44D26"];
       setPackets(prev => [...prev.slice(-12), {
         id: packetId.current++,
         from: reverse ? conn[1] : conn[0],
@@ -109,6 +109,12 @@ const NetworkWorld = () => {
     return { x: n.x, y: n.y };
   };
 
+  const tabStyle = (active: boolean) => ({
+    background: active ? "rgba(61,122,175,0.1)" : "rgba(45,42,38,0.03)",
+    color: active ? "#3d7aaf" : "rgba(80,70,60,0.4)",
+    border: `1px solid ${active ? "rgba(61,122,175,0.2)" : "rgba(180,140,100,0.1)"}`,
+  });
+
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-5xl flex flex-col gap-4">
@@ -116,18 +122,14 @@ const NetworkWorld = () => {
           {(["explore", "skills", "value"] as const).map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               className="px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider cursor-pointer transition-all"
-              style={{
-                background: activeTab === tab ? "rgba(0,120,212,0.15)" : "rgba(15,23,42,0.6)",
-                color: activeTab === tab ? "#0078D4" : "rgba(148,163,184,0.5)",
-                border: `1px solid ${activeTab === tab ? "rgba(0,120,212,0.3)" : "rgba(148,163,184,0.1)"}`,
-              }}>
+              style={tabStyle(activeTab === tab)}>
               {tab === "explore" ? "🔌 Route" : tab === "skills" ? "⚡ Stack" : "💎 Value"}
             </button>
           ))}
           {activeTab === "explore" && !routeComplete && (
             <button onClick={handleRevealAll}
               className="px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider cursor-pointer transition-all"
-              style={{ color: "#FFD700", background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.25)" }}>
+              style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
               ⚡ Reveal All
             </button>
           )}
@@ -137,11 +139,11 @@ const NetworkWorld = () => {
           <div className="flex flex-col lg:flex-row gap-6 items-center">
             <motion.div className="flex-1" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
               <div className="text-center mb-2">
-                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#00C853" : "rgba(148,163,184,0.4)" }}>
+                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#2a7d4f" : "rgba(80,70,60,0.35)" }}>
                   {routeComplete ? "✓ PACKET ROUTED SUCCESSFULLY" : `🎯 Route: ${correctRoute.join(" → ")}`}
                 </span>
                 {routeAttempt.length > 0 && !routeComplete && (
-                  <span className="text-[10px] font-mono ml-2" style={{ color: "#0078D4" }}>
+                  <span className="text-[10px] font-mono ml-2" style={{ color: "#3d7aaf" }}>
                     Progress: {routeAttempt.join(" → ")}
                   </span>
                 )}
@@ -152,7 +154,7 @@ const NetworkWorld = () => {
                   const onRoute = routeComplete && correctRoute.includes(from) && correctRoute.includes(to) &&
                     Math.abs(correctRoute.indexOf(from) - correctRoute.indexOf(to)) === 1;
                   return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                    stroke={onRoute ? "#00C853" : "rgba(0,120,212,0.15)"} strokeWidth={onRoute ? 3 : 2} strokeDasharray={onRoute ? "0" : "4 4"} />;
+                    stroke={onRoute ? "#2a7d4f" : "rgba(180,140,100,0.2)"} strokeWidth={onRoute ? 3 : 2} strokeDasharray={onRoute ? "0" : "4 4"} />;
                 })}
                 {packets.map(p => {
                   const a = getNodePos(p.from); const b = getNodePos(p.to);
@@ -164,11 +166,11 @@ const NetworkWorld = () => {
                   return (
                     <g key={node.id} onClick={() => handleNodeClick(node)} className="cursor-pointer">
                       <circle cx={node.x} cy={node.y} r={30}
-                        fill={inRoute ? "rgba(0,200,83,0.15)" : activeNodes.has(node.id) ? "rgba(0,120,212,0.12)" : "rgba(15,23,42,0.8)"}
-                        stroke={inRoute ? "#00C853" : selectedNode?.id === node.id ? "#0078D4" : "rgba(0,120,212,0.3)"}
+                        fill={inRoute ? "rgba(42,125,79,0.1)" : activeNodes.has(node.id) ? "rgba(61,122,175,0.08)" : "#fefcf9"}
+                        stroke={inRoute ? "#2a7d4f" : selectedNode?.id === node.id ? "#3d7aaf" : "rgba(180,140,100,0.3)"}
                         strokeWidth={selectedNode?.id === node.id ? 3 : 2} />
                       <text x={node.x} y={node.y + 4} textAnchor="middle"
-                        fill={inRoute ? "#00C853" : "#0078D4"} fontSize="10" fontFamily="JetBrains Mono, monospace">
+                        fill={inRoute ? "#2a7d4f" : "#3d7aaf"} fontSize="10" fontFamily="JetBrains Mono, monospace">
                         {node.label}
                       </text>
                     </g>
@@ -180,21 +182,21 @@ const NetworkWorld = () => {
               {selectedNode ? (
                 <motion.div key={selectedNode.id} className="rounded-xl p-6"
                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                  style={{ background: "rgba(15,23,42,0.6)", border: "1px solid rgba(0,120,212,0.2)" }}>
-                  <h3 className="font-display text-xl mb-2" style={{ color: "#0078D4" }}>{selectedNode.label}</h3>
-                  <p className="font-body text-sm italic" style={{ color: "rgba(226,232,240,0.7)" }}>{selectedNode.detail}</p>
+                  style={{ background: "#fefcf9", border: "1px solid rgba(61,122,175,0.15)" }}>
+                  <h3 className="font-display text-xl mb-2" style={{ color: "#3d7aaf" }}>{selectedNode.label}</h3>
+                  <p className="font-body text-sm italic" style={{ color: "rgba(45,42,38,0.7)" }}>{selectedNode.detail}</p>
                 </motion.div>
               ) : (
                 <div className="text-center">
-                  <p className="font-body text-sm italic" style={{ color: "rgba(148,163,184,0.3)" }}>
+                  <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.35)" }}>
                     Click a node to inspect it. Route the packet to win.
                   </p>
                 </div>
               )}
               {routeComplete && (
                 <motion.div className="mt-4 p-4 rounded-lg" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  style={{ background: "rgba(0,200,83,0.08)", border: "1px solid rgba(0,200,83,0.25)" }}>
-                  <p className="text-sm font-body italic" style={{ color: "#00C853" }}>
+                  style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.2)" }}>
+                  <p className="text-sm font-body italic" style={{ color: "#2a7d4f" }}>
                     "Not when I learned what to build, but when I realized I could learn anything."
                   </p>
                 </motion.div>
@@ -208,8 +210,8 @@ const NetworkWorld = () => {
             {skillsLearned.map((skill, i) => (
               <motion.div key={skill} className="px-3 py-2 rounded text-center"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-                style={{ background: "rgba(0,120,212,0.08)", border: "1px solid rgba(0,120,212,0.2)" }}>
-                <span className="text-xs font-mono" style={{ color: "#0078D4" }}>{skill}</span>
+                style={{ background: "rgba(61,122,175,0.06)", border: "1px solid rgba(61,122,175,0.15)" }}>
+                <span className="text-xs font-mono" style={{ color: "#3d7aaf" }}>{skill}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -220,9 +222,9 @@ const NetworkWorld = () => {
             {valueInsights.map((v, i) => (
               <motion.div key={i} className="p-4 rounded-lg"
                 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.12 }}
-                style={{ background: "rgba(0,120,212,0.06)", border: "1px solid rgba(0,120,212,0.12)" }}>
-                <p className="text-xs font-mono uppercase tracking-wider mb-1" style={{ color: "#0078D4" }}>{v.label}</p>
-                <p className="text-sm font-body" style={{ color: "rgba(226,232,240,0.75)" }}>{v.desc}</p>
+                style={{ background: "rgba(61,122,175,0.04)", border: "1px solid rgba(61,122,175,0.1)" }}>
+                <p className="text-xs font-mono uppercase tracking-wider mb-1" style={{ color: "#3d7aaf" }}>{v.label}</p>
+                <p className="text-sm font-body" style={{ color: "rgba(45,42,38,0.75)" }}>{v.desc}</p>
               </motion.div>
             ))}
           </motion.div>

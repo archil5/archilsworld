@@ -21,18 +21,15 @@ const GamePiece = ({ targetPosition }: { targetPosition: [number, number, number
 
   return (
     <group ref={groupRef}>
-      {/* Body */}
       <mesh castShadow position={[0, 0.15, 0]}>
         <cylinderGeometry args={[0.12, 0.2, 0.3, 8]} />
-        <meshStandardMaterial color="#d4883a" roughness={0.3} metalness={0.6} />
+        <meshStandardMaterial color="#b5653a" roughness={0.3} metalness={0.5} />
       </mesh>
-      {/* Head */}
       <mesh castShadow position={[0, 0.42, 0]}>
         <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial color="#d4883a" roughness={0.3} metalness={0.6} />
+        <meshStandardMaterial color="#b5653a" roughness={0.3} metalness={0.5} />
       </mesh>
-      {/* Point light on piece */}
-      <pointLight color="#e8c460" intensity={2} distance={3} position={[0, 0.5, 0]} />
+      <pointLight color="#d4a574" intensity={1.5} distance={3} position={[0, 0.5, 0]} />
     </group>
   );
 };

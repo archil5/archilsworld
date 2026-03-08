@@ -6,51 +6,53 @@
 
 @layer base {
   :root {
-    --background: 25 30% 14%;
-    --foreground: 40 40% 90%;
+    --background: 30 25% 96%;
+    --foreground: 220 20% 18%;
 
-    --card: 36 35% 85%;
-    --card-foreground: 28 25% 18%;
+    --card: 30 20% 98%;
+    --card-foreground: 220 20% 18%;
 
-    --popover: 36 33% 92%;
-    --popover-foreground: 28 25% 18%;
+    --popover: 30 20% 98%;
+    --popover-foreground: 220 20% 18%;
 
-    --primary: 28 65% 35%;
-    --primary-foreground: 40 50% 95%;
+    --primary: 25 75% 47%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 145 25% 28%;
-    --secondary-foreground: 40 50% 95%;
+    --secondary: 200 55% 42%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 30 20% 25%;
-    --muted-foreground: 35 20% 55%;
+    --muted: 30 15% 90%;
+    --muted-foreground: 220 10% 45%;
 
-    --accent: 38 70% 55%;
-    --accent-foreground: 28 25% 12%;
+    --accent: 38 85% 55%;
+    --accent-foreground: 220 20% 12%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 32 25% 30%;
-    --input: 32 25% 30%;
-    --ring: 28 65% 35%;
+    --border: 30 15% 85%;
+    --input: 30 15% 85%;
+    --ring: 25 75% 47%;
 
     --radius: 0.5rem;
 
-    --parchment: 39 45% 88%;
-    --parchment-dark: 35 35% 75%;
-    --wood: 25 40% 30%;
-    --wood-light: 30 35% 50%;
-    --ink: 28 30% 15%;
-    --gold: 43 80% 50%;
-    --gold-dim: 40 50% 38%;
-    --forest: 145 30% 25%;
-    --forest-light: 148 20% 45%;
-    --chapter-glow: 38 80% 60%;
-    --tile-origin: 200 60% 45%;
-    --tile-education: 145 45% 38%;
-    --tile-career: 28 65% 42%;
-    --tile-current: 270 40% 45%;
-    --tile-hover: 43 90% 55%;
+    --warm-50: 30 30% 98%;
+    --warm-100: 30 25% 95%;
+    --warm-200: 30 20% 88%;
+    --warm-300: 30 18% 78%;
+    --warm-400: 25 20% 55%;
+    --warm-500: 220 15% 35%;
+    --warm-600: 220 18% 25%;
+    --warm-700: 220 20% 18%;
+    --warm-800: 220 22% 12%;
+
+    --copper: 25 75% 47%;
+    --copper-light: 28 65% 60%;
+    --amber: 38 85% 55%;
+    --amber-dim: 35 50% 42%;
+    --teal: 180 35% 40%;
+    --teal-light: 178 25% 55%;
+    --slate-warm: 220 12% 40%;
 
     --font-display: 'Cinzel', serif;
     --font-body: 'Crimson Text', serif;
@@ -83,166 +85,6 @@
   }
 }
 
-@layer components {
-  .board-container {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-    background-image: url('/images/wood-table.jpg');
-    background-size: cover;
-    background-position: center;
-  }
-
-  .board-overlay {
-    @apply absolute inset-0;
-    background: radial-gradient(ellipse at center, transparent 30%, hsl(25 30% 8% / 0.7) 100%);
-  }
-
-  .game-board {
-    position: relative;
-    cursor: grab;
-  }
-
-  .game-board:active {
-    cursor: grabbing;
-  }
-
-  /* Tile styles */
-  .tile {
-    @apply absolute cursor-pointer transition-all duration-300;
-    width: 100px;
-    height: 100px;
-    transform-style: preserve-3d;
-  }
-
-  .tile-inner {
-    @apply w-full h-full rounded-xl flex flex-col items-center justify-center gap-1 p-2 text-center;
-    background: hsl(var(--parchment));
-    border: 3px solid hsl(var(--parchment-dark));
-    box-shadow: 
-      0 4px 8px hsl(0 0% 0% / 0.3),
-      inset 0 1px 0 hsl(0 0% 100% / 0.2);
-    transition: all 0.3s ease;
-  }
-
-  .tile:hover .tile-inner {
-    border-color: hsl(var(--gold));
-    box-shadow: 
-      0 6px 20px hsl(var(--gold) / 0.3),
-      0 0 30px hsl(var(--gold) / 0.15),
-      inset 0 1px 0 hsl(0 0% 100% / 0.3);
-    transform: translateY(-4px);
-  }
-
-  .tile.active .tile-inner {
-    border-color: hsl(var(--gold));
-    box-shadow: 
-      0 0 25px hsl(var(--gold) / 0.5),
-      0 8px 30px hsl(0 0% 0% / 0.4),
-      inset 0 1px 0 hsl(0 0% 100% / 0.3);
-  }
-
-  .tile-icon {
-    @apply text-2xl;
-  }
-
-  .tile-label {
-    font-family: var(--font-display);
-    @apply text-[9px] font-semibold leading-tight;
-    color: hsl(var(--ink));
-  }
-
-  .tile-year {
-    font-family: var(--font-mono);
-    @apply text-[8px];
-    color: hsl(var(--muted-foreground));
-  }
-
-  /* Category colored strip on tiles */
-  .tile-strip {
-    @apply absolute bottom-0 left-2 right-2 h-1 rounded-full;
-  }
-
-  /* Detail card */
-  .detail-card {
-    @apply fixed z-50;
-    perspective: 1200px;
-  }
-
-  .detail-card-inner {
-    @apply relative rounded-2xl overflow-hidden;
-    background: hsl(var(--parchment));
-    border: 3px solid hsl(var(--parchment-dark));
-    box-shadow: 
-      0 20px 60px hsl(0 0% 0% / 0.5),
-      0 0 40px hsl(var(--gold) / 0.1);
-    transform-style: preserve-3d;
-  }
-
-  .detail-header {
-    @apply p-6 pb-4;
-    background: linear-gradient(135deg, hsl(var(--parchment)), hsl(var(--parchment-dark) / 0.5));
-    border-bottom: 2px solid hsl(var(--parchment-dark) / 0.5);
-  }
-
-  .detail-body {
-    @apply p-6;
-  }
-
-  .detail-title {
-    font-family: var(--font-display);
-    @apply text-xl md:text-2xl font-bold;
-    color: hsl(var(--ink));
-  }
-
-  .detail-subtitle {
-    font-family: var(--font-display);
-    @apply text-xs uppercase tracking-[0.2em] mt-1;
-    color: hsl(var(--gold-dim));
-  }
-
-  .detail-text {
-    font-family: var(--font-body);
-    @apply text-base leading-relaxed;
-    color: hsl(var(--ink) / 0.85);
-  }
-
-  .detail-text em {
-    color: hsl(var(--primary));
-    font-style: italic;
-  }
-
-  /* Path connector lines */
-  .path-line {
-    @apply absolute pointer-events-none;
-    z-index: 0;
-  }
-
-  /* Board game title banner */
-  .board-title {
-    font-family: var(--font-display);
-    @apply text-3xl md:text-4xl font-bold tracking-wide;
-    color: hsl(var(--gold));
-    text-shadow: 0 2px 8px hsl(0 0% 0% / 0.5);
-  }
-
-  .board-subtitle {
-    font-family: var(--font-body);
-    @apply text-base italic;
-    color: hsl(var(--foreground) / 0.6);
-  }
-
-  /* Skill badge on detail card */
-  .skill-badge {
-    @apply inline-flex items-center px-2 py-1 rounded-md text-xs font-medium;
-    font-family: var(--font-mono);
-    background: hsl(var(--ink) / 0.08);
-    color: hsl(var(--ink) / 0.7);
-    border: 1px solid hsl(var(--ink) / 0.1);
-  }
-}
-
 /* Scrollbar hide */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -253,8 +95,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 10px hsl(43 80% 50% / 0.3); }
-  50% { box-shadow: 0 0 25px hsl(43 80% 50% / 0.6); }
+  0%, 100% { box-shadow: 0 0 10px hsl(38 85% 55% / 0.2); }
+  50% { box-shadow: 0 0 25px hsl(38 85% 55% / 0.4); }
 }
 
 .animate-float-piece {

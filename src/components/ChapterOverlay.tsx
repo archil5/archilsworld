@@ -29,7 +29,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, rgba(8,12,18,0.95) 0%, rgba(8,12,18,0.7) 40%, transparent 100%)",
+              background: "linear-gradient(to top, rgba(245,240,232,0.97) 0%, rgba(245,240,232,0.75) 40%, transparent 100%)",
             }}
           />
 
@@ -52,20 +52,20 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
                 className="text-[10px] font-display uppercase tracking-[0.3em] px-3 py-1 rounded-full"
                 style={{
                   color: chapter.color,
-                  border: `1px solid ${chapter.color}40`,
-                  background: `${chapter.color}15`,
+                  border: `1px solid ${chapter.color}30`,
+                  background: `${chapter.color}10`,
                 }}
               >
                 {categoryLabels[chapter.category] || "Career"}
               </span>
-              <span className="text-xs font-mono" style={{ color: "rgba(148,163,184,0.5)" }}>
+              <span className="text-xs font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>
                 {chapter.year}
               </span>
             </motion.div>
 
             <motion.h2
               className="font-display text-3xl md:text-5xl font-bold mb-2"
-              style={{ color: "#e2e8f0" }}
+              style={{ color: "#2d2a26" }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -75,7 +75,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
 
             <motion.p
               className="font-display text-xs uppercase tracking-[0.2em] mb-5"
-              style={{ color: "rgba(148,163,184,0.6)" }}
+              style={{ color: "rgba(80,70,60,0.55)" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
@@ -88,16 +88,16 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
                 onClick={onDive}
                 className="flex items-center gap-3 px-6 py-3 rounded-xl cursor-pointer transition-all"
                 style={{
-                  background: `${chapter.color}20`,
-                  border: `1px solid ${chapter.color}50`,
+                  background: `${chapter.color}12`,
+                  border: `1px solid ${chapter.color}35`,
                   color: chapter.color,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = `${chapter.color}35`;
-                  e.currentTarget.style.boxShadow = `0 0 30px ${chapter.color}25`;
+                  e.currentTarget.style.background = `${chapter.color}22`;
+                  e.currentTarget.style.boxShadow = `0 4px 20px ${chapter.color}18`;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = `${chapter.color}20`;
+                  e.currentTarget.style.background = `${chapter.color}12`;
                   e.currentTarget.style.boxShadow = "none";
                 }}
                 initial={{ opacity: 0, y: 20 }}
