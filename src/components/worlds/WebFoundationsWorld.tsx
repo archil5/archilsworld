@@ -1,207 +1,198 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /* ═══════════════════════════════════════════════════════════
-   HTML CHESS — Scholar's Mate animated on a pure CSS board
+   HTML BUILDER PUZZLE — Drag & drop code to build YOUR page
+   More personal: you're building Archil's actual first website
    ═══════════════════════════════════════════════════════════ */
 
-type Pos = [number, number]; // [row, col] 0-indexed from top-left
+const codePieces = [
+  { id: 0, code: '<!DOCTYPE html>', order: 0, hint: "Every page starts here" },
+  { id: 1, code: '<html lang="en">', order: 1, hint: "The root element" },
+  { id: 2, code: '<head><title>Archil\'s First Site</title></head>', order: 2, hint: "Meta info lives here" },
+  { id: 3, code: '<body style="font-family: monospace">', order: 3, hint: "The visible page begins" },
+  { id: 4, code: '  <h1 style="color:#E44D26">Hello, World.</h1>', order: 4, hint: "The first thing I ever made" },
+  { id: 5, code: '  <p>Built by a kid who wouldn\'t stop asking <em>how</em>.</p>', order: 5, hint: "The origin story" },
+  { id: 6, code: '  <marquee>This changes everything.</marquee>', order: 6, hint: "Peak 2000s energy" },
+  { id: 7, code: '</body></html>', order: 7, hint: "Close it up" },
+];
 
-interface PieceData {
-  id: string;
-  type: "K" | "Q" | "R" | "B" | "N" | "P";
-  color: "w" | "b";
-  pos: Pos;
-  captured?: boolean;
-}
-
-const PIECE_GLYPHS: Record<string, string> = {
-  wK: "♔", wQ: "♕", wR: "♖", wB: "♗", wN: "♘", wP: "♙",
-  bK: "♚", bQ: "♛", bR: "♜", bB: "♝", bN: "♞", bP: "♟",
+// Progressive preview stages — each piece unlocks more of the rendered page
+const previewStages: Record<number, JSX.Element> = {
+  0: <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.4)" }}>Document type declared...</p>,
+  1: <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.4)" }}>Root element opened...</p>,
+  2: (
+    <div>
+      <div className="text-[9px] font-mono px-2 py-1 rounded mb-1 inline-block" style={{ background: "rgba(228,77,38,0.06)", color: "#E44D26" }}>
+        Tab title: Archil's First Site
+      </div>
+    </div>
+  ),
+  3: (
+    <div className="p-3 rounded-lg" style={{ background: "#faf8f4", border: "1px dashed rgba(228,77,38,0.2)", fontFamily: "monospace" }}>
+      <span className="text-[10px]" style={{ color: "rgba(80,70,60,0.3)" }}>body rendered — waiting for content...</span>
+    </div>
+  ),
+  4: (
+    <div className="p-3 rounded-lg" style={{ background: "#faf8f4", border: "1px dashed rgba(228,77,38,0.2)", fontFamily: "monospace" }}>
+      <h1 className="text-2xl font-bold" style={{ color: "#E44D26" }}>Hello, World.</h1>
+    </div>
+  ),
+  5: (
+    <div className="p-3 rounded-lg" style={{ background: "#faf8f4", border: "1px dashed rgba(228,77,38,0.2)", fontFamily: "monospace" }}>
+      <h1 className="text-2xl font-bold mb-1" style={{ color: "#E44D26" }}>Hello, World.</h1>
+      <p className="text-sm" style={{ color: "#2d2a26" }}>Built by a kid who wouldn't stop asking <em>how</em>.</p>
+    </div>
+  ),
+  6: (
+    <div className="p-3 rounded-lg" style={{ background: "#faf8f4", border: "1px dashed rgba(228,77,38,0.2)", fontFamily: "monospace" }}>
+      <h1 className="text-2xl font-bold mb-1" style={{ color: "#E44D26" }}>Hello, World.</h1>
+      <p className="text-sm mb-2" style={{ color: "#2d2a26" }}>Built by a kid who wouldn't stop asking <em>how</em>.</p>
+      <motion.p className="text-xs italic"
+        animate={{ x: [200, -200] }}
+        transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+        style={{ color: "#b5653a" }}>
+        This changes everything.
+      </motion.p>
+    </div>
+  ),
 };
 
-const initialPieces: PieceData[] = [
-  // Black back rank
-  { id: "bR1", type: "R", color: "b", pos: [0, 0] },
-  { id: "bN1", type: "N", color: "b", pos: [0, 1] },
-  { id: "bB1", type: "B", color: "b", pos: [0, 2] },
-  { id: "bQ",  type: "Q", color: "b", pos: [0, 3] },
-  { id: "bK",  type: "K", color: "b", pos: [0, 4] },
-  { id: "bB2", type: "B", color: "b", pos: [0, 5] },
-  { id: "bN2", type: "N", color: "b", pos: [0, 6] },
-  { id: "bR2", type: "R", color: "b", pos: [0, 7] },
-  ...Array.from({ length: 8 }, (_, i) => ({
-    id: `bP${i}`, type: "P" as const, color: "b" as const, pos: [1, i] as Pos,
-  })),
-  // White back rank
-  { id: "wR1", type: "R", color: "w", pos: [7, 0] },
-  { id: "wN1", type: "N", color: "w", pos: [7, 1] },
-  { id: "wB1", type: "B", color: "w", pos: [7, 2] },
-  { id: "wQ",  type: "Q", color: "w", pos: [7, 3] },
-  { id: "wK",  type: "K", color: "w", pos: [7, 4] },
-  { id: "wB2", type: "B", color: "w", pos: [7, 5] },
-  { id: "wN2", type: "N", color: "w", pos: [7, 6] },
-  { id: "wR2", type: "R", color: "w", pos: [7, 7] },
-  ...Array.from({ length: 8 }, (_, i) => ({
-    id: `wP${i}`, type: "P" as const, color: "w" as const, pos: [6, i] as Pos,
-  })),
-];
+const HTMLBuilderPuzzle = () => {
+  const [available, setAvailable] = useState(() => [...codePieces].sort(() => Math.random() - 0.5));
+  const [placed, setPlaced] = useState<typeof codePieces>([]);
+  const [wrongId, setWrongId] = useState<number | null>(null);
+  const [complete, setComplete] = useState(false);
 
-// Scholar's Mate: 1.e4 e5 2.Bc4 Nc6 3.Qh5 Nf6?? 4.Qxf7#
-const moves: { pieceId: string; to: Pos; caption: string; captureId?: string }[] = [
-  { pieceId: "wP4", to: [4, 4], caption: "1. e4 — King's pawn opening" },
-  { pieceId: "bP4", to: [3, 4], caption: "1... e5 — Mirror response" },
-  { pieceId: "wB2", to: [4, 2], caption: "2. Bc4 — Bishop eyes f7" },
-  { pieceId: "bN1", to: [2, 2], caption: "2... Nc6 — Develop knight" },
-  { pieceId: "wQ",  to: [3, 7], caption: "3. Qh5 — The trap is set" },
-  { pieceId: "bN2", to: [2, 5], caption: "3... Nf6?? — A fatal mistake" },
-  { pieceId: "wQ",  to: [1, 5], caption: "4. Qxf7# — Scholar's Mate!", captureId: "bP5" },
-];
+  const nextExpected = placed.length;
 
-const ChessBoard = () => {
-  const [pieces, setPieces] = useState<PieceData[]>(initialPieces);
-  const [moveIndex, setMoveIndex] = useState(-1);
-  const [highlightSquares, setHighlightSquares] = useState<Pos[]>([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
-
-  const applyMove = useCallback((idx: number) => {
-    if (idx >= moves.length) return;
-    const move = moves[idx];
-    setPieces(prev => prev.map(p => {
-      if (p.id === move.captureId) return { ...p, captured: true };
-      if (p.id === move.pieceId) return { ...p, pos: move.to };
-      return p;
-    }));
-    setHighlightSquares(idx > 0 ? [pieces.find(p => p.id === move.pieceId)!.pos, move.to] : [move.to]);
-    setMoveIndex(idx);
-  }, [pieces]);
-
-  const playAll = useCallback(() => {
-    setPieces(initialPieces);
-    setMoveIndex(-1);
-    setHighlightSquares([]);
-    setIsPlaying(true);
-    let i = 0;
-    const step = () => {
-      if (i >= moves.length) { setIsPlaying(false); return; }
-      // Need fresh state for highlight calculation
-      setPieces(prev => {
-        const move = moves[i];
-        return prev.map(p => {
-          if (p.id === move.captureId) return { ...p, captured: true };
-          if (p.id === move.pieceId) return { ...p, pos: move.to };
-          return p;
-        });
-      });
-      setMoveIndex(i);
-      setHighlightSquares([moves[i].to]);
-      i++;
-      timerRef.current = setTimeout(step, 1400);
-    };
-    timerRef.current = setTimeout(step, 600);
-  }, []);
-
-  const reset = () => {
-    clearTimeout(timerRef.current);
-    setPieces(initialPieces);
-    setMoveIndex(-1);
-    setHighlightSquares([]);
-    setIsPlaying(false);
+  const handlePlace = (piece: typeof codePieces[0]) => {
+    if (piece.order !== nextExpected) {
+      setWrongId(piece.id);
+      setTimeout(() => setWrongId(null), 600);
+      return;
+    }
+    setPlaced(prev => [...prev, piece]);
+    setAvailable(prev => prev.filter(p => p.id !== piece.id));
   };
 
-  useEffect(() => () => clearTimeout(timerRef.current), []);
+  useEffect(() => {
+    if (placed.length === codePieces.length) setTimeout(() => setComplete(true), 400);
+  }, [placed.length]);
 
-  const isHighlighted = (r: number, c: number) =>
-    highlightSquares.some(([hr, hc]) => hr === r && hc === c);
+  const reset = () => {
+    setAvailable([...codePieces].sort(() => Math.random() - 0.5));
+    setPlaced([]);
+    setWrongId(null);
+    setComplete(false);
+  };
 
-  const currentCaption = moveIndex >= 0 ? moves[moveIndex].caption : "Scholar's Mate — built with pure HTML & CSS";
-  const isCheckmate = moveIndex === moves.length - 1;
+  const lastPlacedOrder = placed.length > 0 ? placed[placed.length - 1].order : -1;
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      {/* Board */}
-      <div className="relative rounded-lg overflow-hidden" style={{
-        boxShadow: "0 8px 32px rgba(0,0,0,0.15), inset 0 0 0 3px rgba(140,110,70,0.3)",
-        border: "2px solid rgba(120,90,50,0.4)",
-      }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(8, 1fr)", width: 320, height: 320 }}>
-          {Array.from({ length: 64 }, (_, idx) => {
-            const r = Math.floor(idx / 8);
-            const c = idx % 8;
-            const isDark = (r + c) % 2 === 1;
-            const piece = pieces.find(p => !p.captured && p.pos[0] === r && p.pos[1] === c);
-            const lit = isHighlighted(r, c);
+    <div className="flex flex-col lg:flex-row gap-6 w-full" style={{ minHeight: 420 }}>
+      {/* Left: code editor */}
+      <div className="flex-1 flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>
+            index.html — {placed.length}/{codePieces.length} lines
+          </span>
+          <button onClick={reset}
+            className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
+            style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
+            Reset
+          </button>
+        </div>
+
+        {/* Editor area */}
+        <div className="flex-1 rounded-xl p-4 overflow-y-auto" style={{ background: "#1e1e1e", border: "1px solid #333" }}>
+          {placed.map((piece, i) => (
+            <motion.div key={piece.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+              className="font-mono text-[11px] py-0.5 flex">
+              <span className="w-6 text-right mr-3 select-none" style={{ color: "#555" }}>{i + 1}</span>
+              <span style={{ color: "#e06c75" }}>{piece.code}</span>
+            </motion.div>
+          ))}
+          {!complete && (
+            <motion.div className="font-mono text-[11px] py-0.5 flex"
+              animate={{ opacity: [0.3, 0.8, 0.3] }} transition={{ repeat: Infinity, duration: 1.2 }}>
+              <span className="w-6 text-right mr-3" style={{ color: "#555" }}>{placed.length + 1}</span>
+              <span style={{ color: "rgba(224,108,117,0.3)" }}>│</span>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Hint */}
+        {!complete && nextExpected < codePieces.length && (
+          <p className="text-[10px] font-mono italic" style={{ color: "rgba(80,70,60,0.4)" }}>
+            Hint: {codePieces[nextExpected].hint}
+          </p>
+        )}
+
+        {/* Available pieces */}
+        <div className="flex flex-wrap gap-2">
+          {available.map(piece => {
+            const isNext = piece.order === nextExpected;
+            const isWrong = wrongId === piece.id;
             return (
-              <div key={idx} style={{
-                width: 40, height: 40,
-                background: lit
-                  ? (isDark ? "rgba(181,101,58,0.5)" : "rgba(212,165,116,0.5)")
-                  : (isDark ? "#b5895a" : "#f0dfc0"),
-                display: "flex", alignItems: "center", justifyContent: "center",
-                position: "relative",
-                transition: "background 0.3s",
-              }}>
-                {/* Rank/file labels */}
-                {c === 0 && (
-                  <span style={{ position: "absolute", left: 2, top: 1, fontSize: 8, color: isDark ? "#f0dfc0" : "#b5895a", fontFamily: "monospace" }}>
-                    {8 - r}
-                  </span>
-                )}
-                {r === 7 && (
-                  <span style={{ position: "absolute", right: 2, bottom: 0, fontSize: 8, color: isDark ? "#f0dfc0" : "#b5895a", fontFamily: "monospace" }}>
-                    {String.fromCharCode(97 + c)}
-                  </span>
-                )}
-                {piece && (
-                  <motion.span
-                    layout
-                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                    style={{
-                      fontSize: 28,
-                      lineHeight: 1,
-                      color: piece.color === "w" ? "#fff" : "#2d2a26",
-                      textShadow: piece.color === "w"
-                        ? "0 1px 3px rgba(0,0,0,0.4)"
-                        : "0 1px 2px rgba(0,0,0,0.2)",
-                      filter: isCheckmate && piece.id === "bK" ? "drop-shadow(0 0 8px #e44d26)" : "none",
-                    }}
-                  >
-                    {PIECE_GLYPHS[`${piece.color}${piece.type}`]}
-                  </motion.span>
-                )}
-              </div>
+              <motion.button key={piece.id} onClick={() => handlePlace(piece)}
+                className="font-mono text-[10px] px-3 py-2 rounded-lg cursor-pointer"
+                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+                animate={isWrong ? { x: [0, -6, 6, -3, 3, 0] } : isNext ? {
+                  boxShadow: ["0 0 0px rgba(228,77,38,0)", "0 0 10px rgba(228,77,38,0.15)", "0 0 0px rgba(228,77,38,0)"]
+                } : {}}
+                transition={isWrong ? { duration: 0.4 } : isNext ? { repeat: Infinity, duration: 2 } : {}}
+                style={{
+                  background: isWrong ? "rgba(220,50,50,0.08)" : isNext ? "rgba(228,77,38,0.06)" : "#fefcf9",
+                  color: isWrong ? "#dc3232" : isNext ? "#E44D26" : "rgba(80,70,60,0.5)",
+                  border: `1px solid ${isWrong ? "rgba(220,50,50,0.3)" : isNext ? "rgba(228,77,38,0.25)" : "#e0d8cc"}`,
+                }}>
+                {piece.code.length > 35 ? piece.code.substring(0, 35) + "…" : piece.code}
+              </motion.button>
             );
           })}
         </div>
       </div>
 
-      {/* Caption */}
-      <AnimatePresence mode="wait">
-        <motion.p key={moveIndex} className="text-xs font-mono text-center"
-          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-          style={{ color: isCheckmate ? "#E44D26" : "rgba(45,42,38,0.7)", fontWeight: isCheckmate ? 700 : 400 }}>
-          {currentCaption}
-        </motion.p>
-      </AnimatePresence>
+      {/* Right: live preview */}
+      <div className="flex-1 rounded-xl p-6 flex flex-col justify-center" style={{ background: "#fefcf9", border: "1px solid #e0d8cc" }}>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#ff5f57" }} />
+            <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#febc2e" }} />
+            <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#28c840" }} />
+          </div>
+          <span className="text-[9px] font-mono ml-2" style={{ color: "rgba(80,70,60,0.3)" }}>
+            localhost:3000
+          </span>
+        </div>
 
-      {/* Controls */}
-      <div className="flex gap-2">
-        <button onClick={playAll} disabled={isPlaying}
-          className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer transition-all disabled:opacity-30"
-          style={{ color: "#E44D26", background: "rgba(228,77,38,0.06)", border: "1px solid rgba(228,77,38,0.2)" }}>
-          {moveIndex >= 0 ? "Replay" : "Play Mate"}
-        </button>
-        <button onClick={reset}
-          className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer transition-all"
-          style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
-          Reset
-        </button>
+        <AnimatePresence mode="wait">
+          {complete ? (
+            <motion.div key="done" initial={{ opacity: 0, rotateY: 90 }} animate={{ opacity: 1, rotateY: 0 }}
+              transition={{ duration: 0.8, type: "spring" }}>
+              {previewStages[6]}
+              <motion.div className="mt-4 p-3 rounded-lg"
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                style={{ background: "rgba(228,77,38,0.05)", border: "1px solid rgba(228,77,38,0.15)" }}>
+                <p className="text-sm font-body italic" style={{ color: "rgba(45,42,38,0.75)" }}>
+                  "The moment I saw my words appear in a browser, I knew — I was going to build things for the rest of my life."
+                </p>
+              </motion.div>
+            </motion.div>
+          ) : lastPlacedOrder >= 0 && previewStages[lastPlacedOrder] ? (
+            <motion.div key={lastPlacedOrder} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              {previewStages[lastPlacedOrder]}
+            </motion.div>
+          ) : (
+            <motion.div key="empty" className="text-center py-8">
+              <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.4)" }}>
+                Start placing code to see the page come alive...
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-
-      <p className="text-[9px] font-mono text-center max-w-xs" style={{ color: "rgba(80,70,60,0.4)" }}>
-        Every element above — board, pieces, animation — is pure HTML, CSS & JS. No images. No canvas. Just the web platform.
-      </p>
     </div>
   );
 };
@@ -210,12 +201,7 @@ const ChessBoard = () => {
    OSI PUZZLE — Sort the 7 layers in correct order
    ═══════════════════════════════════════════════════════════ */
 
-interface OSILayer {
-  number: number;
-  name: string;
-  color: string;
-  hint: string;
-}
+interface OSILayer { number: number; name: string; color: string; hint: string; }
 
 const osiLayers: OSILayer[] = [
   { number: 7, name: "Application",  color: "#E44D26", hint: "HTTP, DNS, SMTP — where users interact" },
@@ -241,8 +227,6 @@ const OSIPuzzle = () => {
   const [stack, setStack] = useState<OSILayer[]>([]);
   const [wrong, setWrong] = useState<number | null>(null);
   const [solved, setSolved] = useState(false);
-
-  // Next expected layer number (build from bottom: 1 → 7)
   const nextExpected = stack.length + 1;
 
   const handlePick = (layer: OSILayer) => {
@@ -258,111 +242,75 @@ const OSIPuzzle = () => {
     }
   };
 
-  const resetPuzzle = () => {
-    setPool(shuffle(osiLayers));
-    setStack([]);
-    setWrong(null);
-    setSolved(false);
-  };
+  const resetPuzzle = () => { setPool(shuffle(osiLayers)); setStack([]); setWrong(null); setSolved(false); };
 
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-md mx-auto">
       <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: "rgba(80,70,60,0.5)" }}>
         {solved ? "Network stack complete!" : `Build the OSI model — place Layer ${nextExpected} next`}
       </p>
-
-      {/* Built stack */}
-      <div className="w-full flex flex-col-reverse gap-1 min-h-[120px]">
-        {stack.map((layer, i) => (
-          <motion.div key={layer.number}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg"
+      <div className="w-full flex flex-col-reverse gap-1 min-h-[100px]">
+        {stack.map((layer) => (
+          <motion.div key={layer.number} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg"
             initial={{ opacity: 0, scale: 0.8, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            style={{
-              background: `${layer.color}12`,
-              border: `2px solid ${layer.color}40`,
-              boxShadow: `0 2px 8px ${layer.color}15`,
-            }}>
+            style={{ background: `${layer.color}12`, border: `2px solid ${layer.color}40`, boxShadow: `0 2px 8px ${layer.color}15` }}>
             <span className="text-[10px] font-mono font-bold w-7 h-7 flex items-center justify-center rounded"
               style={{ background: layer.color, color: "#fff" }}>L{layer.number}</span>
             <div className="flex-1">
               <span className="text-xs font-display font-bold" style={{ color: layer.color }}>{layer.name}</span>
               <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>{layer.hint}</p>
             </div>
-            {solved && i === stack.length - 1 && (
-              <span className="text-[9px] font-mono" style={{ color: "#2a7d4f" }}>✓</span>
-            )}
           </motion.div>
         ))}
       </div>
-
-      {/* Empty slot indicator */}
       {!solved && (
-        <div className="w-full rounded-lg py-2 text-center"
-          style={{ border: "2px dashed rgba(180,140,100,0.2)", background: "rgba(180,140,100,0.03)" }}>
-          <motion.span className="text-[10px] font-mono"
-            animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }}
-            style={{ color: "rgba(80,70,60,0.4)" }}>
-            ← pick Layer {nextExpected} from below
-          </motion.span>
+        <div className="w-full rounded-lg py-2 text-center" style={{ border: "2px dashed rgba(180,140,100,0.2)", background: "rgba(180,140,100,0.03)" }}>
+          <motion.span className="text-[10px] font-mono" animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }}
+            style={{ color: "rgba(80,70,60,0.4)" }}>← pick Layer {nextExpected} from below</motion.span>
         </div>
       )}
-
-      {/* Available pool */}
       {pool.length > 0 && (
         <div className="w-full flex flex-wrap gap-2 justify-center">
           {pool.map(layer => {
             const isWrong = wrong === layer.number;
             return (
               <motion.button key={layer.number} onClick={() => handlePick(layer)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer"
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 animate={isWrong ? { x: [0, -8, 8, -4, 4, 0] } : {}}
-                transition={isWrong ? { duration: 0.4 } : {}}
                 style={{
                   background: isWrong ? "rgba(220,50,50,0.08)" : "#fefcf9",
                   border: `1px solid ${isWrong ? "rgba(220,50,50,0.3)" : "rgba(180,140,100,0.15)"}`,
                 }}>
                 <span className="text-[10px] font-mono font-bold w-6 h-6 flex items-center justify-center rounded"
-                  style={{ background: isWrong ? "#dc3232" : layer.color, color: "#fff" }}>
-                  L{layer.number}
-                </span>
-                <span className="text-xs font-display" style={{ color: isWrong ? "#dc3232" : "#2d2a26" }}>
-                  {layer.name}
-                </span>
+                  style={{ background: isWrong ? "#dc3232" : layer.color, color: "#fff" }}>L{layer.number}</span>
+                <span className="text-xs font-display" style={{ color: isWrong ? "#dc3232" : "#2d2a26" }}>{layer.name}</span>
               </motion.button>
             );
           })}
         </div>
       )}
-
-      {/* Solved or reset */}
-      <div className="flex gap-2">
-        {solved && (
-          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-            className="text-center">
-            <p className="text-xs font-body italic mb-2" style={{ color: "rgba(45,42,38,0.7)" }}>
-              "Understanding the OSI model taught me to debug any system — layer by layer, from cable to cloud."
-            </p>
-          </motion.div>
-        )}
-        <button onClick={resetPuzzle}
-          className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
-          style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
-          {solved ? "Replay" : "Shuffle"}
-        </button>
-      </div>
+      {solved && (
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs font-body italic text-center"
+          style={{ color: "rgba(45,42,38,0.7)" }}>
+          "Understanding the OSI model taught me to debug any system — layer by layer, from cable to cloud."
+        </motion.p>
+      )}
+      <button onClick={resetPuzzle} className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
+        style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
+        {solved ? "Replay" : "Shuffle"}
+      </button>
     </div>
   );
 };
 
 /* ═══════════════════════════════════════════════════════════
-   SKILLS + VALUE (kept lean)
+   SKILLS + VALUE
    ═══════════════════════════════════════════════════════════ */
 
 const htmlSkills = ["HTML5", "CSS3", "Web Design", "DOM Structure", "Semantic Markup", "Box Model", "Typography"];
 const netSkills = ["TCP/IP", "OSI Model", "DNS Resolution", "Subnetting", "Network Security", "Packet Analysis", "Wireshark", "Routing Protocols"];
-
 const combinedValue = [
   "Discovered the power of creating from nothing",
   "Saw that networks are just elegant, learnable patterns",
@@ -371,9 +319,7 @@ const combinedValue = [
   "Learned to trace problems through layers of abstraction",
 ];
 
-/* ═══════════════════════════════════════════════════════════
-   MAIN COMPONENT
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════ */
 
 const WebFoundationsWorld = () => {
   const [activeSection, setActiveSection] = useState<"html" | "network" | "skills" | "value">("html");
@@ -381,10 +327,9 @@ const WebFoundationsWorld = () => {
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-6 overflow-y-auto">
       <div className="w-full max-w-5xl flex flex-col gap-4">
-        {/* Section tabs */}
         <div className="flex gap-2 justify-center items-center flex-wrap">
           {([
-            { key: "html", label: "HTML Chess", color: "#E44D26" },
+            { key: "html", label: "HTML Builder", color: "#E44D26" },
             { key: "network", label: "OSI Puzzle", color: "#0078D4" },
             { key: "skills", label: "Skills", color: "#2a7d4f" },
             { key: "value", label: "Value", color: "#b5653a" },
@@ -403,19 +348,15 @@ const WebFoundationsWorld = () => {
 
         <AnimatePresence mode="wait">
           {activeSection === "html" && (
-            <motion.div key="html" className="flex flex-col items-center"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <ChessBoard />
+            <motion.div key="html" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <HTMLBuilderPuzzle />
             </motion.div>
           )}
-
           {activeSection === "network" && (
-            <motion.div key="network"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div key="network" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <OSIPuzzle />
             </motion.div>
           )}
-
           {activeSection === "skills" && (
             <motion.div key="skills" className="max-w-3xl mx-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <h4 className="text-xs font-mono uppercase tracking-wider text-center mb-4" style={{ color: "#E44D26" }}>Web Technologies</h4>
@@ -442,7 +383,6 @@ const WebFoundationsWorld = () => {
               </div>
             </motion.div>
           )}
-
           {activeSection === "value" && (
             <motion.div key="value" className="max-w-lg mx-auto space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {combinedValue.map((val, i) => (
