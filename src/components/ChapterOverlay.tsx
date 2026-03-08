@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ChapterData } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
@@ -39,6 +40,41 @@ const BrandBadge = ({ chapter }: { chapter: ChapterData }) => {
     );
   }
   return <span className="text-3xl">{chapter.icon}</span>;
+};
+
+const TypewriterText = ({ text, delay = 0 }: { text: string; delay?: number }) => {
+  const [displayed, setDisplayed] = useState("");
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    setDisplayed("");
+    setStarted(false);
+    const startTimer = setTimeout(() => setStarted(true), delay * 1000);
+    return () => clearTimeout(startTimer);
+  }, [text, delay]);
+
+  useEffect(() => {
+    if (!started) return;
+    if (displayed.length >= text.length) return;
+    const timer = setTimeout(() => {
+      setDisplayed(text.slice(0, displayed.length + 1));
+    }, 28 + Math.random() * 22);
+    return () => clearTimeout(timer);
+  }, [displayed, text, started]);
+
+  return (
+    <span>
+      "{displayed}
+      {displayed.length < text.length ? (
+        <motion.span
+          className="inline-block w-[2px] h-[14px] ml-0.5 align-middle"
+          style={{ background: "rgba(45,42,38,0.4)" }}
+          animate={{ opacity: [1, 0, 1] }}
+          transition={{ repeat: Infinity, duration: 0.6 }}
+        />
+      ) : '"'}
+    </span>
+  );
 };
 
 const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
@@ -103,15 +139,15 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               {chapter.subtitle}
             </motion.p>
 
-            <motion.p
+            <motion.div
               className="font-body text-sm leading-relaxed mb-5 max-w-md"
               style={{ color: "rgba(45,42,38,0.6)", fontStyle: "italic" }}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
             >
-              "{chapter.tagline}"
-            </motion.p>
+              <TypewriterText text={chapter.tagline} delay={0.6} />
+            </motion.div>
 
             {onDive && (
               <motion.button
