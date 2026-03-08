@@ -806,6 +806,63 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                     ))}
                   </div>
                 </div>
+
+                {/* Some of My Work — Project Showcase */}
+                <div className="col-span-1 md:col-span-2 mt-2">
+                  <div
+                    className="rounded-xl p-5"
+                    style={{
+                      background: `${stop.color}04`,
+                      border: `1px solid ${stop.color}12`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-sm">🏗️</span>
+                      <p
+                        className="text-[9px] font-mono uppercase tracking-widest"
+                        style={{ color: stop.color }}
+                      >
+                        Featured Project
+                      </p>
+                    </div>
+                    <h4
+                      className="font-display text-base font-bold mb-2"
+                      style={{ color: "#2d2a26" }}
+                    >
+                      {stop.project.name}
+                    </h4>
+                    <p
+                      className="text-xs font-body leading-relaxed mb-4"
+                      style={{ color: "rgba(45,42,38,0.75)" }}
+                    >
+                      {stop.project.description}
+                    </p>
+                    <div className="space-y-1.5">
+                      {stop.project.highlights.map((h, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex items-start gap-2 py-1"
+                          initial={{ opacity: 0, x: 8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 + i * 0.06 }}
+                        >
+                          <span
+                            className="text-[8px] mt-1 font-mono"
+                            style={{ color: stop.color }}
+                          >
+                            ◆
+                          </span>
+                          <span
+                            className="text-[11px] font-mono"
+                            style={{ color: "rgba(45,42,38,0.7)" }}
+                          >
+                            {h}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div
