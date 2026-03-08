@@ -611,7 +611,7 @@ const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealBut
    PUZZLE 4: PIPELINE ASSEMBLER
    ═══════════════════════════════════════════════════════════ */
 
-const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
