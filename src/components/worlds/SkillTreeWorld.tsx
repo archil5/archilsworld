@@ -7,27 +7,26 @@ const thesis = {
 };
 
 const highlights = [
-  { icon: "🎓", label: "Distinction", value: "Graduated with Distinction" },
-  { icon: "📅", label: "Duration", value: "2017 — 2018" },
-  { icon: "📍", label: "Location", value: "Halifax, Nova Scotia" },
-  { icon: "📜", label: "Degree", value: "Master of Applied Computer Science" },
+  { label: "Distinction", value: "Graduated with Distinction" },
+  { label: "Duration", value: "2017 — 2018" },
+  { label: "Location", value: "Halifax, Nova Scotia" },
+  { label: "Degree", value: "Master of Applied Computer Science" },
 ];
 
 interface Course {
   code: string;
   name: string;
-  icon: string;
   takeaway: string;
   tools: string[];
 }
 
 const courses: Course[] = [
-  { code: "CSCI 5100", name: "Advanced Algorithms", icon: "🧮", takeaway: "Learned to think in time complexity — every design decision has a cost.", tools: ["Python", "Dynamic Programming", "Graph Theory"] },
-  { code: "CSCI 5308", name: "Advanced Software Dev", icon: "🏗️", takeaway: "Clean architecture, SOLID principles, and why 'it works' isn't enough.", tools: ["Java", "Design Patterns", "TDD", "CI/CD"] },
-  { code: "CSCI 5708", name: "Network Security", icon: "🛡️", takeaway: "Cryptography, firewalls, threat models — the invisible armor of the internet.", tools: ["Wireshark", "Nmap", "OpenSSL", "Kali Linux"] },
-  { code: "CSCI 5709", name: "Ethical Hacking Lab", icon: "🔓", takeaway: "Hands-on penetration testing — learned to think like an attacker to build better defenses.", tools: ["Metasploit", "Burp Suite", "OWASP", "SQL Injection"] },
-  { code: "CSCI 6505", name: "Machine Learning", icon: "🤖", takeaway: "Statistical foundations that would later power my AI platform work.", tools: ["Python", "Scikit-learn", "TensorFlow", "NumPy"] },
-  { code: "Applied Project", name: "Ansible Automation", icon: "⚙️", takeaway: "Built a real compliance automation framework — my bridge from academia to industry.", tools: ["Ansible", "Python", "Jenkins", "Linux"] },
+  { code: "CSCI 5100", name: "Advanced Algorithms", takeaway: "Learned to think in time complexity — every design decision has a cost.", tools: ["Python", "Dynamic Programming", "Graph Theory"] },
+  { code: "CSCI 5308", name: "Advanced Software Dev", takeaway: "Clean architecture, SOLID principles, and why 'it works' isn't enough.", tools: ["Java", "Design Patterns", "TDD", "CI/CD"] },
+  { code: "CSCI 5708", name: "Network Security", takeaway: "Cryptography, firewalls, threat models — the invisible armor of the internet.", tools: ["Wireshark", "Nmap", "OpenSSL", "Kali Linux"] },
+  { code: "CSCI 5709", name: "Ethical Hacking Lab", takeaway: "Hands-on penetration testing — learned to think like an attacker to build better defenses.", tools: ["Metasploit", "Burp Suite", "OWASP", "SQL Injection"] },
+  { code: "CSCI 6505", name: "Machine Learning", takeaway: "Statistical foundations that would later power my AI platform work.", tools: ["Python", "Scikit-learn", "TensorFlow", "NumPy"] },
+  { code: "Applied Project", name: "Ansible Automation", takeaway: "Built a real compliance automation framework — my bridge from academia to industry.", tools: ["Ansible", "Python", "Jenkins", "Linux"] },
 ];
 
 const keyLearnings = [
@@ -47,7 +46,6 @@ const SkillTreeWorld = () => {
         <motion.div className="text-center mb-6" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3"
             style={{ background: "rgba(139,105,20,0.08)", border: "1px solid rgba(139,105,20,0.2)" }}>
-            <span className="text-sm">🎓</span>
             <span className="text-[11px] font-mono uppercase tracking-widest" style={{ color: "#8B6914" }}>
               Dalhousie University · Halifax, NS
             </span>
@@ -64,7 +62,6 @@ const SkillTreeWorld = () => {
           {highlights.map((h, i) => (
             <div key={i} className="text-center p-3 rounded-lg"
               style={{ background: "rgba(139,105,20,0.04)", border: "1px solid rgba(139,105,20,0.1)" }}>
-              <span className="text-lg">{h.icon}</span>
               <p className="text-[10px] font-mono uppercase mt-1" style={{ color: "rgba(80,70,60,0.45)" }}>{h.label}</p>
               <p className="text-xs font-display font-bold" style={{ color: "#2d2a26" }}>{h.value}</p>
             </div>
@@ -78,7 +75,7 @@ const SkillTreeWorld = () => {
             <motion.div className="rounded-xl p-5" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
               style={{ background: "rgba(139,105,20,0.04)", border: "1px solid rgba(139,105,20,0.15)" }}>
               <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#8B6914" }}>
-                📄 Applied Research
+                Applied Research
               </p>
               <h3 className="font-display text-sm font-bold mb-2" style={{ color: "#2d2a26" }}>{thesis.title}</h3>
               <p className="text-xs font-body italic leading-relaxed" style={{ color: "rgba(45,42,38,0.7)" }}>
@@ -89,7 +86,7 @@ const SkillTreeWorld = () => {
             {/* Course grid */}
             <div>
               <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#8B6914" }}>
-                📚 Key Courses · Click to explore
+                Key Courses · Click to explore
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {courses.map((c, i) => {
@@ -104,13 +101,8 @@ const SkillTreeWorld = () => {
                         border: `1px solid ${isActive ? "rgba(139,105,20,0.3)" : "rgba(180,140,100,0.1)"}`,
                         boxShadow: isActive ? "0 2px 12px rgba(139,105,20,0.1)" : "none",
                       }}>
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">{c.icon}</span>
-                        <div>
-                          <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{c.code}</p>
-                          <p className="text-xs font-display font-bold" style={{ color: isActive ? "#8B6914" : "#2d2a26" }}>{c.name}</p>
-                        </div>
-                      </div>
+                      <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{c.code}</p>
+                      <p className="text-xs font-display font-bold" style={{ color: isActive ? "#8B6914" : "#2d2a26" }}>{c.name}</p>
                     </motion.button>
                   );
                 })}
@@ -125,12 +117,9 @@ const SkillTreeWorld = () => {
                 <motion.div key={selectedCourse.code} className="rounded-xl p-5"
                   initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
                   style={{ background: "#fefcf9", border: "1px solid rgba(139,105,20,0.15)" }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-2xl">{selectedCourse.icon}</span>
-                    <div>
-                      <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{selectedCourse.code}</p>
-                      <h3 className="font-display text-sm font-bold" style={{ color: "#8B6914" }}>{selectedCourse.name}</h3>
-                    </div>
+                  <div className="mb-3">
+                    <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{selectedCourse.code}</p>
+                    <h3 className="font-display text-sm font-bold" style={{ color: "#8B6914" }}>{selectedCourse.name}</h3>
                   </div>
                   <p className="text-xs font-body italic leading-relaxed mb-3" style={{ color: "rgba(45,42,38,0.75)" }}>
                     "{selectedCourse.takeaway}"
@@ -159,7 +148,7 @@ const SkillTreeWorld = () => {
             <motion.div className="rounded-xl p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
               style={{ background: "rgba(42,125,79,0.04)", border: "1px solid rgba(42,125,79,0.12)" }}>
               <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>
-                💡 Key Takeaways
+                Key Takeaways
               </p>
               {keyLearnings.map((l, i) => (
                 <motion.div key={i} className="flex items-start gap-2 mb-2"

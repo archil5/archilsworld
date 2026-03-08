@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
+import { Linkedin, Github, Mail } from "lucide-react";
 import { chapterImages } from "@/data/brandLogos";
 
 const links = [
-  { label: "LinkedIn", url: "https://linkedin.com/in/archilpatel", icon: "🔗" },
-  { label: "GitHub", url: "https://github.com/archilpatel", icon: "💻" },
-  { label: "Email", url: "mailto:archil@example.com", icon: "📧" },
+  { label: "LinkedIn", url: "https://linkedin.com/in/archilpatel", Icon: Linkedin },
+  { label: "GitHub", url: "https://github.com/archilpatel", Icon: Github },
+  { label: "Email", url: "mailto:archil@example.com", Icon: Mail },
 ];
 
 const ContactWorld = () => {
@@ -15,7 +16,6 @@ const ContactWorld = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, type: "spring" }}
-          className="relative"
         >
           <img
             src={chapterImages.archil}
@@ -26,12 +26,6 @@ const ContactWorld = () => {
               boxShadow: "0 8px 30px rgba(181,101,58,0.15)",
             }}
           />
-          <div
-            className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-sm"
-            style={{ background: "#b5653a", color: "#fff" }}
-          >
-            👋
-          </div>
         </motion.div>
 
         <motion.div
@@ -85,7 +79,7 @@ const ContactWorld = () => {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              <span>{link.icon}</span>
+              <link.Icon size={16} />
               {link.label}
             </a>
           ))}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 
 interface JourneyStop {
@@ -74,7 +75,6 @@ const stops: JourneyStop[] = [
 const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [activeStop, setActiveStop] = useState(0);
   const [revealed, setRevealed] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timers = stops.map((_, i) =>
@@ -83,23 +83,14 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      const stopEl = scrollRef.current.children[activeStop] as HTMLElement;
-      if (stopEl) {
-        stopEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      }
-    }
-  }, [activeStop]);
-
   const stop = stops[activeStop];
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-4 md:p-6 overflow-hidden">
-      {/* Journey Path — horizontal scrollable */}
+      {/* Journey Path */}
       <div className="w-full max-w-5xl mb-6">
         <div className="relative">
-          {/* Path line */}
+          {/* Progress line */}
           <div className="absolute top-[28px] left-0 right-0 h-[3px] rounded-full"
             style={{ background: "rgba(180,140,100,0.15)" }}>
             <motion.div className="h-full rounded-full" style={{ background: stop.color }}
@@ -109,38 +100,33 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           </div>
 
           {/* Stops */}
-          <div ref={scrollRef} className="flex justify-between items-start relative z-10 overflow-x-auto no-scrollbar px-2">
+          <div className="flex justify-between items-start relative z-10 px-2">
             {stops.slice(0, revealed).map((s, i) => {
               const isActive = i === activeStop;
               const isPast = i < activeStop;
               return (
                 <motion.button key={i}
-                  className="flex flex-col items-center gap-1.5 cursor-pointer flex-shrink-0 px-2"
+                  className="flex flex-col items-center gap-1.5 cursor-pointer flex-shrink-0 px-1"
                   onClick={() => setActiveStop(i)}
                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-                  style={{ minWidth: 90 }}>
-                  {/* Stop marker */}
+                  style={{ minWidth: 70 }}>
                   <motion.div
                     className="w-14 h-14 rounded-full flex items-center justify-center"
-                    animate={isActive ? { scale: [1, 1.1, 1] } : {}}
-                    transition={isActive ? { repeat: Infinity, duration: 2 } : {}}
+                    animate={isActive ? { scale: [1, 1.08, 1] } : {}}
+                    transition={isActive ? { repeat: Infinity, duration: 2.5 } : {}}
                     style={{
-                      background: isActive ? `${s.color}15` : isPast ? `${s.color}08` : "#fefcf9",
-                      border: `3px solid ${isActive ? s.color : isPast ? `${s.color}60` : "rgba(180,140,100,0.2)"}`,
-                      boxShadow: isActive ? `0 0 20px ${s.color}25` : "none",
+                      background: isActive ? `${s.color}12` : isPast ? `${s.color}06` : "#fefcf9",
+                      border: `3px solid ${isActive ? s.color : isPast ? `${s.color}50` : "rgba(180,140,100,0.2)"}`,
+                      boxShadow: isActive ? `0 0 16px ${s.color}20` : "none",
                     }}>
                     {brandLogos[s.company] ? (
                       <img src={brandLogos[s.company]} alt={s.company} className="h-5 object-contain" />
                     ) : (
-                      <span className="text-xs font-mono font-bold" style={{ color: s.color }}>{s.company}</span>
+                      <span className="text-[10px] font-mono font-bold" style={{ color: s.color }}>{s.company}</span>
                     )}
                   </motion.div>
-                  <span className="text-[8px] font-mono text-center leading-tight" style={{ color: isActive ? "#2d2a26" : "rgba(80,70,60,0.45)" }}>
+                  <span className="text-[8px] font-mono text-center" style={{ color: isActive ? "#2d2a26" : "rgba(80,70,60,0.4)" }}>
                     {s.period.split("–")[0]}
-                  </span>
-                  <span className="text-[9px] font-display text-center font-bold leading-tight max-w-[80px]"
-                    style={{ color: isActive ? s.color : "rgba(80,70,60,0.4)" }}>
-                    {s.title.length > 20 ? s.title.split("—")[0].trim() : s.title}
                   </span>
                 </motion.button>
               );
@@ -152,13 +138,13 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
       {/* Detail card */}
       <AnimatePresence mode="wait">
         <motion.div key={activeStop} className="w-full max-w-3xl"
-          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.35 }}>
+          initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }}
+          transition={{ duration: 0.3 }}>
 
           <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${stop.color}20` }}>
             {/* Header */}
             <div className="px-6 py-4 flex items-center justify-between"
-              style={{ background: `${stop.color}08`, borderBottom: `1px solid ${stop.color}15` }}>
+              style={{ background: `${stop.color}06`, borderBottom: `1px solid ${stop.color}12` }}>
               <div className="flex items-center gap-3">
                 {brandLogos[stop.company] && (
                   <img src={brandLogos[stop.company]} alt={stop.company} className="h-6 object-contain" />
@@ -169,15 +155,14 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 </div>
               </div>
               <div className="text-right px-3 py-1.5 rounded-lg"
-                style={{ background: `${stop.color}10`, border: `1px solid ${stop.color}20` }}>
-                <p className="text-[9px] font-mono uppercase" style={{ color: "rgba(80,70,60,0.45)" }}>Impact</p>
+                style={{ background: `${stop.color}08`, border: `1px solid ${stop.color}15` }}>
+                <p className="text-[9px] font-mono uppercase" style={{ color: "rgba(80,70,60,0.4)" }}>Impact</p>
                 <p className="text-xs font-mono font-bold" style={{ color: stop.color }}>{stop.impact}</p>
               </div>
             </div>
 
             {/* Body */}
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5" style={{ background: "#fefcf9" }}>
-              {/* Left: Story + Challenge */}
               <div className="space-y-4">
                 <div>
                   <p className="text-[9px] font-mono uppercase tracking-wider mb-1.5" style={{ color: stop.color }}>The Story</p>
@@ -185,8 +170,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                     "{stop.narrative}"
                   </p>
                 </div>
-                <div className="rounded-lg p-3" style={{ background: "rgba(228,77,38,0.04)", border: "1px solid rgba(228,77,38,0.12)" }}>
-                  <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#E44D26" }}>⚔️ Challenge</p>
+                <div className="rounded-lg p-3" style={{ background: "rgba(228,77,38,0.04)", border: "1px solid rgba(228,77,38,0.1)" }}>
+                  <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#c0553a" }}>Challenge</p>
                   <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.75)" }}>{stop.challenge}</p>
                 </div>
                 <div>
@@ -202,15 +187,14 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 </div>
               </div>
 
-              {/* Right: Wins */}
               <div>
-                <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>🏆 Key Wins</p>
+                <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>Key Wins</p>
                 <div className="space-y-2">
                   {stop.wins.map((w, i) => (
                     <motion.div key={i} className="flex items-start gap-2 p-2.5 rounded-lg"
-                      initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.1 }}
+                      initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 + i * 0.08 }}
                       style={{ background: "rgba(42,125,79,0.04)", border: "1px solid rgba(42,125,79,0.1)" }}>
-                      <span className="text-xs mt-0.5">✅</span>
+                      <span className="text-[10px] mt-0.5" style={{ color: "#2a7d4f" }}>▸</span>
                       <span className="text-xs font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{w}</span>
                     </motion.div>
                   ))}
@@ -218,15 +202,15 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               </div>
             </div>
 
-            {/* Navigation arrows */}
+            {/* Nav */}
             <div className="px-6 py-3 flex justify-between items-center"
               style={{ background: "rgba(180,140,100,0.03)", borderTop: "1px solid rgba(180,140,100,0.08)" }}>
               <button
                 onClick={() => setActiveStop(Math.max(0, activeStop - 1))}
                 disabled={activeStop === 0}
-                className="text-[10px] font-mono px-3 py-1.5 rounded cursor-pointer transition-all disabled:opacity-30"
+                className="flex items-center gap-1 text-[10px] font-mono px-3 py-1.5 rounded cursor-pointer transition-all disabled:opacity-30"
                 style={{ color: "#6b6560", background: "rgba(180,140,100,0.06)", border: "1px solid rgba(180,140,100,0.12)" }}>
-                ← Previous
+                <ChevronLeft size={12} /> Previous
               </button>
               <span className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.35)" }}>
                 {activeStop + 1} / {stops.length}
@@ -234,9 +218,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               <button
                 onClick={() => setActiveStop(Math.min(stops.length - 1, activeStop + 1))}
                 disabled={activeStop === stops.length - 1}
-                className="text-[10px] font-mono px-3 py-1.5 rounded cursor-pointer transition-all disabled:opacity-30"
+                className="flex items-center gap-1 text-[10px] font-mono px-3 py-1.5 rounded cursor-pointer transition-all disabled:opacity-30"
                 style={{ color: "#6b6560", background: "rgba(180,140,100,0.06)", border: "1px solid rgba(180,140,100,0.12)" }}>
-                Next →
+                Next <ChevronRight size={12} />
               </button>
             </div>
           </div>

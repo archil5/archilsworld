@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Experience from "@/components/Experience";
+import meepleImg from "@/assets/meeple.png";
 
 const boardFacts = [
   "I've been obsessed with board games since I could roll dice",
@@ -65,7 +66,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
           className="mb-6"
         >
-          <div className="text-6xl mb-2 animate-float-piece">♟️</div>
+          <img src={meepleImg} alt="Game piece" className="w-16 h-16 object-contain animate-float-piece" style={{ filter: "drop-shadow(0 4px 12px rgba(181,101,58,0.3))" }} />
         </motion.div>
 
         {/* Title */}
@@ -109,7 +110,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.9 }}
         >
           <p className="text-xs font-mono uppercase tracking-wider mb-3" style={{ color: "#b5653a" }}>
-            🎲 Why a Board Game?
+            Why a Board Game?
           </p>
           <p className="font-body text-sm leading-relaxed" style={{ color: "rgba(245,240,232,0.7)" }}>
             I've always loved board games, puzzles, and riddles — the thrill of solving complex problems
@@ -125,7 +126,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1 }}
         >
-          {["🎲 Board Games", "🧩 Puzzles", "🧠 Riddles", "♟️ Strategy", "☁️ Cloud"].map((tag, i) => (
+          {["Board Games", "Puzzles", "Riddles", "Strategy", "Cloud"].map((tag, i) => (
             <motion.span
               key={tag}
               className="text-[11px] font-mono px-3 py-1.5 rounded-full"
