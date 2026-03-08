@@ -24,6 +24,7 @@ interface AwsArchPuzzle extends BasePuzzle {
   services: AwsService[];
   slots: ArchSlot[];
   tiers: string[];
+  extreme?: boolean;
 }
 
 // 2) Terraform Plan Debugger — find & fix broken lines
