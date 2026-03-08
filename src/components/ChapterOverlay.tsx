@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import type { ChapterData } from "@/data/chapters";
+import { brandLogos } from "@/data/brandLogos";
 
 interface ChapterOverlayProps {
   chapter: ChapterData;
@@ -12,6 +13,20 @@ const categoryLabels: Record<string, string> = {
   education: "Education",
   career: "Career",
   current: "Present Day",
+};
+
+const BrandBadge = ({ brandLogo, color }: { brandLogo: string; color: string }) => {
+  const logo = brandLogos[brandLogo];
+  if (logo) {
+    return (
+      <span className="inline-flex items-center px-2 py-1 rounded" style={{ background: `${color}10`, border: `1px solid ${color}25` }}>
+        <img src={logo} alt={brandLogo} className="h-5 object-contain" />
+      </span>
+    );
+  }
+  return (
+    <span className="text-sm font-bold px-3 py-1 rounded" style={{ color: "#fff", background: color }}>{brandLogo}</span>
+  );
 };
 
 const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
@@ -41,10 +56,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               className="flex items-center gap-3 mb-3"
             >
               {chapter.brandLogo ? (
-                <span className="text-sm font-bold px-3 py-1 rounded" style={{
-                  color: "#fff",
-                  background: chapter.color,
-                }}>{chapter.brandLogo}</span>
+                <BrandBadge brandLogo={chapter.brandLogo} color={chapter.color} />
               ) : (
                 <span className="text-3xl">{chapter.icon}</span>
               )}

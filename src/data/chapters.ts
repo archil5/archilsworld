@@ -65,6 +65,7 @@ export const CHAPTERS: ChapterData[] = [
     skills: ["Systems Thinking", "Security", "Automation", "Ethical Hacking"],
     position: [3, 0, -3],
     color: "#FFD700",
+    brandLogo: "Dalhousie",
   },
   {
     id: "rbc",

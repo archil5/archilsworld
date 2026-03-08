@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
 import { CHAPTERS } from "@/data/chapters";
+import { brandLogos } from "@/data/brandLogos";
 import HexTile from "@/components/three/HexTile";
 import BoardPath from "@/components/three/BoardPath";
 import Particles from "@/components/three/Particles";
@@ -187,10 +188,12 @@ const Experience = () => {
               }}
             />
             <span
-              className="absolute left-5 whitespace-nowrap text-xs font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-1 rounded"
+              className="absolute left-5 whitespace-nowrap text-xs font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-1 rounded flex items-center gap-2"
               style={{ color: "#2d2a26", background: "rgba(245,240,232,0.95)", border: "1px solid rgba(180,140,100,0.2)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
             >
-              {ch.brandLogo ? (
+              {ch.brandLogo && brandLogos[ch.brandLogo] ? (
+                <img src={brandLogos[ch.brandLogo]} alt={ch.brandLogo} className="h-3.5 object-contain" />
+              ) : ch.brandLogo ? (
                 <span className="font-bold mr-1" style={{ color: ch.color }}>{ch.brandLogo}</span>
               ) : null}
               {ch.label}

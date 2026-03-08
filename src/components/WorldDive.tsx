@@ -6,6 +6,7 @@ import NetworkWorld from "./worlds/NetworkWorld";
 import SkillTreeWorld from "./worlds/SkillTreeWorld";
 import CareerTimelineWorld from "./worlds/CareerTimelineWorld";
 import type { ChapterData } from "@/data/chapters";
+import { brandLogos } from "@/data/brandLogos";
 
 interface WorldDiveProps {
   chapter: ChapterData | null;
@@ -33,7 +34,6 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          {/* Subtle warm radial */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -41,7 +41,6 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             }}
           />
 
-          {/* Top bar */}
           <motion.div
             className="relative z-10 flex items-center justify-between px-6 py-4"
             initial={{ y: -30, opacity: 0 }}
@@ -68,7 +67,11 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             </button>
 
             <div className="flex items-center gap-3">
-              {chapter.brandLogo ? (
+              {chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
+                <span className="inline-flex items-center px-2 py-1 rounded" style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}20` }}>
+                  <img src={brandLogos[chapter.brandLogo]} alt={chapter.brandLogo} className="h-6 object-contain" />
+                </span>
+              ) : chapter.brandLogo ? (
                 <span className="text-sm font-bold px-2 py-1 rounded" style={{
                   color: "#fff",
                   background: chapter.color,
@@ -87,7 +90,6 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             </div>
           </motion.div>
 
-          {/* World content */}
           <motion.div
             className="flex-1 relative z-10 overflow-hidden"
             initial={{ opacity: 0, y: 30 }}
@@ -97,7 +99,6 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             {worldMap[chapter.id]?.()}
           </motion.div>
 
-          {/* Bottom hint */}
           <motion.div
             className="relative z-10 text-center py-3"
             initial={{ opacity: 0 }}

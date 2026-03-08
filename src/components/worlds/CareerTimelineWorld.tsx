@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { brandLogos } from "@/data/brandLogos";
 
 interface Milestone {
   title: string;
@@ -201,11 +202,13 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 boxShadow: i === activeRole ? `0 2px 12px ${r.brandColor}12` : "none",
               }}
             >
-              <span className="text-sm font-bold px-1.5 py-0.5 rounded" style={{
-                color: "#fff",
-                background: r.brandColor,
-                fontSize: "9px",
-              }}>{r.company}</span>
+              {brandLogos[r.company] ? (
+                <img src={brandLogos[r.company]} alt={r.company} className="h-4 object-contain" />
+              ) : (
+                <span className="text-sm font-bold px-1.5 py-0.5 rounded" style={{
+                  color: "#fff", background: r.brandColor, fontSize: "9px",
+                }}>{r.company}</span>
+              )}
               <div className="text-left">
                 <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{r.period}</p>
                 <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#2d2a26" : "rgba(80,70,60,0.45)" }}>
@@ -227,10 +230,13 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           {/* Header */}
           <div className="rounded-t-xl px-6 py-4" style={{ background: `${role.brandColor}08`, borderBottom: `1px solid ${role.brandColor}20` }}>
             <div className="flex items-center gap-3">
-              <span className="text-sm font-bold px-2 py-1 rounded" style={{
-                color: "#fff",
-                background: role.brandColor,
-              }}>{role.company}</span>
+              {brandLogos[role.company] ? (
+                <img src={brandLogos[role.company]} alt={role.company} className="h-6 object-contain" />
+              ) : (
+                <span className="text-sm font-bold px-2 py-1 rounded" style={{
+                  color: "#fff", background: role.brandColor,
+                }}>{role.company}</span>
+              )}
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded" style={{ background: `${role.brandColor}10`, color: role.brandColor }}>
