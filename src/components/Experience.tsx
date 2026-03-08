@@ -1,6 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CHAPTERS } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 import HexTile from "@/components/three/HexTile";
@@ -23,6 +25,18 @@ const Experience = () => {
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const isDiving = diveChapter !== null;
+
+  const goTo = useCallback((index: number) => {
+    const clamped = Math.max(0, Math.min(CHAPTERS.length - 1, index));
+    targetScroll.current = clamped / (CHAPTERS.length - 1);
+    setActiveIndex(clamped);
+    setVisitedSet(prev => new Set(prev).add(clamped));
+    setShowOverlay(false);
+    setTimeout(() => setShowOverlay(true), 600);
+  }, []);
+
+  const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
+  const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -60,7 +74,11 @@ const Experience = () => {
     };
 
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isDiving) setDiveChapter(null);
+      if (e.key === "Escape" && isDiving) { setDiveChapter(null); return; }
+      if (isDiving) return;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); goTo(activeIndex + 1); }
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); goTo(activeIndex - 1); }
+      if (e.key === "Enter") { setDiveChapter(CHAPTERS[activeIndex]); }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
@@ -77,7 +95,7 @@ const Experience = () => {
       clearTimeout(scrollTimeout.current);
       clearTimeout(t);
     };
-  }, [activeIndex, isDiving]);
+  }, [activeIndex, isDiving, goTo]);
 
   useEffect(() => {
     let raf: number;
@@ -91,12 +109,8 @@ const Experience = () => {
   }, []);
 
   const handleTileClick = useCallback((index: number) => {
-    targetScroll.current = index / (CHAPTERS.length - 1);
-    setActiveIndex(index);
-    setVisitedSet(prev => new Set(prev).add(index));
-    setShowOverlay(false);
-    setTimeout(() => setShowOverlay(true), 600);
-  }, []);
+    goTo(index);
+  }, [goTo]);
 
   const handleDive = useCallback(() => {
     setDiveChapter(CHAPTERS[activeIndex]);
@@ -166,7 +180,66 @@ const Experience = () => {
         </p>
       </div>
 
-      {/* Scroll progress */}
+      {/* Navigation arrows - always visible */}
+      {!isDiving && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+          <motion.button
+            onClick={goPrev}
+            disabled={activeIndex === 0}
+            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
+            style={{
+              background: "rgba(245,240,232,0.9)",
+              border: "1px solid rgba(180,140,100,0.25)",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+              color: "#2d2a26",
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ChevronLeft size={18} />
+          </motion.button>
+
+          {/* Tile indicators */}
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-full" style={{
+            background: "rgba(245,240,232,0.9)",
+            border: "1px solid rgba(180,140,100,0.2)",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+          }}>
+            {CHAPTERS.map((ch, i) => (
+              <button
+                key={ch.id}
+                onClick={() => goTo(i)}
+                className="transition-all duration-300 cursor-pointer rounded-full"
+                style={{
+                  width: i === activeIndex ? 24 : 8,
+                  height: 8,
+                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(107,101,96,0.4)" : "rgba(107,101,96,0.15)",
+                  boxShadow: i === activeIndex ? `0 0 8px ${ch.color}50` : "none",
+                }}
+                title={ch.label}
+              />
+            ))}
+          </div>
+
+          <motion.button
+            onClick={goNext}
+            disabled={activeIndex === CHAPTERS.length - 1}
+            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
+            style={{
+              background: "rgba(245,240,232,0.9)",
+              border: "1px solid rgba(180,140,100,0.25)",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+              color: "#2d2a26",
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ChevronRight size={18} />
+          </motion.button>
+        </div>
+      )}
+
+      {/* Scroll progress - right side */}
       <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
         <div className="w-0.5 rounded-full relative overflow-hidden" style={{ height: 200, background: "rgba(180,140,100,0.15)" }}>
           <div
@@ -179,10 +252,10 @@ const Experience = () => {
         </p>
       </div>
 
-      {/* Nav dots */}
+      {/* Nav dots - left side */}
       <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2">
         {CHAPTERS.map((ch, i) => (
-          <button key={ch.id} className="group relative flex items-center" onClick={() => handleTileClick(i)}>
+          <button key={ch.id} className="group relative flex items-center" onClick={() => goTo(i)}>
             <div
               className="w-2.5 h-2.5 rounded-full transition-all duration-500 cursor-pointer"
               style={{
@@ -214,9 +287,9 @@ const Experience = () => {
       <ChapterOverlay chapter={chapter} visible={showOverlay && !isDiving} onDive={handleDive} />
 
       {activeIndex === 0 && !showOverlay && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
           <p className="text-xs font-display tracking-[0.3em] uppercase" style={{ color: "#6b6560" }}>
-            Scroll to journey
+            Scroll or use arrows
           </p>
           <svg width="20" height="30" viewBox="0 0 20 30" fill="none" className="opacity-50">
             <rect x="1" y="1" width="18" height="28" rx="9" stroke="#b5653a" strokeWidth="1.5" />
@@ -224,6 +297,18 @@ const Experience = () => {
               <animate attributeName="cy" values="8;18;8" dur="2s" repeatCount="indefinite" />
             </circle>
           </svg>
+        </div>
+      )}
+
+      {/* Keyboard hint */}
+      {!isDiving && (
+        <div className="absolute top-6 right-8 z-20 pointer-events-none">
+          <div className="flex items-center gap-1.5 text-[9px] font-mono" style={{ color: "rgba(107,101,96,0.4)" }}>
+            <span className="px-1.5 py-0.5 rounded" style={{ border: "1px solid rgba(107,101,96,0.2)" }}>←→</span>
+            navigate
+            <span className="px-1.5 py-0.5 rounded ml-2" style={{ border: "1px solid rgba(107,101,96,0.2)" }}>Enter</span>
+            dive in
+          </div>
         </div>
       )}
 

@@ -77,6 +77,11 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
+  // Tile content style - fills the hex face
+  const tileSize = 100;
+  const activeFilter = "none";
+  const inactiveFilter = "grayscale(0.15) opacity(0.8)";
+
   return (
     <group position={position}>
       <mesh ref={glowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
@@ -106,65 +111,166 @@ const HexTile = ({
         />
       </mesh>
 
-      {/* HTML overlay covering entire tile */}
+      {/* Full-tile HTML overlay */}
       <Html
         position={[0, isActive ? 0.65 : 0.25, 0]}
         center
-        distanceFactor={8}
+        distanceFactor={6}
         style={{ pointerEvents: "none", userSelect: "none" }}
       >
-        <div className="flex flex-col items-center justify-center" style={{ width: 80, height: 80 }}>
+        <div
+          style={{
+            width: tileSize,
+            height: tileSize,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "50%",
+            overflow: "hidden",
+          }}
+        >
           {imageSrc ? (
-            <img
-              src={imageSrc}
-              alt={label}
-              style={{
-                width: 70,
-                height: 70,
-                objectFit: "cover",
-                borderRadius: "50%",
-                border: `2px solid ${isActive ? color : "rgba(180,140,100,0.3)"}`,
-                filter: isActive ? "none" : "grayscale(0.2) opacity(0.85)",
-              }}
-            />
+            /* Contact tile - full photo */
+            <div style={{ width: tileSize, height: tileSize, position: "relative" }}>
+              <img
+                src={imageSrc}
+                alt={label}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                  border: `3px solid ${isActive ? color : "rgba(180,140,100,0.4)"}`,
+                  filter: isActive ? activeFilter : inactiveFilter,
+                }}
+              />
+              <div style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "4px 0 2px",
+                background: "linear-gradient(transparent, rgba(45,42,38,0.8))",
+                borderRadius: "0 0 50px 50px",
+                textAlign: "center",
+              }}>
+                <span style={{
+                  fontSize: 8,
+                  fontFamily: "'Cinzel', serif",
+                  fontWeight: 700,
+                  color: "#f5f0e8",
+                  letterSpacing: "0.08em",
+                }}>
+                  {label}
+                </span>
+              </div>
+            </div>
           ) : isCareer ? (
-            <div className="flex items-center gap-1">
-              <img src={careerLogos.RBC} alt="RBC" style={{ height: 28, objectFit: "contain", filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)" }} />
-              <span style={{ color: isActive ? "#2d2a26" : "#aaa", fontSize: 10, fontWeight: 700 }}>+</span>
-              <img src={careerLogos.BMO} alt="BMO" style={{ height: 28, objectFit: "contain", filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)" }} />
+            /* Career tile - RBC + BMO stacked */
+            <div style={{
+              width: tileSize,
+              height: tileSize,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 2,
+              background: isActive
+                ? `radial-gradient(circle, ${color}18, transparent)`
+                : "none",
+              borderRadius: "50%",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <img src={careerLogos.RBC} alt="RBC" style={{
+                  height: 30,
+                  objectFit: "contain",
+                  filter: isActive ? activeFilter : inactiveFilter,
+                }} />
+                <img src={careerLogos.BMO} alt="BMO" style={{
+                  height: 30,
+                  objectFit: "contain",
+                  filter: isActive ? activeFilter : inactiveFilter,
+                }} />
+              </div>
+              <span style={{
+                fontSize: 7,
+                fontFamily: "'Cinzel', serif",
+                fontWeight: 700,
+                color: isActive ? "#2d2a26" : "#6b6560",
+                letterSpacing: "0.06em",
+                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
+              }}>
+                {label}
+              </span>
             </div>
           ) : logoSrc ? (
-            <img
-              src={logoSrc}
-              alt={brandLogo}
-              style={{
-                height: 45,
-                maxWidth: 65,
-                objectFit: "contain",
-                filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)",
-              }}
-            />
-          ) : (
-            <span style={{
-              fontSize: 32,
-              lineHeight: 1,
-              filter: isActive ? "none" : "grayscale(0.2) opacity(0.7)",
+            /* Brand logo tile - fill the hex */
+            <div style={{
+              width: tileSize,
+              height: tileSize,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 3,
+              background: isActive
+                ? `radial-gradient(circle, ${color}18, transparent)`
+                : "none",
+              borderRadius: "50%",
             }}>
-              {icon}
-            </span>
+              <img
+                src={logoSrc}
+                alt={brandLogo}
+                style={{
+                  height: 55,
+                  maxWidth: 85,
+                  objectFit: "contain",
+                  filter: isActive ? activeFilter : inactiveFilter,
+                }}
+              />
+              <span style={{
+                fontSize: 7,
+                fontFamily: "'Cinzel', serif",
+                fontWeight: 700,
+                color: isActive ? "#2d2a26" : "#6b6560",
+                letterSpacing: "0.06em",
+                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
+              }}>
+                {label}
+              </span>
+            </div>
+          ) : (
+            /* Emoji icon tile - large icon */
+            <div style={{
+              width: tileSize,
+              height: tileSize,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 2,
+              borderRadius: "50%",
+            }}>
+              <span style={{
+                fontSize: 42,
+                lineHeight: 1,
+                filter: isActive ? activeFilter : inactiveFilter,
+              }}>
+                {icon}
+              </span>
+              <span style={{
+                fontSize: 8,
+                fontFamily: "'Cinzel', serif",
+                fontWeight: 700,
+                color: isActive ? "#2d2a26" : "#6b6560",
+                letterSpacing: "0.06em",
+                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
+              }}>
+                {label}
+              </span>
+            </div>
           )}
-          <span style={{
-            fontSize: 7,
-            fontFamily: "'Cinzel', serif",
-            fontWeight: 600,
-            color: isActive ? "#2d2a26" : "#6b6560",
-            letterSpacing: "0.05em",
-            whiteSpace: "nowrap",
-            textShadow: "0 1px 2px rgba(255,255,255,0.8)",
-            marginTop: 2,
-          }}>
-            {label}
-          </span>
         </div>
       </Html>
 
