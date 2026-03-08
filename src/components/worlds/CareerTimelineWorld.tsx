@@ -340,7 +340,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                           ) : (
                             <div className="text-center" style={{ transform: "rotateY(180deg)" }}>
                               <span className="text-2xl">🎴</span>
-                              <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.3)" }}>Click to reveal</p>
+                              <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.55)" }}>Click to reveal</p>
                             </div>
                           )}
                         </motion.div>
