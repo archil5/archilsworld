@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
+import ReadOnlyDiagram from "@/components/puzzles/ReadOnlyDiagram";
 
 /* ═══════════════════════════════════════════════════════════
    TYPES & DATA
@@ -892,6 +893,17 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                         </motion.div>
                       ))}
                     </div>
+
+                    {/* Read-only architecture diagram */}
+                    {stop.diagramPuzzle && (
+                      <div className="mt-4">
+                        <ReadOnlyDiagram
+                          diagram={stop.diagramPuzzle.diagram}
+                          color={stop.color}
+                          title={stop.diagramPuzzle.projectName}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
