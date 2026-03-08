@@ -2,13 +2,16 @@ import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useMemo } from "react";
 
+const prepareTexture = (texture: THREE.Texture) => {
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
+};
+
 /**
- * Renders a logo/image as a texture mapped onto a circular disc
- * flush on the hex tile top surface.
- * 
- * NOTE: This is rendered as a CHILD of the hex mesh which already has
- * rotation={[-Math.PI/2, 0, 0]}. So we do NOT rotate again.
- * The extrude depth is 0.15 along local Z. We place the disc just above at z=0.16.
+ * Texture medallion placed on top of hex tile.
+ * Rendered as sibling mesh in tile group (not child of extruded mesh).
  */
 const TileSurface = ({
   textureUrl,
@@ -22,29 +25,26 @@ const TileSurface = ({
   const texture = useTexture(textureUrl);
 
   useMemo(() => {
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.colorSpace = THREE.SRGBColorSpace;
+    prepareTexture(texture);
   }, [texture]);
 
   return (
-    <mesh position={[0, 0, 0.16]}>
-      <circleGeometry args={[size, 48]} />
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.165, 0]} renderOrder={4}>
+      <circleGeometry args={[size, 64]} />
       <meshStandardMaterial
         map={texture}
+        color="#ffffff"
         transparent
-        roughness={isActive ? 0.45 : 0.85}
-        metalness={isActive ? 0.1 : 0.03}
-        color={isActive ? "#e8e0d4" : "#d5cfc5"}
-        toneMapped
+        roughness={isActive ? 0.35 : 0.7}
+        metalness={isActive ? 0.08 : 0.02}
+        polygonOffset
+        polygonOffsetFactor={-2}
+        polygonOffsetUnits={-2}
       />
     </mesh>
   );
 };
 
-/**
- * Career tile: two side-by-side logo discs (RBC | BMO).
- */
 export const CareerSplitSurface = ({
   leftUrl,
   rightUrl,
@@ -58,37 +58,43 @@ export const CareerSplitSurface = ({
   const rightTex = useTexture(rightUrl);
 
   useMemo(() => {
-    [leftTex, rightTex].forEach((t) => {
-      t.minFilter = THREE.LinearFilter;
-      t.magFilter = THREE.LinearFilter;
-      t.colorSpace = THREE.SRGBColorSpace;
-    });
+    prepareTexture(leftTex);
+    prepareTexture(rightTex);
   }, [leftTex, rightTex]);
 
-  const matProps = {
-    transparent: true,
-    roughness: isActive ? 0.45 : 0.85,
-    metalness: isActive ? 0.1 : 0.03,
-    color: isActive ? "#e8e0d4" : "#d5cfc5",
-    toneMapped: true,
-  };
-
   return (
-    <group position={[0, 0, 0.16]}>
-      {/* Left logo - RBC */}
+    <group position={[0, 0.165, 0]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={4}>
       <mesh position={[-0.28, 0, 0]}>
-        <circleGeometry args={[0.32, 48]} />
-        <meshStandardMaterial map={leftTex} {...matProps} />
+        <circleGeometry args={[0.32, 64]} />
+        <meshStandardMaterial
+          map={leftTex}
+          color="#ffffff"
+          transparent
+          roughness={isActive ? 0.35 : 0.7}
+          metalness={isActive ? 0.08 : 0.02}
+          polygonOffset
+          polygonOffsetFactor={-2}
+          polygonOffsetUnits={-2}
+        />
       </mesh>
-      {/* Divider groove */}
-      <mesh position={[0, 0, 0.001]}>
+
+      <mesh position={[0, 0, 0.002]}>
         <planeGeometry args={[0.02, 0.8]} />
-        <meshStandardMaterial color="#b0a898" roughness={1} metalness={0} transparent opacity={0.3} />
+        <meshStandardMaterial color="#b0a898" roughness={1} metalness={0} transparent opacity={0.35} />
       </mesh>
-      {/* Right logo - BMO */}
+
       <mesh position={[0.28, 0, 0]}>
-        <circleGeometry args={[0.32, 48]} />
-        <meshStandardMaterial map={rightTex} {...matProps} />
+        <circleGeometry args={[0.32, 64]} />
+        <meshStandardMaterial
+          map={rightTex}
+          color="#ffffff"
+          transparent
+          roughness={isActive ? 0.35 : 0.7}
+          metalness={isActive ? 0.08 : 0.02}
+          polygonOffset
+          polygonOffsetFactor={-2}
+          polygonOffsetUnits={-2}
+        />
       </mesh>
     </group>
   );
