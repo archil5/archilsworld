@@ -75,25 +75,22 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
-  const tileSize = 130;
+  const tileSize = 170;
 
   const engravedFilter = [
-    "contrast(1.1)", "saturate(0.3)", "brightness(0.85)", "sepia(0.35)",
-    "drop-shadow(1px 2px 1px rgba(0,0,0,0.35))",
-    "drop-shadow(-1px -1px 0px rgba(255,250,240,0.4))",
+    "contrast(1.2)", "saturate(0.5)", "brightness(0.9)",
+    "drop-shadow(1px 2px 2px rgba(0,0,0,0.4))",
   ].join(" ");
 
   const engravedFilterActive = [
-    "contrast(1.15)", "saturate(0.45)", "brightness(0.9)", "sepia(0.2)",
-    "drop-shadow(1px 2px 2px rgba(0,0,0,0.4))",
-    "drop-shadow(-1px -1px 1px rgba(255,250,240,0.5))",
+    "contrast(1.3)", "saturate(0.6)", "brightness(0.95)",
+    "drop-shadow(2px 3px 3px rgba(0,0,0,0.5))",
   ].join(" ");
 
   const containerStyle: React.CSSProperties = {
     width: tileSize, height: tileSize,
     display: "flex", alignItems: "center", justifyContent: "center",
-    borderRadius: "50%", overflow: "hidden",
-    boxShadow: "inset 0 2px 6px rgba(0,0,0,0.15), inset 0 -1px 3px rgba(255,250,240,0.2)",
+    overflow: "hidden",
   };
 
   const imgFilter = isActive ? engravedFilterActive : engravedFilter;
