@@ -1,200 +1,175 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface SkillNode {
-  id: string;
-  label: string;
-  icon: string;
-  x: number;
-  y: number;
-  connections: string[];
-  tier: number;
-  prereqs: string[];
-  detail: string;
-  course?: string;
-}
+const thesis = {
+  title: "Automated Security Compliance in Cloud-Native Environments",
+  abstract: "Explored frameworks for automating SOC2 and NIST compliance checks across containerized infrastructure, reducing manual audit effort by 70% while maintaining regulatory accuracy.",
+};
 
-const skillNodes: SkillNode[] = [
-  { id: "cs", label: "Computer Science", icon: "💻", x: 300, y: 30, connections: ["systems", "security"], tier: 0, prereqs: [],
-    detail: "Core algorithms, data structures, computational thinking", course: "CSCI 5100 — Advanced Algorithms" },
-  { id: "systems", label: "Systems Thinking", icon: "🧩", x: 130, y: 130, connections: ["automation", "architecture"], tier: 1, prereqs: ["cs"],
-    detail: "Distributed systems design, fault tolerance, CAP theorem", course: "CSCI 5308 — Advanced Software Development" },
-  { id: "security", label: "Security", icon: "🛡️", x: 470, y: 130, connections: ["hacking", "compliance"], tier: 1, prereqs: ["cs"],
-    detail: "Cryptography, threat modelling, zero-trust architecture", course: "CSCI 5708 — Network Security" },
-  { id: "automation", label: "Automation", icon: "⚙️", x: 70, y: 250, connections: ["devops"], tier: 2, prereqs: ["systems"],
-    detail: "Infrastructure as Code, configuration management, CI/CD", course: "Applied Project — Ansible Automation" },
-  { id: "architecture", label: "Architecture", icon: "📐", x: 230, y: 250, connections: ["cloud"], tier: 2, prereqs: ["systems"],
-    detail: "Microservices, event-driven design, scalability patterns" },
-  { id: "hacking", label: "Ethical Hacking", icon: "🔓", x: 380, y: 250, connections: ["cloud"], tier: 2, prereqs: ["security"],
-    detail: "Penetration testing, vulnerability assessment, OWASP Top 10", course: "CSCI 5709 — Ethical Hacking Lab" },
-  { id: "compliance", label: "Compliance", icon: "📋", x: 530, y: 250, connections: ["devops"], tier: 2, prereqs: ["security"],
-    detail: "SOC2, NIST frameworks, audit automation" },
-  { id: "devops", label: "DevOps", icon: "🔄", x: 200, y: 370, connections: [], tier: 3, prereqs: ["automation", "compliance"],
-    detail: "The bridge between development and operations — culture + tooling" },
-  { id: "cloud", label: "Cloud", icon: "☁️", x: 400, y: 370, connections: [], tier: 3, prereqs: ["architecture", "hacking"],
-    detail: "AWS, Azure, GCP — the platform that changed everything" },
+const highlights = [
+  { icon: "🎓", label: "Distinction", value: "Graduated with Distinction" },
+  { icon: "📅", label: "Duration", value: "2017 — 2018" },
+  { icon: "📍", label: "Location", value: "Halifax, Nova Scotia" },
+  { icon: "📜", label: "Degree", value: "Master of Applied Computer Science" },
 ];
 
-const valueDelivered = [
-  "Graduated with distinction — Master of Applied Computer Science",
-  "Published research on automated security compliance",
-  "Built a threat-modelling framework used by 3 lab cohorts",
-  "Learned to think three moves ahead — 'what breaks at scale?'",
+interface Course {
+  code: string;
+  name: string;
+  icon: string;
+  takeaway: string;
+  tools: string[];
+}
+
+const courses: Course[] = [
+  { code: "CSCI 5100", name: "Advanced Algorithms", icon: "🧮", takeaway: "Learned to think in time complexity — every design decision has a cost.", tools: ["Python", "Dynamic Programming", "Graph Theory"] },
+  { code: "CSCI 5308", name: "Advanced Software Dev", icon: "🏗️", takeaway: "Clean architecture, SOLID principles, and why 'it works' isn't enough.", tools: ["Java", "Design Patterns", "TDD", "CI/CD"] },
+  { code: "CSCI 5708", name: "Network Security", icon: "🛡️", takeaway: "Cryptography, firewalls, threat models — the invisible armor of the internet.", tools: ["Wireshark", "Nmap", "OpenSSL", "Kali Linux"] },
+  { code: "CSCI 5709", name: "Ethical Hacking Lab", icon: "🔓", takeaway: "Hands-on penetration testing — learned to think like an attacker to build better defenses.", tools: ["Metasploit", "Burp Suite", "OWASP", "SQL Injection"] },
+  { code: "CSCI 6505", name: "Machine Learning", icon: "🤖", takeaway: "Statistical foundations that would later power my AI platform work.", tools: ["Python", "Scikit-learn", "TensorFlow", "NumPy"] },
+  { code: "Applied Project", name: "Ansible Automation", icon: "⚙️", takeaway: "Built a real compliance automation framework — my bridge from academia to industry.", tools: ["Ansible", "Python", "Jenkins", "Linux"] },
+];
+
+const keyLearnings = [
+  "Systems thinking — understanding how invisible architecture connects everything",
+  "Security-first mindset — threat modelling before feature building",
+  "Automation instinct — if you do it twice, script it",
+  "Research discipline — evidence over opinion, always",
 ];
 
 const SkillTreeWorld = () => {
-  const [unlockedNodes, setUnlockedNodes] = useState<Set<string>>(new Set());
-  const [selectedNode, setSelectedNode] = useState<SkillNode | null>(null);
-  const [xpPoints, setXpPoints] = useState(9);
-
-  const canUnlock = (node: SkillNode) => {
-    if (unlockedNodes.has(node.id)) return false;
-    return node.prereqs.every(p => unlockedNodes.has(p));
-  };
-
-  const handleUnlock = (node: SkillNode) => {
-    if (!canUnlock(node)) return;
-    setUnlockedNodes(prev => new Set(prev).add(node.id));
-    setXpPoints(prev => prev - 1);
-    setSelectedNode(node);
-  };
-
-  const handleClick = (node: SkillNode) => {
-    if (unlockedNodes.has(node.id)) setSelectedNode(node);
-    else handleUnlock(node);
-  };
-
-  const handleRevealAll = () => {
-    setUnlockedNodes(new Set(skillNodes.map(n => n.id)));
-    setXpPoints(0);
-    setSelectedNode(skillNodes[skillNodes.length - 1]);
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setUnlockedNodes(new Set(["cs"]));
-      setXpPoints(8);
-      setSelectedNode(skillNodes[0]);
-    }, 500);
-  }, []);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-4 md:p-6">
-      <div className="flex flex-col lg:flex-row gap-6 max-w-5xl w-full items-start">
-        <div className="flex-1 flex flex-col items-center">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-xs font-mono" style={{ color: "#b5653a" }}>
-              DALHOUSIE UNIVERSITY · 2017–2018
+    <div className="w-full h-full flex items-center justify-center p-4 md:p-6 overflow-y-auto">
+      <div className="w-full max-w-4xl">
+        {/* Poster header */}
+        <motion.div className="text-center mb-6" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3"
+            style={{ background: "rgba(139,105,20,0.08)", border: "1px solid rgba(139,105,20,0.2)" }}>
+            <span className="text-sm">🎓</span>
+            <span className="text-[11px] font-mono uppercase tracking-widest" style={{ color: "#8B6914" }}>
+              Dalhousie University · Halifax, NS
             </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded"
-              style={{ background: "rgba(181,101,58,0.08)", color: "#b5653a", border: "1px solid rgba(181,101,58,0.15)" }}>
-              {unlockedNodes.size}/{skillNodes.length} unlocked
-            </span>
-            {unlockedNodes.size < skillNodes.length && (
-              <button onClick={handleRevealAll}
-                className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer transition-all"
-                style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
-                ⚡ Unlock All
-              </button>
-            )}
+          </div>
+          <h2 className="font-display text-xl md:text-2xl font-bold mb-1" style={{ color: "#2d2a26" }}>
+            Master of Applied Computer Science
+          </h2>
+          <p className="text-xs font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>2017 — 2018</p>
+        </motion.div>
+
+        {/* Highlight stats */}
+        <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
+          {highlights.map((h, i) => (
+            <div key={i} className="text-center p-3 rounded-lg"
+              style={{ background: "rgba(139,105,20,0.04)", border: "1px solid rgba(139,105,20,0.1)" }}>
+              <span className="text-lg">{h.icon}</span>
+              <p className="text-[10px] font-mono uppercase mt-1" style={{ color: "rgba(80,70,60,0.45)" }}>{h.label}</p>
+              <p className="text-xs font-display font-bold" style={{ color: "#2d2a26" }}>{h.value}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        <div className="flex flex-col lg:flex-row gap-5">
+          {/* Left: Thesis + Courses */}
+          <div className="flex-1 space-y-4">
+            {/* Thesis */}
+            <motion.div className="rounded-xl p-5" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+              style={{ background: "rgba(139,105,20,0.04)", border: "1px solid rgba(139,105,20,0.15)" }}>
+              <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#8B6914" }}>
+                📄 Applied Research
+              </p>
+              <h3 className="font-display text-sm font-bold mb-2" style={{ color: "#2d2a26" }}>{thesis.title}</h3>
+              <p className="text-xs font-body italic leading-relaxed" style={{ color: "rgba(45,42,38,0.7)" }}>
+                {thesis.abstract}
+              </p>
+            </motion.div>
+
+            {/* Course grid */}
+            <div>
+              <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#8B6914" }}>
+                📚 Key Courses · Click to explore
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {courses.map((c, i) => {
+                  const isActive = selectedCourse?.code === c.code;
+                  return (
+                    <motion.button key={c.code}
+                      className="text-left p-3 rounded-lg cursor-pointer transition-all"
+                      onClick={() => setSelectedCourse(isActive ? null : c)}
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 + i * 0.06 }}
+                      style={{
+                        background: isActive ? "rgba(139,105,20,0.08)" : "#fefcf9",
+                        border: `1px solid ${isActive ? "rgba(139,105,20,0.3)" : "rgba(180,140,100,0.1)"}`,
+                        boxShadow: isActive ? "0 2px 12px rgba(139,105,20,0.1)" : "none",
+                      }}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{c.icon}</span>
+                        <div>
+                          <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{c.code}</p>
+                          <p className="text-xs font-display font-bold" style={{ color: isActive ? "#8B6914" : "#2d2a26" }}>{c.name}</p>
+                        </div>
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          <svg viewBox="0 0 600 420" className="w-full max-w-xl">
-            {skillNodes.map(node =>
-              node.connections.map(targetId => {
-                const target = skillNodes.find(n => n.id === targetId)!;
-                const unlocked = unlockedNodes.has(node.id) && unlockedNodes.has(targetId);
-                return (
-                  <line key={`${node.id}-${targetId}`}
-                    x1={node.x} y1={node.y + 20} x2={target.x} y2={target.y - 10}
-                    stroke={unlocked ? "#b5653a" : unlockedNodes.has(node.id) ? "rgba(181,101,58,0.3)" : "rgba(180,140,100,0.12)"}
-                    strokeWidth={unlocked ? 2 : 1} strokeDasharray={unlocked ? "0" : "4 4"} />
-                );
-              })
-            )}
-            {skillNodes.map(node => {
-              const unlocked = unlockedNodes.has(node.id);
-              const available = canUnlock(node);
-              return (
-                <g key={node.id} onClick={() => handleClick(node)} className="cursor-pointer">
-                  {unlocked && (
-                    <circle cx={node.x} cy={node.y} r={35} fill="rgba(181,101,58,0.06)">
-                      <animate attributeName="r" values="30;38;30" dur="2s" repeatCount="indefinite" />
-                    </circle>
-                  )}
-                  {available && !unlocked && (
-                    <circle cx={node.x} cy={node.y} r={32} fill="none" stroke="rgba(181,101,58,0.3)" strokeWidth="1" strokeDasharray="4 4">
-                      <animate attributeName="stroke-opacity" values="0.2;0.6;0.2" dur="1.5s" repeatCount="indefinite" />
-                    </circle>
-                  )}
-                  <rect x={node.x - 42} y={node.y - 18} width={84} height={40} rx={8}
-                    fill={unlocked ? "rgba(181,101,58,0.08)" : available ? "rgba(180,140,100,0.06)" : "#fefcf9"}
-                    stroke={unlocked ? "#b5653a" : available ? "rgba(181,101,58,0.3)" : "rgba(180,140,100,0.15)"}
-                    strokeWidth={selectedNode?.id === node.id ? 2.5 : 1.5} />
-                  <text x={node.x - 27} y={node.y + 5} fontSize="14">{node.icon}</text>
-                  <text x={node.x + 5} y={node.y + 5} textAnchor="middle"
-                    fill={unlocked ? "#b5653a" : available ? "rgba(181,101,58,0.7)" : "rgba(80,70,60,0.4)"}
-                    fontSize="8" fontFamily="Cinzel, serif">
-                    {node.label}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-          <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.55)" }}>
-            Click available nodes to unlock skills
-          </p>
-        </div>
-
-        <div className="lg:w-80 w-full">
-          <AnimatePresence mode="wait">
-            {selectedNode && (
-              <motion.div key={selectedNode.id} className="rounded-xl p-6"
-                initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                style={{ background: "#fefcf9", border: "1px solid rgba(181,101,58,0.15)" }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-3xl">{selectedNode.icon}</span>
-                  <div>
-                    <h3 className="font-display text-lg" style={{ color: "#b5653a" }}>{selectedNode.label}</h3>
-                    <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.4)" }}>Tier {selectedNode.tier}</p>
+          {/* Right: Detail + Key Learnings */}
+          <div className="lg:w-72 space-y-4">
+            <AnimatePresence mode="wait">
+              {selectedCourse ? (
+                <motion.div key={selectedCourse.code} className="rounded-xl p-5"
+                  initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+                  style={{ background: "#fefcf9", border: "1px solid rgba(139,105,20,0.15)" }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">{selectedCourse.icon}</span>
+                    <div>
+                      <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{selectedCourse.code}</p>
+                      <h3 className="font-display text-sm font-bold" style={{ color: "#8B6914" }}>{selectedCourse.name}</h3>
+                    </div>
                   </div>
-                </div>
-                <p className="font-body text-sm mb-3" style={{ color: "rgba(45,42,38,0.8)" }}>{selectedNode.detail}</p>
-                {selectedNode.course && (
-                  <div className="px-3 py-2 rounded mb-4" style={{ background: "rgba(181,101,58,0.05)", border: "1px solid rgba(181,101,58,0.12)" }}>
-                    <p className="text-[10px] font-mono" style={{ color: "rgba(181,101,58,0.5)" }}>COURSE</p>
-                    <p className="text-xs font-mono" style={{ color: "#b5653a" }}>{selectedNode.course}</p>
-                  </div>
-                )}
-                {selectedNode.prereqs.length > 0 && (
-                  <div className="flex gap-1.5 flex-wrap">
-                    <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>Requires:</span>
-                    {selectedNode.prereqs.map(p => (
-                      <span key={p} className="text-[10px] font-mono px-1.5 py-0.5 rounded"
-                        style={{ background: "rgba(181,101,58,0.06)", color: "#b5653a" }}>
-                        {skillNodes.find(n => n.id === p)?.label}
+                  <p className="text-xs font-body italic leading-relaxed mb-3" style={{ color: "rgba(45,42,38,0.75)" }}>
+                    "{selectedCourse.takeaway}"
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {selectedCourse.tools.map(t => (
+                      <span key={t} className="text-[10px] font-mono px-2 py-0.5 rounded"
+                        style={{ background: "rgba(139,105,20,0.06)", border: "1px solid rgba(139,105,20,0.12)", color: "#8B6914" }}>
+                        {t}
                       </span>
                     ))}
                   </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              ) : (
+                <motion.div key="placeholder" className="rounded-xl p-5 text-center"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  style={{ background: "#fefcf9", border: "1px solid rgba(180,140,100,0.1)" }}>
+                  <p className="text-sm font-body italic" style={{ color: "rgba(80,70,60,0.45)" }}>
+                    Select a course to see details
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {unlockedNodes.size >= 5 && (
-            <motion.div className="mt-4 rounded-xl p-4"
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              style={{ background: "rgba(80,70,60,0.03)", border: "1px solid rgba(180,140,100,0.1)" }}>
-              <p className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: "#b5653a" }}>Value Delivered</p>
-              {valueDelivered.map((v, i) => (
+            {/* Key learnings */}
+            <motion.div className="rounded-xl p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+              style={{ background: "rgba(42,125,79,0.04)", border: "1px solid rgba(42,125,79,0.12)" }}>
+              <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>
+                💡 Key Takeaways
+              </p>
+              {keyLearnings.map((l, i) => (
                 <motion.div key={i} className="flex items-start gap-2 mb-2"
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.2 }}>
-                  <span className="text-xs mt-0.5">🎓</span>
-                  <span className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{v}</span>
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 + i * 0.1 }}>
+                  <span className="text-[10px] mt-0.5" style={{ color: "#2a7d4f" }}>▸</span>
+                  <span className="text-[11px] font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.7)" }}>{l}</span>
                 </motion.div>
               ))}
             </motion.div>
-          )}
+          </div>
         </div>
       </div>
     </div>
