@@ -78,7 +78,7 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
-  const tileSize = 120;
+  const tileSize = 140;
 
   return (
     <group position={position}>
@@ -183,13 +183,13 @@ const HexTile = ({
               border: isActive ? `2px solid ${color}40` : "none",
               boxShadow: isActive ? `0 0 16px ${color}30` : "none",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <img src={careerLogos.RBC} alt="RBC" style={{
-                  height: 44,
+                  height: 56,
                   objectFit: "contain",
                 }} />
                 <img src={careerLogos.BMO} alt="BMO" style={{
-                  height: 44,
+                  height: 56,
                   objectFit: "contain",
                 }} />
               </div>
@@ -224,8 +224,8 @@ const HexTile = ({
                 src={logoSrc}
                 alt={brandLogo}
                 style={{
-                  height: 65,
-                  maxWidth: 95,
+                  height: 80,
+                  maxWidth: 110,
                   objectFit: "contain",
                 }}
               />

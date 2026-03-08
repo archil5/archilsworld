@@ -13,30 +13,79 @@ const codePieces = [
 
 const htmlSkills = ["HTML5", "CSS3", "Web Design", "DOM Structure", "Semantic Markup", "Box Model", "Typography"];
 
-/* ── Networking Section ── */
-interface Node { id: string; label: string; x: number; y: number; detail: string; }
+/* ── OSI Layer Explorer ── */
+interface OSILayer {
+  number: number;
+  name: string;
+  color: string;
+  icon: string;
+  protocols: string[];
+  dataUnit: string;
+  realWorld: string;
+  whatHappens: string;
+  mySkill: string;
+}
 
-const netNodes: Node[] = [
-  { id: "client", label: "My PC", x: 80, y: 180, detail: "Where every question started" },
-  { id: "router", label: "Router", x: 230, y: 90, detail: "First gateway to the world" },
-  { id: "switch", label: "Switch", x: 230, y: 270, detail: "Layer 2 — where frames live" },
-  { id: "firewall", label: "Firewall", x: 380, y: 90, detail: "The gatekeeper" },
-  { id: "dns", label: "DNS", x: 380, y: 180, detail: "Names → Numbers" },
-  { id: "server", label: "Server", x: 380, y: 270, detail: "Where data lives" },
-  { id: "cloud", label: "Internet", x: 530, y: 180, detail: "The infinite network" },
-];
-
-const netConns = [
-  ["client", "router"], ["client", "switch"],
-  ["router", "firewall"], ["router", "dns"],
-  ["switch", "server"], ["switch", "dns"],
-  ["firewall", "cloud"], ["dns", "cloud"],
-  ["server", "cloud"],
+const osiLayers: OSILayer[] = [
+  {
+    number: 7, name: "Application", color: "#E44D26", icon: "🌐",
+    protocols: ["HTTP", "HTTPS", "FTP", "SMTP", "DNS", "SSH"],
+    dataUnit: "Data",
+    realWorld: "The browser, the API call — where humans interact with the network.",
+    whatHappens: "User-facing services generate or consume data. REST APIs and web pages live here.",
+    mySkill: "Built REST APIs, web apps, and automated SSH deployments across enterprise infra.",
+  },
+  {
+    number: 6, name: "Presentation", color: "#F0A830", icon: "🔐",
+    protocols: ["SSL/TLS", "JPEG", "ASCII", "MIME", "JSON"],
+    dataUnit: "Data",
+    realWorld: "Encryption, compression, formatting — translating between app-speak and network-speak.",
+    whatHappens: "Data gets encrypted (TLS handshake), compressed, or formatted for both sides.",
+    mySkill: "Implemented TLS termination, certificate management, and data serialization at scale.",
+  },
+  {
+    number: 5, name: "Session", color: "#2a7d4f", icon: "🤝",
+    protocols: ["NetBIOS", "RPC", "PPTP", "SCP"],
+    dataUnit: "Data",
+    realWorld: "Managing connections — who's talking to whom, keeping conversations alive.",
+    whatHappens: "Establishes, maintains, and tears down sessions. Handles auth tokens and state.",
+    mySkill: "Designed session management for distributed microservices using OAuth2 and Istio.",
+  },
+  {
+    number: 4, name: "Transport", color: "#3d7aaf", icon: "📦",
+    protocols: ["TCP", "UDP", "TLS", "QUIC"],
+    dataUnit: "Segment",
+    realWorld: "TCP guarantees order, UDP trades it for speed. Port numbers identify services.",
+    whatHappens: "Data is segmented, sequenced, and flow-controlled. Ports like 80, 443, 22.",
+    mySkill: "Configured load balancers, health checks, and connection pooling for banking services.",
+  },
+  {
+    number: 3, name: "Network", color: "#6B4C9A", icon: "🗺️",
+    protocols: ["IP", "ICMP", "OSPF", "BGP", "ARP"],
+    dataUnit: "Packet",
+    realWorld: "Routing — finding the best path. IP addresses live here.",
+    whatHappens: "Logical addressing (IP) and routing decisions. Routers forward packets by destination.",
+    mySkill: "Designed VPC architectures, subnets, and Transit Gateway topologies for AWS/Azure.",
+  },
+  {
+    number: 2, name: "Data Link", color: "#b5653a", icon: "🔗",
+    protocols: ["Ethernet", "Wi-Fi", "PPP", "VLAN"],
+    dataUnit: "Frame",
+    realWorld: "Local delivery — MAC addresses, switches, VLANs.",
+    whatHappens: "Frames with source/destination MACs. Error detection via CRC. Switches operate here.",
+    mySkill: "Configured VLANs, switch port security, and 802.1X in enterprise networks.",
+  },
+  {
+    number: 1, name: "Physical", color: "#555555", icon: "⚡",
+    protocols: ["Ethernet cables", "Fiber optic", "Wi-Fi radio", "USB"],
+    dataUnit: "Bits",
+    realWorld: "Raw electricity, light pulses, radio waves — the physics of data.",
+    whatHappens: "Binary becomes electrical signals, light, or radio. Cables and NICs live here.",
+    mySkill: "Hands-on with rack & stack, cabling, and physical network audits in early career.",
+  },
 ];
 
 const netSkills = ["TCP/IP", "OSI Model", "DNS Resolution", "Subnetting", "Network Security", "Packet Analysis", "Wireshark", "Routing Protocols"];
-
-const correctRoute = ["client", "router", "firewall", "cloud"];
 
 /* ── Combined Value ── */
 const combinedValue = [
@@ -47,8 +96,6 @@ const combinedValue = [
   "Learned to trace problems through layers of abstraction",
 ];
 
-interface Packet { id: number; from: string; to: string; progress: number; color: string; }
-
 const WebFoundationsWorld = () => {
   const [activeSection, setActiveSection] = useState<"html" | "network" | "skills" | "value">("html");
 
@@ -57,14 +104,12 @@ const WebFoundationsWorld = () => {
   const [placed, setPlaced] = useState<typeof codePieces>([]);
   const [showPreview, setShowPreview] = useState(false);
 
-  /* Network state */
-  const [packets, setPackets] = useState<Packet[]>([]);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [routeAttempt, setRouteAttempt] = useState<string[]>([]);
-  const [routeComplete, setRouteComplete] = useState(false);
-  const packetId = useRef(0);
+  /* OSI state */
+  const [activeLayer, setActiveLayer] = useState<number | null>(null);
+  const [hoveredLayer, setHoveredLayer] = useState<number | null>(null);
 
   const nextExpected = placed.length;
+  const selectedOSI = activeLayer !== null ? osiLayers.find(l => l.number === activeLayer) : null;
 
   const handlePlace = (piece: typeof codePieces[0]) => {
     if (piece.order !== nextExpected) return;
@@ -82,45 +127,6 @@ const WebFoundationsWorld = () => {
     if (placed.length === codePieces.length) setTimeout(() => setShowPreview(true), 600);
   }, [placed.length]);
 
-  /* Network packets */
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const conn = netConns[Math.floor(Math.random() * netConns.length)];
-      const colors = ["#3d7aaf", "#b5653a", "#2a7d4f", "#E44D26"];
-      setPackets(prev => [...prev.slice(-12), {
-        id: packetId.current++,
-        from: Math.random() > 0.5 ? conn[1] : conn[0],
-        to: Math.random() > 0.5 ? conn[0] : conn[1],
-        progress: 0,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      }]);
-    }, 600);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const raf = setInterval(() => {
-      setPackets(prev => prev.map(p => ({ ...p, progress: p.progress + 0.025 })).filter(p => p.progress <= 1));
-    }, 16);
-    return () => clearInterval(raf);
-  }, []);
-
-  const handleNodeClick = (node: Node) => {
-    setSelectedNode(node);
-    if (!routeComplete) {
-      const nextIdx = routeAttempt.length;
-      if (correctRoute[nextIdx] === node.id) {
-        const newRoute = [...routeAttempt, node.id];
-        setRouteAttempt(newRoute);
-        if (newRoute.length === correctRoute.length) setRouteComplete(true);
-      } else if (routeAttempt.length > 0) setRouteAttempt([]);
-    }
-  };
-
-  const getPos = (id: string) => { const n = netNodes.find(n => n.id === id)!; return { x: n.x, y: n.y }; };
-
-  const sectionColor = activeSection === "html" ? "#E44D26" : activeSection === "network" ? "#0078D4" : activeSection === "skills" ? "#2a7d4f" : "#b5653a";
-
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-6 overflow-y-auto">
       <div className="w-full max-w-5xl flex flex-col gap-4">
@@ -128,7 +134,7 @@ const WebFoundationsWorld = () => {
         <div className="flex gap-2 justify-center items-center flex-wrap">
           {([
             { key: "html", label: "🧩 HTML Builder", color: "#E44D26" },
-            { key: "network", label: "🔌 Network Map", color: "#0078D4" },
+            { key: "network", label: "🔌 OSI Layers", color: "#0078D4" },
             { key: "skills", label: "⚡ Skills", color: "#2a7d4f" },
             { key: "value", label: "💎 Value", color: "#b5653a" },
           ] as const).map(tab => (
@@ -225,67 +231,114 @@ const WebFoundationsWorld = () => {
             </motion.div>
           )}
 
-          {/* ── Network Map ── */}
+          {/* ── OSI Layer Explorer ── */}
           {activeSection === "network" && (
-            <motion.div key="network" className="flex flex-col lg:flex-row gap-6 items-center"
+            <motion.div key="network" className="flex flex-col lg:flex-row gap-6 items-start"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <div className="flex-1">
-                <div className="text-center mb-2">
-                  <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#2a7d4f" : "rgba(80,70,60,0.55)" }}>
-                    {routeComplete ? "✓ PACKET ROUTED SUCCESSFULLY" : `🎯 Route: ${correctRoute.join(" → ")}`}
-                  </span>
-                </div>
-                <svg viewBox="0 0 610 360" className="w-full max-w-lg mx-auto">
-                  {netConns.map(([from, to], i) => {
-                    const a = getPos(from), b = getPos(to);
-                    const onRoute = routeComplete && correctRoute.includes(from) && correctRoute.includes(to) &&
-                      Math.abs(correctRoute.indexOf(from) - correctRoute.indexOf(to)) === 1;
-                    return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                      stroke={onRoute ? "#2a7d4f" : "rgba(180,140,100,0.2)"} strokeWidth={onRoute ? 3 : 2} strokeDasharray={onRoute ? "0" : "4 4"} />;
-                  })}
-                  {packets.map(p => {
-                    const a = getPos(p.from), b = getPos(p.to);
-                    return <circle key={p.id} cx={a.x + (b.x - a.x) * p.progress} cy={a.y + (b.y - a.y) * p.progress}
-                      r={3} fill={p.color} opacity={1 - p.progress * 0.5} />;
-                  })}
-                  {netNodes.map(node => {
-                    const inRoute = routeAttempt.includes(node.id);
+              <div className="flex-1 flex flex-col items-center">
+                <p className="text-[10px] font-mono mb-2" style={{ color: "rgba(80,70,60,0.55)" }}>
+                  Click any layer to explore
+                </p>
+                <div className="w-full max-w-md flex flex-col gap-1">
+                  {osiLayers.map((layer, i) => {
+                    const isActive = activeLayer === layer.number;
+                    const isHovered = hoveredLayer === layer.number;
                     return (
-                      <g key={node.id} onClick={() => handleNodeClick(node)} className="cursor-pointer">
-                        <circle cx={node.x} cy={node.y} r={30}
-                          fill={inRoute ? "rgba(42,125,79,0.1)" : selectedNode?.id === node.id ? "rgba(61,122,175,0.08)" : "#fefcf9"}
-                          stroke={inRoute ? "#2a7d4f" : selectedNode?.id === node.id ? "#3d7aaf" : "rgba(180,140,100,0.3)"}
-                          strokeWidth={selectedNode?.id === node.id ? 3 : 2} />
-                        <text x={node.x} y={node.y + 4} textAnchor="middle"
-                          fill={inRoute ? "#2a7d4f" : "#3d7aaf"} fontSize="10" fontFamily="JetBrains Mono, monospace">
-                          {node.label}
-                        </text>
-                      </g>
+                      <motion.button key={layer.number}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-all text-left"
+                        onClick={() => setActiveLayer(isActive ? null : layer.number)}
+                        onMouseEnter={() => setHoveredLayer(layer.number)}
+                        onMouseLeave={() => setHoveredLayer(null)}
+                        initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}
+                        style={{
+                          background: isActive ? `${layer.color}12` : isHovered ? `${layer.color}08` : "#fefcf9",
+                          border: `2px solid ${isActive ? layer.color : isHovered ? `${layer.color}40` : "rgba(180,140,100,0.1)"}`,
+                          boxShadow: isActive ? `0 4px 16px ${layer.color}20` : "none",
+                        }}>
+                        <span className="text-base w-7 h-7 flex items-center justify-center rounded-full"
+                          style={{ background: `${layer.color}15` }}>
+                          {layer.icon}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded"
+                              style={{ background: layer.color, color: "#fff" }}>
+                              L{layer.number}
+                            </span>
+                            <span className="text-xs font-display font-bold" style={{ color: isActive ? layer.color : "#2d2a26" }}>
+                              {layer.name}
+                            </span>
+                          </div>
+                          <p className="text-[9px] font-mono truncate" style={{ color: "rgba(80,70,60,0.45)" }}>
+                            {layer.protocols.slice(0, 3).join(" · ")}
+                          </p>
+                        </div>
+                        <span className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>{layer.dataUnit}</span>
+                      </motion.button>
                     );
                   })}
-                </svg>
+                </div>
+                <div className="mt-2 flex items-center gap-2 w-full max-w-md">
+                  <span className="text-[8px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>↑ USER</span>
+                  <div className="h-px flex-1" style={{ background: "rgba(180,140,100,0.12)" }} />
+                  <span className="text-[8px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>WIRE ↓</span>
+                </div>
               </div>
-              <div className="flex-1 max-w-sm">
-                {selectedNode ? (
-                  <motion.div key={selectedNode.id} className="rounded-xl p-6"
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    style={{ background: "#fefcf9", border: "1px solid rgba(61,122,175,0.15)" }}>
-                    <h3 className="font-display text-xl mb-2" style={{ color: "#3d7aaf" }}>{selectedNode.label}</h3>
-                    <p className="font-body text-sm italic" style={{ color: "rgba(45,42,38,0.7)" }}>{selectedNode.detail}</p>
-                  </motion.div>
-                ) : (
-                  <p className="font-body text-sm italic text-center" style={{ color: "rgba(80,70,60,0.55)" }}>
-                    Click a node to inspect it. Route the packet to win.
-                  </p>
-                )}
-                {routeComplete && (
-                  <motion.div className="mt-4 p-4 rounded-lg" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    style={{ background: "rgba(42,125,79,0.06)", border: "1px solid rgba(42,125,79,0.2)" }}>
-                    <p className="text-sm font-body italic" style={{ color: "#2a7d4f" }}>
-                      "Not when I learned what to build, but when I realized I could learn anything."
-                    </p>
-                  </motion.div>
-                )}
+
+              <div className="lg:w-80 w-full">
+                <AnimatePresence mode="wait">
+                  {selectedOSI ? (
+                    <motion.div key={selectedOSI.number} className="rounded-xl overflow-hidden"
+                      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                      style={{ border: `1px solid ${selectedOSI.color}25` }}>
+                      <div className="px-4 py-3" style={{ background: `${selectedOSI.color}10` }}>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{selectedOSI.icon}</span>
+                          <div>
+                            <h3 className="font-display text-base font-bold" style={{ color: selectedOSI.color }}>
+                              L{selectedOSI.number} — {selectedOSI.name}
+                            </h3>
+                            <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>
+                              Unit: {selectedOSI.dataUnit}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4 space-y-3" style={{ background: "#fefcf9" }}>
+                        <div>
+                          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: selectedOSI.color }}>What Happens</p>
+                          <p className="text-xs font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.8)" }}>{selectedOSI.whatHappens}</p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: selectedOSI.color }}>Real World</p>
+                          <p className="text-xs font-body italic" style={{ color: "rgba(45,42,38,0.65)" }}>{selectedOSI.realWorld}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {selectedOSI.protocols.map(p => (
+                            <span key={p} className="text-[10px] font-mono px-1.5 py-0.5 rounded"
+                              style={{ background: `${selectedOSI.color}08`, border: `1px solid ${selectedOSI.color}15`, color: selectedOSI.color }}>
+                              {p}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="rounded-lg p-2.5" style={{ background: "rgba(42,125,79,0.05)", border: "1px solid rgba(42,125,79,0.12)" }}>
+                          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>🎯 My Experience</p>
+                          <p className="text-[11px] font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{selectedOSI.mySkill}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="empty" className="rounded-xl p-6 text-center"
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                      style={{ background: "#fefcf9", border: "1px solid rgba(180,140,100,0.1)" }}>
+                      <span className="text-3xl mb-2 block">🔌</span>
+                      <p className="font-display text-sm mb-1" style={{ color: "#2d2a26" }}>The OSI Model</p>
+                      <p className="text-xs font-body italic" style={{ color: "rgba(80,70,60,0.5)" }}>
+                        7 layers that make the internet work. Click any layer to explore.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           )}
