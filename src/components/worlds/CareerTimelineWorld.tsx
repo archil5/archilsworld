@@ -1049,11 +1049,67 @@ const PuzzleRouter = ({ puzzle, color, solved, onSolve, onUnsolve }: { puzzle: R
    MAIN CAREER WORLD
    ═══════════════════════════════════════════════════════════ */
 
+const AllSolvedTrophy = ({ color }: { color: string }) => (
+  <motion.div
+    className="w-full max-w-3xl mb-6"
+    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+    animate={{ opacity: 1, scale: 1, y: 0 }}
+    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+  >
+    <div className="rounded-xl p-6 text-center relative overflow-hidden" style={{
+      background: "linear-gradient(135deg, rgba(42,125,79,0.08), rgba(212,165,116,0.08))",
+      border: "1px solid rgba(42,125,79,0.2)",
+    }}>
+      {/* Confetti particles */}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1.5 h-1.5 rounded-full"
+          style={{
+            background: ["#2a7d4f", "#b5653a", "#0075BE", "#FF9900", "#005DAA", "#0078D4"][i % 6],
+            left: `${10 + (i * 7) % 80}%`,
+            top: `${10 + (i * 13) % 70}%`,
+          }}
+          animate={{
+            y: [0, -15, 0],
+            opacity: [0.3, 0.8, 0.3],
+            scale: [0.8, 1.2, 0.8],
+          }}
+          transition={{ repeat: Infinity, duration: 2 + i * 0.3, delay: i * 0.15 }}
+        />
+      ))}
+      <motion.div
+        className="text-5xl mb-3"
+        animate={{ rotateY: [0, 360] }}
+        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+      >
+        🏆
+      </motion.div>
+      <h3 className="font-display text-lg font-bold mb-1" style={{ color: "#2a7d4f" }}>
+        All Puzzles Mastered
+      </h3>
+      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.65)" }}>
+        You've completed every cloud engineering challenge — from compliance automation to AI governance.
+      </p>
+      <div className="flex justify-center gap-1.5 mt-3">
+        {["🛡️", "🏗️", "📋", "🔄", "📊", "🤖"].map((e, i) => (
+          <motion.span key={i} className="text-sm"
+            initial={{ scale: 0 }} animate={{ scale: 1 }}
+            transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}>
+            {e}
+          </motion.span>
+        ))}
+      </div>
+    </div>
+  </motion.div>
+);
+
 const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [activeStop, setActiveStop] = useState(0);
   const [revealed, setRevealed] = useState(0);
   const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
   const [solvedStops, setSolvedStops] = useState<Set<number>>(new Set());
+  const allSolved = solvedStops.size === stops.length;
 
   useEffect(() => {
     const timers = stops.map((_, i) => setTimeout(() => setRevealed(i + 1), 200 + i * 200));
