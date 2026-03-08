@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
+import ReadOnlyDiagram from "@/components/puzzles/ReadOnlyDiagram";
 
 /* ═══════════════════════════════════════════════════════════
    TYPES & DATA
