@@ -24,8 +24,8 @@ interface RoleStop {
   impact: string;
   techStack: string[];
   wins: string[];
-  project: ProjectShowcase;
-  diagramPuzzle: DiagramPuzzleData;
+  project?: ProjectShowcase;
+  diagramPuzzle?: DiagramPuzzleData;
 }
 
 /* ───────────────────────────────────────────────────────────
