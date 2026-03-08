@@ -141,6 +141,11 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   }, []);
 
   useEffect(() => {
+    if (!startRole) return;
+    setActiveStop(startRole.toLowerCase() === "bmo" ? 1 : 0);
+  }, [startRole]);
+
+  useEffect(() => {
     const steps = stops[activeStop].puzzle.steps;
     setPoolSteps(shuffle(steps));
     setPickedSteps([]);
