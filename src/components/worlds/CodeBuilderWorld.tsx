@@ -145,7 +145,7 @@ const CodeBuilderWorld = () => {
                     </motion.div>
                   ) : (
                     <motion.div key="progress" className="text-center">
-                      <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.4)" }}>
+                      <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.6)" }}>
                         Click the pieces in the right order to build the page...
                       </p>
                     </motion.div>
