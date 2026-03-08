@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles, Eye, Cloud, FileCode, Container, GitBranch } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
