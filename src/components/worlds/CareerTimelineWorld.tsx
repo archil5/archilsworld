@@ -611,11 +611,12 @@ const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealBut
    PUZZLE 4: PIPELINE ASSEMBLER
    ═══════════════════════════════════════════════════════════ */
 
-const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
-  const isDone = solved || placed.length === puzzle.correctOrder.length;
+  const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
 
+  useEffect(() => { if (autoReveal) setPlaced([...puzzle.correctOrder]); }, [autoReveal, puzzle.correctOrder]);
   useEffect(() => { setPlaced([]); setWrongId(null); }, [puzzle.title]);
 
   const nextExpected = puzzle.correctOrder[placed.length];
