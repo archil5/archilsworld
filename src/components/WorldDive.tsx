@@ -27,17 +27,17 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
       {chapter && (
         <motion.div
           className="fixed inset-0 z-50 flex flex-col"
-          style={{ background: "#080c12" }}
+          style={{ background: "#faf8f4" }}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          {/* Ambient background glow */}
+          {/* Subtle warm radial */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: `radial-gradient(ellipse at 50% 80%, ${chapter.color}12, transparent 70%)`,
+              background: `radial-gradient(ellipse at 50% 80%, ${chapter.color}08, transparent 70%)`,
             }}
           />
 
@@ -52,15 +52,15 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
               onClick={onClose}
               className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all cursor-pointer"
               style={{
-                color: "#94a3b8",
-                background: "rgba(148,163,184,0.08)",
-                border: "1px solid rgba(148,163,184,0.15)",
+                color: "#6b6560",
+                background: "rgba(180,140,100,0.08)",
+                border: "1px solid rgba(180,140,100,0.15)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(148,163,184,0.15)";
+                e.currentTarget.style.background = "rgba(180,140,100,0.15)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(148,163,184,0.08)";
+                e.currentTarget.style.background = "rgba(180,140,100,0.08)";
               }}
             >
               <ArrowLeft size={16} />
@@ -70,18 +70,17 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             <div className="flex items-center gap-3">
               {chapter.brandLogo ? (
                 <span className="text-sm font-bold px-2 py-1 rounded" style={{
-                  color: chapter.color,
-                  background: `${chapter.color}15`,
-                  border: `1px solid ${chapter.color}30`,
+                  color: "#fff",
+                  background: chapter.color,
                 }}>{chapter.brandLogo}</span>
               ) : (
                 <span className="text-2xl">{chapter.icon}</span>
               )}
               <div className="text-right">
-                <p className="font-display text-sm tracking-wider" style={{ color: "#e2e8f0" }}>
+                <p className="font-display text-sm tracking-wider" style={{ color: "#2d2a26" }}>
                   {chapter.title}
                 </p>
-                <p className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.5)" }}>
+                <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>
                   {chapter.year}
                 </p>
               </div>
@@ -105,7 +104,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
           >
-            <p className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.25)" }}>
+            <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.25)" }}>
               Press ESC or click Back to return to the board
             </p>
           </motion.div>
