@@ -500,7 +500,7 @@ const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButt
    PUZZLE 3: GOVERNANCE MATRIX
    ═══════════════════════════════════════════════════════════ */
 
-const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [matched, setMatched] = useState<Record<string, string>>({});
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const [wrongPair, setWrongPair] = useState<string | null>(null);
