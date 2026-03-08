@@ -125,7 +125,7 @@ const shuffle = <T,>(arr: T[]) => {
   return copy;
 };
 
-const CareerTimelineWorld = () => {
+const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [activeStop, setActiveStop] = useState(0);
   const [revealed, setRevealed] = useState(0);
   const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
