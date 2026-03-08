@@ -65,7 +65,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
           className="mb-6"
         >
-          <div className="text-6xl mb-2 animate-float-piece">♟️</div>
+          <img src="/placeholder.svg" alt="" className="w-12 h-12 opacity-0" />
         </motion.div>
 
         {/* Title */}
