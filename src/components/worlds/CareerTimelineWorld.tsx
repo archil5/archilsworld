@@ -24,6 +24,7 @@ interface AwsArchPuzzle extends BasePuzzle {
   services: AwsService[];
   slots: ArchSlot[];
   tiers: string[];
+  extreme?: boolean;
 }
 
 // 2) Terraform Plan Debugger — find & fix broken lines
@@ -242,47 +243,36 @@ const stops: JourneyStop[] = [
     techStack: ["Azure OpenAI", "AI Studio", "LangChain", "Vector DBs", "MLflow", "Python"],
     wins: ["Enterprise AI platform architecture", "Model governance framework", "RAG at petabyte scale", "AI security standards org-wide"],
     puzzle: {
-      type: "terraform-debug",
-      title: "Azure AI Platform — Fix the Terraform",
-      prompt: "This Terraform config provisions the Azure AI platform but has security issues. Click on broken lines to fix them — these are real compliance gaps I caught.",
-      fileName: "azure-ai-platform.tf",
-      lines: [
-        { id: "l1", code: 'resource "azurerm_cognitive_account" "openai" {', isBroken: false },
-        { id: "l2", code: '  name                = "bmo-ai-openai"', isBroken: false },
-        { id: "l3", code: '  resource_group_name = azurerm_resource_group.ai.name', isBroken: false },
-        { id: "l4", code: '  location            = "eastus"', isBroken: true, fix: '  location            = "canadacentral"', hint: "Data residency violation — PIPEDA requires Canadian data hosting" },
-        { id: "l5", code: '  kind                = "OpenAI"', isBroken: false },
-        { id: "l6", code: '  sku_name            = "S0"', isBroken: false },
-        { id: "l7", code: '', isBroken: false },
-        { id: "l8", code: '  network_acls {', isBroken: false },
-        { id: "l9", code: '    default_action = "Allow"', isBroken: true, fix: '    default_action = "Deny"', hint: "Public access enabled — AI endpoints must be private in banking" },
-        { id: "l10", code: '    ip_rules       = []', isBroken: false },
-        { id: "l11", code: '  }', isBroken: false },
-        { id: "l12", code: '}', isBroken: false },
-        { id: "l13", code: '', isBroken: false },
-        { id: "l14", code: 'resource "azurerm_private_endpoint" "openai_pe" {', isBroken: false },
-        { id: "l15", code: '  name                = "openai-private-endpoint"', isBroken: false },
-        { id: "l16", code: '  resource_group_name = azurerm_resource_group.ai.name', isBroken: false },
-        { id: "l17", code: '  location            = "canadacentral"', isBroken: false },
-        { id: "l18", code: '  subnet_id           = azurerm_subnet.ai.id', isBroken: false },
-        { id: "l19", code: '', isBroken: false },
-        { id: "l20", code: '  private_service_connection {', isBroken: false },
-        { id: "l21", code: '    name                           = "openai-psc"', isBroken: false },
-        { id: "l22", code: '    is_manual_connection            = false', isBroken: false },
-        { id: "l23", code: '    private_connection_resource_id  = azurerm_cognitive_account.openai.id', isBroken: false },
-        { id: "l24", code: '    subresource_names               = ["account"]', isBroken: false },
-        { id: "l25", code: '  }', isBroken: false },
-        { id: "l26", code: '}', isBroken: false },
-        { id: "l27", code: '', isBroken: false },
-        { id: "l28", code: 'resource "azurerm_key_vault_secret" "api_key" {', isBroken: false },
-        { id: "l29", code: '  name         = "openai-api-key"', isBroken: false },
-        { id: "l30", code: '  value        = "sk-abc123hardcoded"', isBroken: true, fix: '  value        = data.azurerm_key_vault_secret.rotated_key.value', hint: "Hardcoded API key — must reference rotated secret from Key Vault" },
-        { id: "l31", code: '  key_vault_id = azurerm_key_vault.ai.id', isBroken: false },
-        { id: "l32", code: '  content_type = "application/json"', isBroken: false },
-        { id: "l33", code: '  expiration_date = "2099-12-31T00:00:00Z"', isBroken: true, fix: '  expiration_date = "2026-06-30T00:00:00Z"', hint: "Secret never expires — banking policy requires 90-day rotation" },
-        { id: "l34", code: '}', isBroken: false },
+      type: "aws-arch",
+      title: "Azure Enterprise RAG Architecture",
+      prompt: "⚠️ EXTREME DIFFICULTY — This is a 10-service, 6-tier Azure RAG architecture. You need deep knowledge of Azure AI services, networking, identity, and data pipelines to solve this. Think smart. Think like an architect.",
+      extreme: true,
+      tiers: ["Identity & Security", "Networking", "Data Ingestion", "Vector & Search", "AI Inference", "Orchestration & UX"],
+      services: [
+        { id: "entra", name: "Entra ID", icon: "🔐", desc: "Identity provider — RBAC, conditional access, managed identities for zero-trust" },
+        { id: "keyvault", name: "Key Vault", icon: "🔑", desc: "Secrets management — API keys, certificates, encryption keys with HSM backing" },
+        { id: "apim", name: "API Management", icon: "🚪", desc: "API gateway — rate limiting, auth policies, usage analytics, prompt filtering" },
+        { id: "privatelink", name: "Private Link", icon: "🔒", desc: "Private networking — all AI traffic stays on Microsoft backbone, no public internet" },
+        { id: "blob", name: "Blob Storage", icon: "📂", desc: "Document lake — PDFs, images, compliance docs ingested for RAG pipeline" },
+        { id: "docintl", name: "Document Intelligence", icon: "📄", desc: "AI document cracking — OCR, layout analysis, table extraction from scanned docs" },
+        { id: "aisearch", name: "AI Search", icon: "🔍", desc: "Vector + keyword hybrid search — semantic ranking, custom skillsets, index projections" },
+        { id: "cosmosdb", name: "Cosmos DB", icon: "🌐", desc: "Vector database — DiskANN index, chat history, session state at global scale" },
+        { id: "openai", name: "Azure OpenAI", icon: "🧠", desc: "GPT-4o & embeddings — content filtering, PTU provisioning, managed deployments" },
+        { id: "appservice", name: "App Service", icon: "💻", desc: "Frontend & orchestrator — LangChain app, streaming responses, auth integration" },
       ],
-      success: "These fixes ensured the Azure AI platform met PIPEDA, OSFI, and internal banking security standards before production.",
+      slots: [
+        { id: "slot-identity", label: "Zero-Trust Identity", tier: "Identity & Security", correctService: "entra" },
+        { id: "slot-secrets", label: "Secrets & Keys", tier: "Identity & Security", correctService: "keyvault" },
+        { id: "slot-gateway", label: "API Gateway & Filtering", tier: "Networking", correctService: "apim" },
+        { id: "slot-network", label: "Private Connectivity", tier: "Networking", correctService: "privatelink" },
+        { id: "slot-docs", label: "Document Lake", tier: "Data Ingestion", correctService: "blob" },
+        { id: "slot-crack", label: "Document Cracking (OCR)", tier: "Data Ingestion", correctService: "docintl" },
+        { id: "slot-search", label: "Hybrid Search Index", tier: "Vector & Search", correctService: "aisearch" },
+        { id: "slot-vector", label: "Vector DB & Chat History", tier: "Vector & Search", correctService: "cosmosdb" },
+        { id: "slot-llm", label: "LLM Inference", tier: "AI Inference", correctService: "openai" },
+        { id: "slot-app", label: "Orchestrator & Frontend", tier: "Orchestration & UX", correctService: "appservice" },
+      ],
+      success: "You just architected a production-grade Azure RAG platform — the same architecture powering enterprise AI at BMO under full banking compliance. Not many can solve this one. 🏆",
     },
   },
 ];
@@ -346,6 +336,29 @@ const AwsArchBuilderPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
           style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
+
+      {/* Extreme difficulty warning */}
+      {puzzle.extreme && !isDone && (
+        <motion.div
+          className="rounded-lg p-3 flex items-start gap-2.5"
+          style={{ background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.2)" }}
+          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}>
+          <motion.span className="text-lg shrink-0"
+            animate={{ rotate: [0, -10, 10, -10, 0], scale: [1, 1.15, 1] }}
+            transition={{ repeat: Infinity, duration: 2, repeatDelay: 1 }}>⚠️</motion.span>
+          <div>
+            <p className="text-[10px] font-mono font-bold uppercase tracking-wider mb-0.5" style={{ color: "#dc3232" }}>
+              Extreme Difficulty — Architect Level
+            </p>
+            <p className="text-[9px] font-body" style={{ color: "rgba(45,42,38,0.65)" }}>
+              10 Azure services across 6 tiers. This is a real enterprise RAG architecture used in banking.
+              You'll need to understand identity, networking, data pipelines, vector search, and AI inference to place every service correctly.
+              <span className="font-bold" style={{ color: "#dc3232" }}> Good luck.</span>
+            </p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Service palette */}
       {!isDone && (
