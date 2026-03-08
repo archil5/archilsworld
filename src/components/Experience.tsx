@@ -143,6 +143,9 @@ const Experience = () => {
               isVisited={visitedSet.has(i)}
               onClick={() => handleTileClick(i)}
               index={i}
+              icon={ch.icon}
+              label={ch.label}
+              brandLogo={ch.brandLogo}
             />
           ))}
 

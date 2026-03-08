@@ -1,6 +1,8 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import * as THREE from "three";
+import { brandLogos } from "@/data/brandLogos";
 
 const HexTile = ({
   position,
@@ -9,6 +11,9 @@ const HexTile = ({
   isVisited,
   onClick,
   index,
+  icon,
+  label,
+  brandLogo,
 }: {
   position: [number, number, number];
   color: string;
@@ -16,6 +21,9 @@ const HexTile = ({
   isVisited: boolean;
   onClick: () => void;
   index: number;
+  icon: string;
+  label: string;
+  brandLogo?: string;
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
@@ -63,6 +71,8 @@ const HexTile = ({
     }
   });
 
+  const logoSrc = brandLogo ? brandLogos[brandLogo] : null;
+
   return (
     <group position={position}>
       <mesh ref={glowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
@@ -91,6 +101,33 @@ const HexTile = ({
           emissiveIntensity={isActive ? 0.2 : 0}
         />
       </mesh>
+
+      {/* HTML overlay for icon/logo on tile */}
+      <Html
+        position={[0, isActive ? 0.65 : 0.25, 0]}
+        center
+        distanceFactor={8}
+        style={{ pointerEvents: "none", userSelect: "none" }}
+      >
+        <div className="flex flex-col items-center gap-0.5" style={{ transform: "scale(1)" }}>
+          {logoSrc ? (
+            <img src={logoSrc} alt={brandLogo} style={{ height: 22, objectFit: "contain", filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)" }} />
+          ) : (
+            <span style={{ fontSize: 20, lineHeight: 1, filter: isActive ? "none" : "grayscale(0.2) opacity(0.7)" }}>{icon}</span>
+          )}
+          <span style={{
+            fontSize: 7,
+            fontFamily: "'Cinzel', serif",
+            fontWeight: 600,
+            color: isActive ? "#2d2a26" : "#8a8078",
+            letterSpacing: "0.05em",
+            whiteSpace: "nowrap",
+            textShadow: "0 1px 2px rgba(255,255,255,0.8)",
+          }}>
+            {label}
+          </span>
+        </div>
+      </Html>
 
       {isActive && (
         <pointLight color={color} intensity={2} distance={4} position={[0, 1.5, 0]} />
