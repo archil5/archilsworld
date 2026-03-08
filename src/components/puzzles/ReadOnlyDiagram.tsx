@@ -99,7 +99,6 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                   fillOpacity={0.5}
                   fontSize="9"
                   fontFamily="monospace"
-                  textTransform="uppercase"
                   letterSpacing="1"
                 >
                   {group.label.toUpperCase()}
