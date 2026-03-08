@@ -641,7 +641,7 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
           <Workflow size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        {!isDone && <button onClick={() => { setPlaced([]); setWrongId(null); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>}
+        <button onClick={() => { setPlaced([]); setWrongId(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
