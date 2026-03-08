@@ -85,6 +85,7 @@ export const CHAPTERS: ChapterData[] = [
     title: "Let's Connect",
     subtitle: "The next chapter starts with a conversation",
     narrative: "I'm always open to connecting — whether it's about cloud architecture, AI, leadership, or the next big thing.",
+    tagline: "The next move is yours — let's talk",
     position: [9, 0, -3],
     color: "#b5653a",
     image: "archil",
