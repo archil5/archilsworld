@@ -384,7 +384,7 @@ const PAD_X = 20;
 const PAD_Y = 30;
 const getNodeCenter = (node: ArchNode) => ({ x: PAD_X + node.col * GRID_GAP_X + NODE_W / 2, y: PAD_Y + node.row * GRID_GAP_Y + NODE_H / 2 });
 
-const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [connected, setConnected] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const svgW = PAD_X * 2 + 3 * GRID_GAP_X + NODE_W;
