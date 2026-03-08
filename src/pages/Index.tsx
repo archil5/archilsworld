@@ -66,7 +66,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
           className="mb-6"
         >
-          <img src="/placeholder.svg" alt="" className="w-12 h-12 opacity-0" />
+          <img src={meepleImg} alt="Game piece" className="w-16 h-16 object-contain animate-float-piece" style={{ filter: "drop-shadow(0 4px 12px rgba(181,101,58,0.3))" }} />
         </motion.div>
 
         {/* Title */}
