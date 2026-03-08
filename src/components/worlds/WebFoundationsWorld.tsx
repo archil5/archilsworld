@@ -48,11 +48,12 @@ const previewStages: Record<number, JSX.Element> = {
     <div className="p-3 rounded-lg overflow-hidden" style={{ background: "#faf8f4", border: "1px dashed rgba(228,77,38,0.2)", fontFamily: "monospace" }}>
       <h1 className="text-2xl font-bold mb-1" style={{ color: "#E44D26" }}>Hello, World.</h1>
       <p className="text-sm mb-2" style={{ color: "#2d2a26" }}>Built by a kid who wouldn't stop asking <em>how</em>.</p>
-      <div style={{ overflow: "hidden", width: "100%" }}>
-        <motion.p className="text-xs italic inline-block"
-          animate={{ x: ["0%", "calc(100% - 180px)", "0%"] }}
-          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-          style={{ color: "#b5653a" }}>
+      <div className="relative" style={{ overflow: "hidden", width: "100%" }}>
+        <motion.p className="text-xs italic"
+          initial={{ x: 0 }}
+          animate={{ x: [0, 250, 0] }}
+          transition={{ repeat: Infinity, duration: 4, ease: [0.42, 0, 0.58, 1], times: [0, 0.5, 1] }}
+          style={{ color: "#b5653a", width: "fit-content" }}>
           This changes everything.
         </motion.p>
       </div>
