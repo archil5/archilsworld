@@ -4,6 +4,8 @@ import bmoLogo from "@/assets/logos/bmo.png";
 import rbcLogo from "@/assets/logos/rbc.png";
 import dalhouseLogo from "@/assets/logos/dalhousie.png";
 import archilPhoto from "@/assets/archil.jpg";
+import curiousMindImg from "@/assets/curious-mind.png";
+import webNetworkImg from "@/assets/web-network.png";
 
 export const brandLogos: Record<string, string> = {
   AWS: awsLogo,
@@ -15,9 +17,10 @@ export const brandLogos: Record<string, string> = {
 
 export const chapterImages: Record<string, string> = {
   archil: archilPhoto,
+  "curious-mind": curiousMindImg,
+  "web-network": webNetworkImg,
 };
 
-// Combined career logo - we'll use both RBC and BMO logos
 export const careerLogos = {
   RBC: rbcLogo,
   BMO: bmoLogo,

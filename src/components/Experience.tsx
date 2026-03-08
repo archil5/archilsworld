@@ -8,7 +8,6 @@ import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 import HexTile from "@/components/three/HexTile";
 import BoardPath from "@/components/three/BoardPath";
 import Particles from "@/components/three/Particles";
-import GamePiece from "@/components/three/GamePiece";
 import BoardSurface from "@/components/three/BoardSurface";
 import CameraController from "@/components/three/CameraController";
 import ChapterOverlay from "@/components/ChapterOverlay";
@@ -164,7 +163,6 @@ const Experience = () => {
             />
           ))}
 
-          <GamePiece targetPosition={chapter.position} />
           <Particles count={150} />
           <Environment preset="apartment" />
         </Suspense>
@@ -180,7 +178,7 @@ const Experience = () => {
         </p>
       </div>
 
-      {/* Navigation arrows - always visible */}
+      {/* Navigation arrows */}
       {!isDiving && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
           <motion.button
@@ -199,7 +197,6 @@ const Experience = () => {
             <ChevronLeft size={18} />
           </motion.button>
 
-          {/* Tile indicators */}
           <div className="flex items-center gap-1.5 px-3 py-2 rounded-full" style={{
             background: "rgba(245,240,232,0.9)",
             border: "1px solid rgba(180,140,100,0.2)",
@@ -239,7 +236,7 @@ const Experience = () => {
         </div>
       )}
 
-      {/* Scroll progress - right side */}
+      {/* Scroll progress */}
       <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
         <div className="w-0.5 rounded-full relative overflow-hidden" style={{ height: 200, background: "rgba(180,140,100,0.15)" }}>
           <div
@@ -269,7 +266,7 @@ const Experience = () => {
               style={{ color: "#2d2a26", background: "rgba(245,240,232,0.95)", border: "1px solid rgba(180,140,100,0.2)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
             >
               {ch.image && chapterImages[ch.image] ? (
-                <img src={chapterImages[ch.image]} alt="Archil" className="h-4 w-4 rounded-full object-cover" />
+                <img src={chapterImages[ch.image]} alt={ch.label} className="h-4 w-4 rounded-full object-cover" />
               ) : ch.brandLogo === "Career" ? (
                 <>
                   <img src={careerLogos.RBC} alt="RBC" className="h-3.5 object-contain" />

@@ -56,20 +56,21 @@ const HexTile = ({
     const t = state.clock.elapsedTime;
 
     const floatY = baseY + Math.sin(t * 0.8 + index * 0.5) * 0.05;
-    meshRef.current.position.y = isActive ? baseY + 0.4 : floatY;
+    meshRef.current.position.y = isActive ? baseY + 0.35 : floatY;
 
-    const s = isActive ? 1.15 + Math.sin(t * 3) * 0.03 : 1;
+    const s = isActive ? 1.12 + Math.sin(t * 3) * 0.02 : 1;
     meshRef.current.scale.setScalar(s);
 
     if (glowRef.current) {
       const mat = glowRef.current.material as THREE.MeshBasicMaterial;
-      mat.opacity = isActive ? 0.25 + Math.sin(t * 4) * 0.1 : isVisited ? 0.08 : 0.0;
+      mat.opacity = isActive ? 0.35 + Math.sin(t * 4) * 0.12 : isVisited ? 0.06 : 0.0;
     }
 
     if (ringRef.current) {
       ringRef.current.rotation.z = t * 0.5;
       const ringMat = ringRef.current.material as THREE.MeshBasicMaterial;
-      ringMat.opacity = isActive ? 0.5 : 0;
+      ringMat.opacity = isActive ? 0.7 : 0;
+      ringRef.current.scale.setScalar(isActive ? 1 + Math.sin(t * 2) * 0.05 : 1);
     }
   });
 
@@ -77,23 +78,23 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
-  // Tile content style - fills the hex face
-  const tileSize = 100;
-  const activeFilter = "none";
-  const inactiveFilter = "grayscale(0.15) opacity(0.8)";
+  const tileSize = 120;
 
   return (
     <group position={position}>
+      {/* Glow underneath */}
       <mesh ref={glowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
-        <circleGeometry args={[1.2, 32]} />
+        <circleGeometry args={[1.4, 32]} />
         <meshBasicMaterial color={color} transparent opacity={0} />
       </mesh>
 
-      <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.3, 0]}>
+      {/* Spinning hex ring for active */}
+      <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.35, 0]}>
         <ringGeometry args={[0.85, 0.95, 6]} />
         <meshBasicMaterial color={color} transparent opacity={0} side={THREE.DoubleSide} />
       </mesh>
 
+      {/* Hex tile mesh */}
       <mesh
         ref={meshRef}
         rotation={[-Math.PI / 2, 0, 0]}
@@ -103,19 +104,19 @@ const HexTile = ({
       >
         <extrudeGeometry args={[hexShape, extrudeSettings]} />
         <meshStandardMaterial
-          color={isActive ? color : isVisited ? "#e8ddd0" : "#f5f0e8"}
-          roughness={isActive ? 0.25 : 0.6}
-          metalness={isActive ? 0.3 : 0.05}
+          color={isActive ? "#ffffff" : isVisited ? "#ede8df" : "#f5f0e8"}
+          roughness={isActive ? 0.2 : 0.6}
+          metalness={isActive ? 0.15 : 0.05}
           emissive={isActive ? color : "#000000"}
-          emissiveIntensity={isActive ? 0.2 : 0}
+          emissiveIntensity={isActive ? 0.15 : 0}
         />
       </mesh>
 
-      {/* Full-tile HTML overlay */}
+      {/* HTML overlay covering full tile */}
       <Html
-        position={[0, isActive ? 0.65 : 0.25, 0]}
+        position={[0, isActive ? 0.6 : 0.22, 0]}
         center
-        distanceFactor={6}
+        distanceFactor={5.5}
         style={{ pointerEvents: "none", userSelect: "none" }}
       >
         <div
@@ -131,7 +132,6 @@ const HexTile = ({
           }}
         >
           {imageSrc ? (
-            /* Contact tile - full photo */
             <div style={{ width: tileSize, height: tileSize, position: "relative" }}>
               <img
                 src={imageSrc}
@@ -141,8 +141,8 @@ const HexTile = ({
                   height: "100%",
                   objectFit: "cover",
                   borderRadius: "50%",
-                  border: `3px solid ${isActive ? color : "rgba(180,140,100,0.4)"}`,
-                  filter: isActive ? activeFilter : inactiveFilter,
+                  border: isActive ? `3px solid ${color}` : "2px solid rgba(180,140,100,0.3)",
+                  boxShadow: isActive ? `0 0 20px ${color}40` : "none",
                 }}
               />
               <div style={{
@@ -150,24 +150,24 @@ const HexTile = ({
                 bottom: 0,
                 left: 0,
                 right: 0,
-                padding: "4px 0 2px",
-                background: "linear-gradient(transparent, rgba(45,42,38,0.8))",
-                borderRadius: "0 0 50px 50px",
+                padding: "6px 0 4px",
+                background: "linear-gradient(transparent, rgba(30,28,26,0.85))",
+                borderRadius: "0 0 60px 60px",
                 textAlign: "center",
               }}>
                 <span style={{
-                  fontSize: 8,
+                  fontSize: 9,
                   fontFamily: "'Cinzel', serif",
                   fontWeight: 700,
                   color: "#f5f0e8",
-                  letterSpacing: "0.08em",
+                  letterSpacing: "0.1em",
+                  textShadow: "0 1px 3px rgba(0,0,0,0.5)",
                 }}>
                   {label}
                 </span>
               </div>
             </div>
           ) : isCareer ? (
-            /* Career tile - RBC + BMO stacked */
             <div style={{
               width: tileSize,
               height: tileSize,
@@ -175,37 +175,72 @@ const HexTile = ({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: 2,
+              gap: 4,
               background: isActive
-                ? `radial-gradient(circle, ${color}18, transparent)`
+                ? `radial-gradient(circle, ${color}22, transparent)`
                 : "none",
               borderRadius: "50%",
+              border: isActive ? `2px solid ${color}40` : "none",
+              boxShadow: isActive ? `0 0 16px ${color}30` : "none",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <img src={careerLogos.RBC} alt="RBC" style={{
-                  height: 30,
+                  height: 44,
                   objectFit: "contain",
-                  filter: isActive ? activeFilter : inactiveFilter,
                 }} />
                 <img src={careerLogos.BMO} alt="BMO" style={{
-                  height: 30,
+                  height: 44,
                   objectFit: "contain",
-                  filter: isActive ? activeFilter : inactiveFilter,
                 }} />
               </div>
               <span style={{
-                fontSize: 7,
+                fontSize: 8,
                 fontFamily: "'Cinzel', serif",
                 fontWeight: 700,
-                color: isActive ? "#2d2a26" : "#6b6560",
-                letterSpacing: "0.06em",
+                color: "#2d2a26",
+                letterSpacing: "0.08em",
                 textShadow: "0 1px 2px rgba(255,255,255,0.9)",
               }}>
                 {label}
               </span>
             </div>
           ) : logoSrc ? (
-            /* Brand logo tile - fill the hex */
+            <div style={{
+              width: tileSize,
+              height: tileSize,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+              background: isActive
+                ? `radial-gradient(circle, ${color}22, transparent)`
+                : "none",
+              borderRadius: "50%",
+              border: isActive ? `2px solid ${color}40` : "none",
+              boxShadow: isActive ? `0 0 16px ${color}30` : "none",
+            }}>
+              <img
+                src={logoSrc}
+                alt={brandLogo}
+                style={{
+                  height: 65,
+                  maxWidth: 95,
+                  objectFit: "contain",
+                }}
+              />
+              <span style={{
+                fontSize: 8,
+                fontFamily: "'Cinzel', serif",
+                fontWeight: 700,
+                color: "#2d2a26",
+                letterSpacing: "0.08em",
+                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
+              }}>
+                {label}
+              </span>
+            </div>
+          ) : (
             <div style={{
               width: tileSize,
               height: tileSize,
@@ -214,57 +249,20 @@ const HexTile = ({
               alignItems: "center",
               justifyContent: "center",
               gap: 3,
-              background: isActive
-                ? `radial-gradient(circle, ${color}18, transparent)`
-                : "none",
-              borderRadius: "50%",
-            }}>
-              <img
-                src={logoSrc}
-                alt={brandLogo}
-                style={{
-                  height: 55,
-                  maxWidth: 85,
-                  objectFit: "contain",
-                  filter: isActive ? activeFilter : inactiveFilter,
-                }}
-              />
-              <span style={{
-                fontSize: 7,
-                fontFamily: "'Cinzel', serif",
-                fontWeight: 700,
-                color: isActive ? "#2d2a26" : "#6b6560",
-                letterSpacing: "0.06em",
-                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
-              }}>
-                {label}
-              </span>
-            </div>
-          ) : (
-            /* Emoji icon tile - large icon */
-            <div style={{
-              width: tileSize,
-              height: tileSize,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
               borderRadius: "50%",
             }}>
               <span style={{
-                fontSize: 42,
+                fontSize: 48,
                 lineHeight: 1,
-                filter: isActive ? activeFilter : inactiveFilter,
               }}>
                 {icon}
               </span>
               <span style={{
-                fontSize: 8,
+                fontSize: 9,
                 fontFamily: "'Cinzel', serif",
                 fontWeight: 700,
-                color: isActive ? "#2d2a26" : "#6b6560",
-                letterSpacing: "0.06em",
+                color: "#2d2a26",
+                letterSpacing: "0.08em",
                 textShadow: "0 1px 2px rgba(255,255,255,0.9)",
               }}>
                 {label}
@@ -274,8 +272,9 @@ const HexTile = ({
         </div>
       </Html>
 
+      {/* Active highlight light */}
       {isActive && (
-        <pointLight color={color} intensity={2} distance={4} position={[0, 1.5, 0]} />
+        <pointLight color={color} intensity={3} distance={5} position={[0, 1.8, 0]} />
       )}
     </group>
   );
