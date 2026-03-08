@@ -893,6 +893,17 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                         </motion.div>
                       ))}
                     </div>
+
+                    {/* Read-only architecture diagram */}
+                    {stop.diagramPuzzle && (
+                      <div className="mt-4">
+                        <ReadOnlyDiagram
+                          diagram={stop.diagramPuzzle.diagram}
+                          color={stop.color}
+                          title={stop.diagramPuzzle.projectName}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
