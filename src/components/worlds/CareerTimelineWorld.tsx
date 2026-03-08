@@ -230,10 +230,13 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           {/* Header */}
           <div className="rounded-t-xl px-6 py-4" style={{ background: `${role.brandColor}08`, borderBottom: `1px solid ${role.brandColor}20` }}>
             <div className="flex items-center gap-3">
-              <span className="text-sm font-bold px-2 py-1 rounded" style={{
-                color: "#fff",
-                background: role.brandColor,
-              }}>{role.company}</span>
+              {brandLogos[role.company] ? (
+                <img src={brandLogos[role.company]} alt={role.company} className="h-6 object-contain" />
+              ) : (
+                <span className="text-sm font-bold px-2 py-1 rounded" style={{
+                  color: "#fff", background: role.brandColor,
+                }}>{role.company}</span>
+              )}
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded" style={{ background: `${role.brandColor}10`, color: role.brandColor }}>
