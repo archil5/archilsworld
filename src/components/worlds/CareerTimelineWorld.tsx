@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Terminal, Network, Grid3X3, Workflow, BarChart3, Shield } from "lucide-react";
+import { ChevronLeft, ChevronRight, Terminal, Network, Grid3X3, Workflow, BarChart3, Shield, Sparkles, Eye } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 
 /* ═══════════════════════════════════════════════════════════
