@@ -15,9 +15,9 @@ const usePreparedTexture = (url: string) => {
 };
 
 /**
- * Simple textured circle placed just above the hex extrusion top face.
- * Parent mesh is rotated -PI/2 around X, so local Z = world Y (up).
- * Extrude depth is 0.15, so z=0.16 sits flush on top.
+ * Standalone textured plane rendered as a SIBLING of the hex mesh (not a child).
+ * Positioned in world space just above the hex tile top face.
+ * rotation={[-Math.PI/2, 0, 0]} makes it face upward toward the camera.
  */
 const TileSurface = ({
   textureUrl,
@@ -31,15 +31,19 @@ const TileSurface = ({
   const texture = usePreparedTexture(textureUrl);
 
   return (
-    <mesh position={[0, 0, 0.16]} renderOrder={10}>
+    <mesh
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, 0.17, 0]}
+      renderOrder={10}
+    >
       <planeGeometry args={[size * 2, size * 2]} />
       <meshBasicMaterial
         map={texture}
         transparent
-        opacity={isActive ? 1 : 0.85}
+        opacity={isActive ? 1 : 0.82}
         toneMapped={false}
         depthWrite={false}
-        side={THREE.FrontSide}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );
@@ -57,19 +61,21 @@ export const CareerSplitSurface = ({
   const leftTex = usePreparedTexture(leftUrl);
   const rightTex = usePreparedTexture(rightUrl);
 
+  const opacity = isActive ? 1 : 0.82;
+
   return (
-    <group position={[0, 0, 0.16]}>
+    <group position={[0, 0.17, 0]} rotation={[-Math.PI / 2, 0, 0]}>
       <mesh position={[-0.26, 0, 0]} renderOrder={10}>
-        <planeGeometry args={[0.52, 0.52]} />
-        <meshBasicMaterial map={leftTex} transparent opacity={isActive ? 1 : 0.85} toneMapped={false} depthWrite={false} />
+        <planeGeometry args={[0.5, 0.5]} />
+        <meshBasicMaterial map={leftTex} transparent opacity={opacity} toneMapped={false} depthWrite={false} side={THREE.DoubleSide} />
       </mesh>
       <mesh position={[0.26, 0, 0]} renderOrder={10}>
-        <planeGeometry args={[0.52, 0.52]} />
-        <meshBasicMaterial map={rightTex} transparent opacity={isActive ? 1 : 0.85} toneMapped={false} depthWrite={false} />
+        <planeGeometry args={[0.5, 0.5]} />
+        <meshBasicMaterial map={rightTex} transparent opacity={opacity} toneMapped={false} depthWrite={false} side={THREE.DoubleSide} />
       </mesh>
       <mesh position={[0, 0, 0.001]} renderOrder={11}>
         <planeGeometry args={[0.02, 0.7]} />
-        <meshBasicMaterial color="#b0a898" transparent opacity={0.4} toneMapped={false} depthWrite={false} />
+        <meshBasicMaterial color="#b0a898" transparent opacity={0.4} toneMapped={false} depthWrite={false} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
