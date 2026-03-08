@@ -111,7 +111,7 @@ const NetworkWorld = () => {
 
   const tabStyle = (active: boolean) => ({
     background: active ? "rgba(61,122,175,0.1)" : "rgba(45,42,38,0.03)",
-    color: active ? "#3d7aaf" : "rgba(80,70,60,0.4)",
+    color: active ? "#3d7aaf" : "rgba(80,70,60,0.6)",
     border: `1px solid ${active ? "rgba(61,122,175,0.2)" : "rgba(180,140,100,0.1)"}`,
   });
 
