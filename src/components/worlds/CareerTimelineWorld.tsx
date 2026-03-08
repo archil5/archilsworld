@@ -1131,9 +1131,22 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   style={{ color: panel === "overview" ? stop.color : "rgba(80,70,60,0.55)", background: panel === "overview" ? `${stop.color}10` : "rgba(180,140,100,0.04)", border: `1px solid ${panel === "overview" ? `${stop.color}20` : "rgba(180,140,100,0.1)"}` }}>
                   Overview
                 </button>
-                <button onClick={() => setPanel("puzzle")} className="text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
+                <button onClick={() => setPanel("puzzle")} className="relative text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
                   style={{ color: panel === "puzzle" ? stop.color : "rgba(80,70,60,0.55)", background: panel === "puzzle" ? `${stop.color}10` : "rgba(180,140,100,0.04)", border: `1px solid ${panel === "puzzle" ? `${stop.color}20` : "rgba(180,140,100,0.1)"}` }}>
-                  {puzzleLabel[stop.puzzle.type]}
+                  <span className="flex items-center gap-1.5">
+                    <motion.span animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, repeatDelay: 1 }}>
+                      <Sparkles size={10} style={{ color: solvedStops.has(activeStop) ? "#2a7d4f" : stop.color }} />
+                    </motion.span>
+                    {puzzleLabel[stop.puzzle.type]}
+                    {!solvedStops.has(activeStop) && (
+                      <motion.span
+                        className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
+                        style={{ background: stop.color }}
+                        animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                      />
+                    )}
+                  </span>
                 </button>
               </div>
             </div>
