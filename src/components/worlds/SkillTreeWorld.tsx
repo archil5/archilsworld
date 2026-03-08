@@ -133,7 +133,7 @@ const SkillTreeWorld = () => {
                     strokeWidth={selectedNode?.id === node.id ? 2.5 : 1.5} />
                   <text x={node.x - 27} y={node.y + 5} fontSize="14">{node.icon}</text>
                   <text x={node.x + 5} y={node.y + 5} textAnchor="middle"
-                    fill={unlocked ? "#b5653a" : available ? "rgba(181,101,58,0.6)" : "rgba(80,70,60,0.2)"}
+                    fill={unlocked ? "#b5653a" : available ? "rgba(181,101,58,0.7)" : "rgba(80,70,60,0.4)"}
                     fontSize="8" fontFamily="Cinzel, serif">
                     {node.label}
                   </text>
