@@ -255,7 +255,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className="flex-1 py-2.5 text-[11px] font-mono uppercase tracking-wider cursor-pointer transition-all"
                 style={{
-                  color: activeTab === tab || (activeTab === "all") ? "#2d2a26" : "rgba(80,70,60,0.3)",
+                  color: activeTab === tab || (activeTab === "all") ? "#2d2a26" : "rgba(80,70,60,0.55)",
                   borderBottom: activeTab === tab ? `2px solid ${role.brandColor}` : "2px solid transparent",
                   background: activeTab === tab ? `${role.brandColor}06` : "transparent",
                 }}>
