@@ -18,7 +18,6 @@ interface OSILayer {
   number: number;
   name: string;
   color: string;
-  icon: string;
   protocols: string[];
   dataUnit: string;
   realWorld: string;
@@ -28,7 +27,7 @@ interface OSILayer {
 
 const osiLayers: OSILayer[] = [
   {
-    number: 7, name: "Application", color: "#E44D26", icon: "🌐",
+    number: 7, name: "Application", color: "#E44D26",
     protocols: ["HTTP", "HTTPS", "FTP", "SMTP", "DNS", "SSH"],
     dataUnit: "Data",
     realWorld: "The browser, the API call — where humans interact with the network.",
@@ -36,7 +35,7 @@ const osiLayers: OSILayer[] = [
     mySkill: "Built REST APIs, web apps, and automated SSH deployments across enterprise infra.",
   },
   {
-    number: 6, name: "Presentation", color: "#F0A830", icon: "🔐",
+    number: 6, name: "Presentation", color: "#F0A830",
     protocols: ["SSL/TLS", "JPEG", "ASCII", "MIME", "JSON"],
     dataUnit: "Data",
     realWorld: "Encryption, compression, formatting — translating between app-speak and network-speak.",
@@ -44,7 +43,7 @@ const osiLayers: OSILayer[] = [
     mySkill: "Implemented TLS termination, certificate management, and data serialization at scale.",
   },
   {
-    number: 5, name: "Session", color: "#2a7d4f", icon: "🤝",
+    number: 5, name: "Session", color: "#2a7d4f",
     protocols: ["NetBIOS", "RPC", "PPTP", "SCP"],
     dataUnit: "Data",
     realWorld: "Managing connections — who's talking to whom, keeping conversations alive.",
@@ -52,7 +51,7 @@ const osiLayers: OSILayer[] = [
     mySkill: "Designed session management for distributed microservices using OAuth2 and Istio.",
   },
   {
-    number: 4, name: "Transport", color: "#3d7aaf", icon: "📦",
+    number: 4, name: "Transport", color: "#3d7aaf",
     protocols: ["TCP", "UDP", "TLS", "QUIC"],
     dataUnit: "Segment",
     realWorld: "TCP guarantees order, UDP trades it for speed. Port numbers identify services.",
@@ -60,7 +59,7 @@ const osiLayers: OSILayer[] = [
     mySkill: "Configured load balancers, health checks, and connection pooling for banking services.",
   },
   {
-    number: 3, name: "Network", color: "#6B4C9A", icon: "🗺️",
+    number: 3, name: "Network", color: "#6B4C9A",
     protocols: ["IP", "ICMP", "OSPF", "BGP", "ARP"],
     dataUnit: "Packet",
     realWorld: "Routing — finding the best path. IP addresses live here.",
@@ -68,7 +67,7 @@ const osiLayers: OSILayer[] = [
     mySkill: "Designed VPC architectures, subnets, and Transit Gateway topologies for AWS/Azure.",
   },
   {
-    number: 2, name: "Data Link", color: "#b5653a", icon: "🔗",
+    number: 2, name: "Data Link", color: "#b5653a",
     protocols: ["Ethernet", "Wi-Fi", "PPP", "VLAN"],
     dataUnit: "Frame",
     realWorld: "Local delivery — MAC addresses, switches, VLANs.",
@@ -76,7 +75,7 @@ const osiLayers: OSILayer[] = [
     mySkill: "Configured VLANs, switch port security, and 802.1X in enterprise networks.",
   },
   {
-    number: 1, name: "Physical", color: "#555555", icon: "⚡",
+    number: 1, name: "Physical", color: "#555555",
     protocols: ["Ethernet cables", "Fiber optic", "Wi-Fi radio", "USB"],
     dataUnit: "Bits",
     realWorld: "Raw electricity, light pulses, radio waves — the physics of data.",
@@ -133,10 +132,10 @@ const WebFoundationsWorld = () => {
         {/* Section tabs */}
         <div className="flex gap-2 justify-center items-center flex-wrap">
           {([
-            { key: "html", label: "🧩 HTML Builder", color: "#E44D26" },
-            { key: "network", label: "🔌 OSI Layers", color: "#0078D4" },
-            { key: "skills", label: "⚡ Skills", color: "#2a7d4f" },
-            { key: "value", label: "💎 Value", color: "#b5653a" },
+            { key: "html", label: "HTML Builder", color: "#E44D26" },
+            { key: "network", label: "OSI Layers", color: "#0078D4" },
+            { key: "skills", label: "Skills", color: "#2a7d4f" },
+            { key: "value", label: "Value", color: "#b5653a" },
           ] as const).map(tab => (
             <button key={tab.key} onClick={() => setActiveSection(tab.key)}
               className="px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider cursor-pointer transition-all"
@@ -164,7 +163,7 @@ const WebFoundationsWorld = () => {
                     <button onClick={revealHTML}
                       className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
                       style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
-                      ⚡ Reveal All
+                      Reveal All
                     </button>
                   )}
                 </div>
@@ -255,20 +254,14 @@ const WebFoundationsWorld = () => {
                           border: `2px solid ${isActive ? layer.color : isHovered ? `${layer.color}40` : "rgba(180,140,100,0.1)"}`,
                           boxShadow: isActive ? `0 4px 16px ${layer.color}20` : "none",
                         }}>
-                        <span className="text-base w-7 h-7 flex items-center justify-center rounded-full"
-                          style={{ background: `${layer.color}15` }}>
-                          {layer.icon}
+                        <span className="text-[10px] font-mono font-bold w-7 h-7 flex items-center justify-center rounded"
+                          style={{ background: layer.color, color: "#fff" }}>
+                          L{layer.number}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded"
-                              style={{ background: layer.color, color: "#fff" }}>
-                              L{layer.number}
-                            </span>
-                            <span className="text-xs font-display font-bold" style={{ color: isActive ? layer.color : "#2d2a26" }}>
-                              {layer.name}
-                            </span>
-                          </div>
+                          <span className="text-xs font-display font-bold" style={{ color: isActive ? layer.color : "#2d2a26" }}>
+                            {layer.name}
+                          </span>
                           <p className="text-[9px] font-mono truncate" style={{ color: "rgba(80,70,60,0.45)" }}>
                             {layer.protocols.slice(0, 3).join(" · ")}
                           </p>
@@ -279,9 +272,9 @@ const WebFoundationsWorld = () => {
                   })}
                 </div>
                 <div className="mt-2 flex items-center gap-2 w-full max-w-md">
-                  <span className="text-[8px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>↑ USER</span>
+                  <span className="text-[8px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>USER</span>
                   <div className="h-px flex-1" style={{ background: "rgba(180,140,100,0.12)" }} />
-                  <span className="text-[8px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>WIRE ↓</span>
+                  <span className="text-[8px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>WIRE</span>
                 </div>
               </div>
 
@@ -292,17 +285,12 @@ const WebFoundationsWorld = () => {
                       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                       style={{ border: `1px solid ${selectedOSI.color}25` }}>
                       <div className="px-4 py-3" style={{ background: `${selectedOSI.color}10` }}>
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{selectedOSI.icon}</span>
-                          <div>
-                            <h3 className="font-display text-base font-bold" style={{ color: selectedOSI.color }}>
-                              L{selectedOSI.number} — {selectedOSI.name}
-                            </h3>
-                            <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>
-                              Unit: {selectedOSI.dataUnit}
-                            </p>
-                          </div>
-                        </div>
+                        <h3 className="font-display text-base font-bold" style={{ color: selectedOSI.color }}>
+                          Layer {selectedOSI.number} — {selectedOSI.name}
+                        </h3>
+                        <p className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>
+                          Data unit: {selectedOSI.dataUnit}
+                        </p>
                       </div>
                       <div className="p-4 space-y-3" style={{ background: "#fefcf9" }}>
                         <div>
@@ -322,7 +310,7 @@ const WebFoundationsWorld = () => {
                           ))}
                         </div>
                         <div className="rounded-lg p-2.5" style={{ background: "rgba(42,125,79,0.05)", border: "1px solid rgba(42,125,79,0.12)" }}>
-                          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>🎯 My Experience</p>
+                          <p className="text-[9px] font-mono uppercase mb-1" style={{ color: "#2a7d4f" }}>My Experience</p>
                           <p className="text-[11px] font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{selectedOSI.mySkill}</p>
                         </div>
                       </div>
@@ -331,7 +319,6 @@ const WebFoundationsWorld = () => {
                     <motion.div key="empty" className="rounded-xl p-6 text-center"
                       initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                       style={{ background: "#fefcf9", border: "1px solid rgba(180,140,100,0.1)" }}>
-                      <span className="text-3xl mb-2 block">🔌</span>
                       <p className="font-display text-sm mb-1" style={{ color: "#2d2a26" }}>The OSI Model</p>
                       <p className="text-xs font-body italic" style={{ color: "rgba(80,70,60,0.5)" }}>
                         7 layers that make the internet work. Click any layer to explore.
@@ -378,7 +365,7 @@ const WebFoundationsWorld = () => {
                 <motion.div key={i} className="flex items-start gap-3 px-4 py-3 rounded-lg"
                   initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.12 }}
                   style={{ background: "rgba(80,70,60,0.04)", border: "1px solid rgba(180,140,100,0.12)" }}>
-                  <span className="text-base mt-0.5">💎</span>
+                  <span className="text-[10px] mt-1" style={{ color: "#b5653a" }}>▸</span>
                   <span className="text-sm font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{val}</span>
                 </motion.div>
               ))}

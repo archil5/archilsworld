@@ -156,37 +156,12 @@ const HexTile = ({
               width: tileSize,
               height: tileSize,
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: 4,
-              background: isActive
-                ? `radial-gradient(circle, ${color}22, transparent)`
-                : "none",
-              borderRadius: "50%",
-              border: isActive ? `2px solid ${color}40` : "none",
-              boxShadow: isActive ? `0 0 16px ${color}30` : "none",
+              gap: 12,
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <img src={careerLogos.RBC} alt="RBC" style={{
-                  height: 56,
-                  objectFit: "contain",
-                }} />
-                <img src={careerLogos.BMO} alt="BMO" style={{
-                  height: 56,
-                  objectFit: "contain",
-                }} />
-              </div>
-              <span style={{
-                fontSize: 8,
-                fontFamily: "'Cinzel', serif",
-                fontWeight: 700,
-                color: "#2d2a26",
-                letterSpacing: "0.08em",
-                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
-              }}>
-                {label}
-              </span>
+              <img src={careerLogos.RBC} alt="RBC" style={{ height: 65, objectFit: "contain" }} />
+              <img src={careerLogos.BMO} alt="BMO" style={{ height: 65, objectFit: "contain" }} />
             </div>
           ) : logoSrc ? (
             <div style={{
