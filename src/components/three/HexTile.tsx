@@ -128,8 +128,11 @@ const HexTile = ({
         center
         distanceFactor={5.5}
         style={{ pointerEvents: "none", userSelect: "none" }}
+        transform
+        occlude={false}
+        sprite={false}
       >
-        <div style={containerStyle}>
+        <div style={{ ...containerStyle, clipPath: "polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)" }}>
           {isCareer ? (
             <div style={{ width: tileSize, height: tileSize, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
               <div style={{ flex: 1, height: "100%", display: "flex", alignItems: "center", justifyContent: "center", borderRight: "1px solid rgba(160,130,100,0.2)" }}>
