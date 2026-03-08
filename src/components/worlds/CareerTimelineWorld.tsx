@@ -654,6 +654,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 >
                   Overview
                 </button>
+                {stop.diagramPuzzle && (
                 <button
                   onClick={() => setPanel("puzzle")}
                   className="relative text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
@@ -707,6 +708,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                     )}
                   </span>
                 </button>
+                )}
               </div>
             </div>
 
