@@ -54,10 +54,8 @@ const HexTile = ({
   useFrame((state) => {
     if (!meshRef.current) return;
     const t = state.clock.elapsedTime;
-
     const floatY = baseY + Math.sin(t * 0.8 + index * 0.5) * 0.05;
     meshRef.current.position.y = isActive ? baseY + 0.35 : floatY;
-
     const s = isActive ? 1.12 + Math.sin(t * 3) * 0.02 : 1;
     meshRef.current.scale.setScalar(s);
 
@@ -65,7 +63,6 @@ const HexTile = ({
       const mat = glowRef.current.material as THREE.MeshBasicMaterial;
       mat.opacity = isActive ? 0.35 + Math.sin(t * 4) * 0.12 : isVisited ? 0.06 : 0.0;
     }
-
     if (ringRef.current) {
       ringRef.current.rotation.z = t * 0.5;
       const ringMat = ringRef.current.material as THREE.MeshBasicMaterial;
@@ -78,7 +75,40 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
-  const tileSize = 140;
+  const tileSize = 130;
+
+  // Shared engraved filter style — simulates recessed carving
+  const engravedFilter = [
+    "contrast(1.1)",
+    "saturate(0.3)",
+    "brightness(0.85)",
+    "sepia(0.35)",
+    "drop-shadow(1px 2px 1px rgba(0,0,0,0.35))",
+    "drop-shadow(-1px -1px 0px rgba(255,250,240,0.4))",
+  ].join(" ");
+
+  const engravedFilterActive = [
+    "contrast(1.15)",
+    "saturate(0.45)",
+    "brightness(0.9)",
+    "sepia(0.2)",
+    "drop-shadow(1px 2px 2px rgba(0,0,0,0.4))",
+    "drop-shadow(-1px -1px 1px rgba(255,250,240,0.5))",
+  ].join(" ");
+
+  const containerStyle: React.CSSProperties = {
+    width: tileSize,
+    height: tileSize,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    overflow: "hidden",
+    // Subtle inner bevel shadow to simulate depth
+    boxShadow: "inset 0 2px 6px rgba(0,0,0,0.15), inset 0 -1px 3px rgba(255,250,240,0.2)",
+  };
+
+  const imgFilter = isActive ? engravedFilterActive : engravedFilter;
 
   return (
     <group position={position}>
@@ -104,38 +134,82 @@ const HexTile = ({
       >
         <extrudeGeometry args={[hexShape, extrudeSettings]} />
         <meshStandardMaterial
-          color={isActive ? "#ffffff" : isVisited ? "#ede8df" : "#f5f0e8"}
-          roughness={isActive ? 0.2 : 0.6}
-          metalness={isActive ? 0.15 : 0.05}
+          color={isActive ? "#faf5ee" : isVisited ? "#ede8df" : "#f0ebe3"}
+          roughness={isActive ? 0.35 : 0.7}
+          metalness={isActive ? 0.08 : 0.02}
           emissive={isActive ? color : "#000000"}
-          emissiveIntensity={isActive ? 0.15 : 0}
+          emissiveIntensity={isActive ? 0.1 : 0}
         />
       </mesh>
 
-      {/* HTML overlay covering full tile */}
+      {/* Engraved overlay */}
       <Html
         position={[0, isActive ? 0.6 : 0.22, 0]}
         center
         distanceFactor={5.5}
         style={{ pointerEvents: "none", userSelect: "none" }}
       >
-        <div
-          style={{
-            width: tileSize,
-            height: tileSize,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "50%",
-            overflow: "hidden",
-          }}
-        >
-          {imageSrc ? (
+        <div style={containerStyle}>
+          {/* ─── Career: 50/50 split RBC | BMO ─── */}
+          {isCareer ? (
             <div style={{
               width: tileSize,
               height: tileSize,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               position: "relative",
+            }}>
+              {/* Left half — RBC */}
+              <div style={{
+                flex: 1,
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRight: "1px solid rgba(160,130,100,0.2)",
+              }}>
+                <img src={careerLogos.RBC} alt="RBC" style={{
+                  height: "55%",
+                  objectFit: "contain",
+                  filter: imgFilter,
+                  mixBlendMode: "multiply",
+                  opacity: 0.85,
+                }} />
+              </div>
+              {/* Right half — BMO */}
+              <div style={{
+                flex: 1,
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <img src={careerLogos.BMO} alt="BMO" style={{
+                  height: "55%",
+                  objectFit: "contain",
+                  filter: imgFilter,
+                  mixBlendMode: "multiply",
+                  opacity: 0.85,
+                }} />
+              </div>
+              {/* Divider notch */}
+              <div style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 3,
+                height: "40%",
+                background: "linear-gradient(to bottom, transparent, rgba(140,120,90,0.3), transparent)",
+                borderRadius: 2,
+              }} />
+            </div>
+          ) : imageSrc ? (
+            /* ─── Image tiles (curious-mind, web-network, archil) ─── */
+            <div style={{
+              width: tileSize,
+              height: tileSize,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -144,87 +218,53 @@ const HexTile = ({
                 src={imageSrc}
                 alt={label}
                 style={{
-                  width: "90%",
-                  height: "90%",
+                  width: "88%",
+                  height: "88%",
                   objectFit: "contain",
-                  filter: isActive ? "drop-shadow(0 0 8px rgba(0,0,0,0.15))" : "none",
+                  filter: imgFilter,
+                  mixBlendMode: "multiply",
+                  opacity: 0.8,
                 }}
               />
             </div>
-          ) : isCareer ? (
-            <div style={{
-              width: tileSize,
-              height: tileSize,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 12,
-            }}>
-              <img src={careerLogos.RBC} alt="RBC" style={{ height: 65, objectFit: "contain" }} />
-              <img src={careerLogos.BMO} alt="BMO" style={{ height: 65, objectFit: "contain" }} />
-            </div>
           ) : logoSrc ? (
+            /* ─── Brand logo tiles (Dalhousie) ─── */
             <div style={{
               width: tileSize,
               height: tileSize,
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: 4,
-              background: isActive
-                ? `radial-gradient(circle, ${color}22, transparent)`
-                : "none",
-              borderRadius: "50%",
-              border: isActive ? `2px solid ${color}40` : "none",
-              boxShadow: isActive ? `0 0 16px ${color}30` : "none",
             }}>
               <img
                 src={logoSrc}
                 alt={brandLogo}
                 style={{
-                  height: 80,
-                  maxWidth: 110,
+                  height: "60%",
+                  maxWidth: "80%",
                   objectFit: "contain",
+                  filter: imgFilter,
+                  mixBlendMode: "multiply",
+                  opacity: 0.8,
                 }}
               />
-              <span style={{
-                fontSize: 8,
-                fontFamily: "'Cinzel', serif",
-                fontWeight: 700,
-                color: "#2d2a26",
-                letterSpacing: "0.08em",
-                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
-              }}>
-                {label}
-              </span>
             </div>
           ) : (
+            /* ─── Fallback icon ─── */
             <div style={{
               width: tileSize,
               height: tileSize,
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: 3,
-              borderRadius: "50%",
             }}>
               <span style={{
-                fontSize: 48,
+                fontSize: 42,
                 lineHeight: 1,
+                filter: "grayscale(0.4) drop-shadow(1px 2px 1px rgba(0,0,0,0.3))",
+                opacity: 0.7,
               }}>
                 {icon}
-              </span>
-              <span style={{
-                fontSize: 9,
-                fontFamily: "'Cinzel', serif",
-                fontWeight: 700,
-                color: "#2d2a26",
-                letterSpacing: "0.08em",
-                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
-              }}>
-                {label}
               </span>
             </div>
           )}
