@@ -724,7 +724,7 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
    PUZZLE 5: CAPACITY PLANNER
    ═══════════════════════════════════════════════════════════ */
 
-const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [assignments, setAssignments] = useState<Record<string, string>>({});
   const [selectedWorkload, setSelectedWorkload] = useState<string | null>(null);
   const [wrongRegion, setWrongRegion] = useState<string | null>(null);
