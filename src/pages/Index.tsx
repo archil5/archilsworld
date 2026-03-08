@@ -109,7 +109,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.9 }}
         >
           <p className="text-xs font-mono uppercase tracking-wider mb-3" style={{ color: "#b5653a" }}>
-            🎲 Why a Board Game?
+            Why a Board Game?
           </p>
           <p className="font-body text-sm leading-relaxed" style={{ color: "rgba(245,240,232,0.7)" }}>
             I've always loved board games, puzzles, and riddles — the thrill of solving complex problems
