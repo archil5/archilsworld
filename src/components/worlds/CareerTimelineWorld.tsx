@@ -862,12 +862,13 @@ const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, rev
    PUZZLE 6: AI RISK ASSESSMENT
    ═══════════════════════════════════════════════════════════ */
 
-const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [decisions, setDecisions] = useState<Record<string, boolean>>({});
   const [wrongId, setWrongId] = useState<string | null>(null);
   const [showReason, setShowReason] = useState<string | null>(null);
-  const isDone = solved || Object.keys(decisions).length === puzzle.models.length;
+  const isDone = solved || autoReveal || Object.keys(decisions).length === puzzle.models.length;
 
+  useEffect(() => { if (autoReveal) { const d: Record<string, boolean> = {}; puzzle.models.forEach(m => d[m.id] = m.safe); setDecisions(d); setShowReason(puzzle.models[puzzle.models.length - 1].id); } }, [autoReveal, puzzle.models]);
   useEffect(() => { setDecisions({}); setWrongId(null); setShowReason(null); }, [puzzle.title]);
 
   const handleDecision = (modelId: string, approve: boolean) => {
