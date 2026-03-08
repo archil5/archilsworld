@@ -310,7 +310,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               {activeTab === "milestones" && (
                 <motion.div key="milestones" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>Click cards to reveal</p>
+                    <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>Click cards to reveal</p>
                     {revealedMilestones.size < role.milestones.length && (
                       <button onClick={() => setRevealedMilestones(new Set(role.milestones.map((_, i) => i)))}
                         className="text-[10px] font-mono px-2 py-1 rounded cursor-pointer"
