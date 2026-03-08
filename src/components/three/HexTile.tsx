@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
-import { brandLogos } from "@/data/brandLogos";
+import { brandLogos, chapterImages, careerLogos } from "@/data/brandLogos";
 
 const HexTile = ({
   position,
@@ -14,6 +14,7 @@ const HexTile = ({
   icon,
   label,
   brandLogo,
+  image,
 }: {
   position: [number, number, number];
   color: string;
@@ -24,6 +25,7 @@ const HexTile = ({
   icon: string;
   label: string;
   brandLogo?: string;
+  image?: string;
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
@@ -71,7 +73,9 @@ const HexTile = ({
     }
   });
 
-  const logoSrc = brandLogo ? brandLogos[brandLogo] : null;
+  const logoSrc = brandLogo && brandLogo !== "Career" ? brandLogos[brandLogo] : null;
+  const imageSrc = image ? chapterImages[image] : null;
+  const isCareer = brandLogo === "Career";
 
   return (
     <group position={position}>
@@ -102,27 +106,62 @@ const HexTile = ({
         />
       </mesh>
 
-      {/* HTML overlay for icon/logo on tile */}
+      {/* HTML overlay covering entire tile */}
       <Html
         position={[0, isActive ? 0.65 : 0.25, 0]}
         center
         distanceFactor={8}
         style={{ pointerEvents: "none", userSelect: "none" }}
       >
-        <div className="flex flex-col items-center gap-0.5" style={{ transform: "scale(1)" }}>
-          {logoSrc ? (
-            <img src={logoSrc} alt={brandLogo} style={{ height: 22, objectFit: "contain", filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)" }} />
+        <div className="flex flex-col items-center justify-center" style={{ width: 80, height: 80 }}>
+          {imageSrc ? (
+            <img
+              src={imageSrc}
+              alt={label}
+              style={{
+                width: 70,
+                height: 70,
+                objectFit: "cover",
+                borderRadius: "50%",
+                border: `2px solid ${isActive ? color : "rgba(180,140,100,0.3)"}`,
+                filter: isActive ? "none" : "grayscale(0.2) opacity(0.85)",
+              }}
+            />
+          ) : isCareer ? (
+            <div className="flex items-center gap-1">
+              <img src={careerLogos.RBC} alt="RBC" style={{ height: 28, objectFit: "contain", filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)" }} />
+              <span style={{ color: isActive ? "#2d2a26" : "#aaa", fontSize: 10, fontWeight: 700 }}>+</span>
+              <img src={careerLogos.BMO} alt="BMO" style={{ height: 28, objectFit: "contain", filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)" }} />
+            </div>
+          ) : logoSrc ? (
+            <img
+              src={logoSrc}
+              alt={brandLogo}
+              style={{
+                height: 45,
+                maxWidth: 65,
+                objectFit: "contain",
+                filter: isActive ? "none" : "grayscale(0.3) opacity(0.7)",
+              }}
+            />
           ) : (
-            <span style={{ fontSize: 20, lineHeight: 1, filter: isActive ? "none" : "grayscale(0.2) opacity(0.7)" }}>{icon}</span>
+            <span style={{
+              fontSize: 32,
+              lineHeight: 1,
+              filter: isActive ? "none" : "grayscale(0.2) opacity(0.7)",
+            }}>
+              {icon}
+            </span>
           )}
           <span style={{
             fontSize: 7,
             fontFamily: "'Cinzel', serif",
             fontWeight: 600,
-            color: isActive ? "#2d2a26" : "#8a8078",
+            color: isActive ? "#2d2a26" : "#6b6560",
             letterSpacing: "0.05em",
             whiteSpace: "nowrap",
             textShadow: "0 1px 2px rgba(255,255,255,0.8)",
+            marginTop: 2,
           }}>
             {label}
           </span>

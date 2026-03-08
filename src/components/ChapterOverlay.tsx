@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import type { ChapterData } from "@/data/chapters";
-import { brandLogos } from "@/data/brandLogos";
+import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 
 interface ChapterOverlayProps {
   chapter: ChapterData;
@@ -15,18 +15,30 @@ const categoryLabels: Record<string, string> = {
   current: "Present Day",
 };
 
-const BrandBadge = ({ brandLogo, color }: { brandLogo: string; color: string }) => {
-  const logo = brandLogos[brandLogo];
-  if (logo) {
+const BrandBadge = ({ chapter }: { chapter: ChapterData }) => {
+  if (chapter.image && chapterImages[chapter.image]) {
     return (
-      <span className="inline-flex items-center px-2 py-1 rounded" style={{ background: `${color}10`, border: `1px solid ${color}25` }}>
-        <img src={logo} alt={brandLogo} className="h-5 object-contain" />
+      <img src={chapterImages[chapter.image]} alt="Archil" className="w-10 h-10 rounded-full object-cover"
+        style={{ border: `2px solid ${chapter.color}40` }} />
+    );
+  }
+  if (chapter.brandLogo === "Career") {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded" style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}25` }}>
+        <img src={careerLogos.RBC} alt="RBC" className="h-5 object-contain" />
+        <span style={{ color: "#999", fontSize: 9 }}>+</span>
+        <img src={careerLogos.BMO} alt="BMO" className="h-5 object-contain" />
       </span>
     );
   }
-  return (
-    <span className="text-sm font-bold px-3 py-1 rounded" style={{ color: "#fff", background: color }}>{brandLogo}</span>
-  );
+  if (chapter.brandLogo && brandLogos[chapter.brandLogo]) {
+    return (
+      <span className="inline-flex items-center px-2 py-1 rounded" style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}25` }}>
+        <img src={brandLogos[chapter.brandLogo]} alt={chapter.brandLogo} className="h-5 object-contain" />
+      </span>
+    );
+  }
+  return <span className="text-3xl">{chapter.icon}</span>;
 };
 
 const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
@@ -55,11 +67,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               transition={{ delay: 0.1, duration: 0.5 }}
               className="flex items-center gap-3 mb-3"
             >
-              {chapter.brandLogo ? (
-                <BrandBadge brandLogo={chapter.brandLogo} color={chapter.color} />
-              ) : (
-                <span className="text-3xl">{chapter.icon}</span>
-              )}
+              <BrandBadge chapter={chapter} />
               <span
                 className="text-[10px] font-display uppercase tracking-[0.3em] px-3 py-1 rounded-full"
                 style={{
@@ -70,7 +78,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               >
                 {categoryLabels[chapter.category] || "Career"}
               </span>
-              <span className="text-xs font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>
+              <span className="text-xs font-mono" style={{ color: "#6b6560" }}>
                 {chapter.year}
               </span>
             </motion.div>
@@ -87,7 +95,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
 
             <motion.p
               className="font-display text-xs uppercase tracking-[0.2em] mb-5"
-              style={{ color: "rgba(80,70,60,0.55)" }}
+              style={{ color: "#6b6560" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}

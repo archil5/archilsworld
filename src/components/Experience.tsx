@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
 import { CHAPTERS } from "@/data/chapters";
-import { brandLogos } from "@/data/brandLogos";
+import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 import HexTile from "@/components/three/HexTile";
 import BoardPath from "@/components/three/BoardPath";
 import Particles from "@/components/three/Particles";
@@ -146,6 +146,7 @@ const Experience = () => {
               icon={ch.icon}
               label={ch.label}
               brandLogo={ch.brandLogo}
+              image={ch.image}
             />
           ))}
 
@@ -160,7 +161,7 @@ const Experience = () => {
         <h1 className="font-display text-2xl md:text-3xl tracking-wide" style={{ color: "#2d2a26" }}>
           Archil Patel
         </h1>
-        <p className="font-body text-sm italic mt-0.5" style={{ color: "rgba(80,70,60,0.5)" }}>
+        <p className="font-body text-sm italic mt-0.5" style={{ color: "#6b6560" }}>
           Principal Cloud Engineer · A Journey in Tiles
         </p>
       </div>
@@ -173,7 +174,7 @@ const Experience = () => {
             style={{ height: `${scrollProgress * 100}%`, background: "linear-gradient(to bottom, #b5653a, #d4a574)" }}
           />
         </div>
-        <p className="text-[10px] font-mono mt-2" style={{ color: "rgba(80,70,60,0.4)" }}>
+        <p className="text-[10px] font-mono mt-2" style={{ color: "#6b6560" }}>
           {activeIndex + 1}/{CHAPTERS.length}
         </p>
       </div>
@@ -185,7 +186,7 @@ const Experience = () => {
             <div
               className="w-2.5 h-2.5 rounded-full transition-all duration-500 cursor-pointer"
               style={{
-                background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(140,120,100,0.5)" : "rgba(140,120,100,0.2)",
+                background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(107,101,96,0.5)" : "rgba(107,101,96,0.2)",
                 boxShadow: i === activeIndex ? `0 0 10px ${ch.color}60` : "none",
                 transform: i === activeIndex ? "scale(1.4)" : "scale(1)",
               }}
@@ -194,10 +195,15 @@ const Experience = () => {
               className="absolute left-5 whitespace-nowrap text-xs font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-1 rounded flex items-center gap-2"
               style={{ color: "#2d2a26", background: "rgba(245,240,232,0.95)", border: "1px solid rgba(180,140,100,0.2)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
             >
-              {ch.brandLogo && brandLogos[ch.brandLogo] ? (
+              {ch.image && chapterImages[ch.image] ? (
+                <img src={chapterImages[ch.image]} alt="Archil" className="h-4 w-4 rounded-full object-cover" />
+              ) : ch.brandLogo === "Career" ? (
+                <>
+                  <img src={careerLogos.RBC} alt="RBC" className="h-3.5 object-contain" />
+                  <img src={careerLogos.BMO} alt="BMO" className="h-3.5 object-contain" />
+                </>
+              ) : ch.brandLogo && brandLogos[ch.brandLogo] ? (
                 <img src={brandLogos[ch.brandLogo]} alt={ch.brandLogo} className="h-3.5 object-contain" />
-              ) : ch.brandLogo ? (
-                <span className="font-bold mr-1" style={{ color: ch.color }}>{ch.brandLogo}</span>
               ) : null}
               {ch.label}
             </span>
@@ -209,7 +215,7 @@ const Experience = () => {
 
       {activeIndex === 0 && !showOverlay && (
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
-          <p className="text-xs font-display tracking-[0.3em] uppercase" style={{ color: "rgba(80,70,60,0.5)" }}>
+          <p className="text-xs font-display tracking-[0.3em] uppercase" style={{ color: "#6b6560" }}>
             Scroll to journey
           </p>
           <svg width="20" height="30" viewBox="0 0 20 30" fill="none" className="opacity-50">
