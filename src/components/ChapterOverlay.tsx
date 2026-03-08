@@ -94,13 +94,23 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
             </motion.h2>
 
             <motion.p
-              className="font-display text-xs uppercase tracking-[0.2em] mb-5"
+              className="font-display text-xs uppercase tracking-[0.2em] mb-3"
               style={{ color: "#6b6560" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               {chapter.subtitle}
+            </motion.p>
+
+            <motion.p
+              className="font-body text-sm leading-relaxed mb-5 max-w-md"
+              style={{ color: "rgba(45,42,38,0.6)", fontStyle: "italic" }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              "{chapter.tagline}"
             </motion.p>
 
             {onDive && (
