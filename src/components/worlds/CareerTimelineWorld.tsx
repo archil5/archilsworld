@@ -269,12 +269,12 @@ const stops: JourneyStop[] = [
    PUZZLE 1: TERMINAL SEQUENCER
    ═══════════════════════════════════════════════════════════ */
 
-const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: TerminalPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: TerminalPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
-  const isDone = solved || placed.length === puzzle.correctOrder.length;
+  const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
 
-  useEffect(() => { setPlaced([]); setWrongId(null); }, [puzzle.title]);
+  useEffect(() => { if (autoReveal) setPlaced([...puzzle.correctOrder]); }, [autoReveal, puzzle.correctOrder]);
 
   const nextExpected = puzzle.correctOrder[placed.length];
 
