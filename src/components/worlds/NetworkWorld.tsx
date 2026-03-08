@@ -139,7 +139,7 @@ const NetworkWorld = () => {
           <div className="flex flex-col lg:flex-row gap-6 items-center">
             <motion.div className="flex-1" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
               <div className="text-center mb-2">
-                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#2a7d4f" : "rgba(80,70,60,0.35)" }}>
+                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#2a7d4f" : "rgba(80,70,60,0.55)" }}>
                   {routeComplete ? "✓ PACKET ROUTED SUCCESSFULLY" : `🎯 Route: ${correctRoute.join(" → ")}`}
                 </span>
                 {routeAttempt.length > 0 && !routeComplete && (
