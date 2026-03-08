@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Experience from "@/components/Experience";
+import meepleImg from "@/assets/meeple.png";
 
 const boardFacts = [
   "I've been obsessed with board games since I could roll dice",
