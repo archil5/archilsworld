@@ -111,7 +111,7 @@ const NetworkWorld = () => {
 
   const tabStyle = (active: boolean) => ({
     background: active ? "rgba(61,122,175,0.1)" : "rgba(45,42,38,0.03)",
-    color: active ? "#3d7aaf" : "rgba(80,70,60,0.4)",
+    color: active ? "#3d7aaf" : "rgba(80,70,60,0.6)",
     border: `1px solid ${active ? "rgba(61,122,175,0.2)" : "rgba(180,140,100,0.1)"}`,
   });
 
@@ -139,7 +139,7 @@ const NetworkWorld = () => {
           <div className="flex flex-col lg:flex-row gap-6 items-center">
             <motion.div className="flex-1" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
               <div className="text-center mb-2">
-                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#2a7d4f" : "rgba(80,70,60,0.35)" }}>
+                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#2a7d4f" : "rgba(80,70,60,0.55)" }}>
                   {routeComplete ? "✓ PACKET ROUTED SUCCESSFULLY" : `🎯 Route: ${correctRoute.join(" → ")}`}
                 </span>
                 {routeAttempt.length > 0 && !routeComplete && (
@@ -188,7 +188,7 @@ const NetworkWorld = () => {
                 </motion.div>
               ) : (
                 <div className="text-center">
-                  <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.35)" }}>
+                  <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.55)" }}>
                     Click a node to inspect it. Route the packet to win.
                   </p>
                 </div>

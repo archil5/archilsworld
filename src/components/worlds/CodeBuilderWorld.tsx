@@ -57,7 +57,7 @@ const CodeBuilderWorld = () => {
 
   const tabStyle = (active: boolean, color: string) => ({
     background: active ? `${color}10` : "rgba(45,42,38,0.03)",
-    color: active ? color : "rgba(80,70,60,0.4)",
+    color: active ? color : "rgba(80,70,60,0.6)",
     border: `1px solid ${active ? `${color}25` : "rgba(180,140,100,0.1)"}`,
   });
 
@@ -88,7 +88,7 @@ const CodeBuilderWorld = () => {
                 style={{ background: "#fefcf9", border: "1px solid #e0d8cc" }}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xs font-mono" style={{ color: "#8a8078" }}>index.html</span>
-                  <span className="text-[10px] font-mono ml-auto" style={{ color: "rgba(80,70,60,0.35)" }}>
+                  <span className="text-[10px] font-mono ml-auto" style={{ color: "rgba(80,70,60,0.55)" }}>
                     {placed.length}/{codePieces.length} pieces
                   </span>
                 </div>
@@ -145,7 +145,7 @@ const CodeBuilderWorld = () => {
                     </motion.div>
                   ) : (
                     <motion.div key="progress" className="text-center">
-                      <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.4)" }}>
+                      <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.6)" }}>
                         Click the pieces in the right order to build the page...
                       </p>
                     </motion.div>

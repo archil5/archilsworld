@@ -210,8 +210,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 }}>{r.company}</span>
               )}
               <div className="text-left">
-                <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{r.period}</p>
-                <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#2d2a26" : "rgba(80,70,60,0.45)" }}>
+                <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.6)" }}>{r.period}</p>
+                <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#2d2a26" : "rgba(80,70,60,0.6)" }}>
                   {r.mechanicIcon} {r.gameMechanic}
                 </p>
               </div>
@@ -244,7 +244,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   </span>
                 </div>
                 <h3 className="font-display text-lg md:text-xl font-bold" style={{ color: "#2d2a26" }}>{role.title}</h3>
-                <p className="font-mono text-xs" style={{ color: "rgba(80,70,60,0.45)" }}>{role.period}</p>
+                <p className="font-mono text-xs" style={{ color: "rgba(80,70,60,0.6)" }}>{role.period}</p>
               </div>
             </div>
           </div>
@@ -255,7 +255,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className="flex-1 py-2.5 text-[11px] font-mono uppercase tracking-wider cursor-pointer transition-all"
                 style={{
-                  color: activeTab === tab || (activeTab === "all") ? "#2d2a26" : "rgba(80,70,60,0.3)",
+                  color: activeTab === tab || (activeTab === "all") ? "#2d2a26" : "rgba(80,70,60,0.55)",
                   borderBottom: activeTab === tab ? `2px solid ${role.brandColor}` : "2px solid transparent",
                   background: activeTab === tab ? `${role.brandColor}06` : "transparent",
                 }}>
@@ -310,7 +310,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               {activeTab === "milestones" && (
                 <motion.div key="milestones" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.3)" }}>Click cards to reveal</p>
+                    <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>Click cards to reveal</p>
                     {revealedMilestones.size < role.milestones.length && (
                       <button onClick={() => setRevealedMilestones(new Set(role.milestones.map((_, i) => i)))}
                         className="text-[10px] font-mono px-2 py-1 rounded cursor-pointer"
@@ -340,7 +340,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                           ) : (
                             <div className="text-center" style={{ transform: "rotateY(180deg)" }}>
                               <span className="text-2xl">🎴</span>
-                              <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.3)" }}>Click to reveal</p>
+                              <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.55)" }}>Click to reveal</p>
                             </div>
                           )}
                         </motion.div>
@@ -432,7 +432,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           {activeRole < roles.length - 1 && (
             <motion.button
               className="mt-3 text-xs font-display tracking-wider flex items-center gap-2 mx-auto cursor-pointer"
-              style={{ color: "rgba(80,70,60,0.4)" }}
+              style={{ color: "rgba(80,70,60,0.6)" }}
               onClick={() => setActiveRole(prev => Math.min(prev + 1, roles.length - 1))}
               animate={{ x: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
