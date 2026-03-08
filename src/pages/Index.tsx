@@ -14,13 +14,13 @@ const Index = () => {
     const container = containerRef.current;
     if (!container) return;
 
-    const sections = container.querySelectorAll("section");
+    const sections = container.querySelectorAll<HTMLElement>("section");
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const index = Array.from(sections).indexOf(entry.target as Element);
+            const index = Array.from(sections).indexOf(entry.target as HTMLElement);
             if (index >= 0) setActiveChapter(index);
           }
         });
