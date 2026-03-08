@@ -224,8 +224,8 @@ const HexTile = ({
                 src={logoSrc}
                 alt={brandLogo}
                 style={{
-                  height: 65,
-                  maxWidth: 95,
+                  height: 80,
+                  maxWidth: 110,
                   objectFit: "contain",
                 }}
               />
