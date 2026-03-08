@@ -45,15 +45,17 @@ const previewStages: Record<number, JSX.Element> = {
     </div>
   ),
   6: (
-    <div className="p-3 rounded-lg" style={{ background: "#faf8f4", border: "1px dashed rgba(228,77,38,0.2)", fontFamily: "monospace" }}>
+    <div className="p-3 rounded-lg overflow-hidden" style={{ background: "#faf8f4", border: "1px dashed rgba(228,77,38,0.2)", fontFamily: "monospace" }}>
       <h1 className="text-2xl font-bold mb-1" style={{ color: "#E44D26" }}>Hello, World.</h1>
       <p className="text-sm mb-2" style={{ color: "#2d2a26" }}>Built by a kid who wouldn't stop asking <em>how</em>.</p>
-      <motion.p className="text-xs italic"
-        animate={{ x: [200, -200] }}
-        transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
-        style={{ color: "#b5653a" }}>
-        This changes everything.
-      </motion.p>
+      <div style={{ overflow: "hidden", width: "100%" }}>
+        <motion.p className="text-xs italic whitespace-nowrap"
+          animate={{ x: ["100%", "-100%"] }}
+          transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
+          style={{ color: "#b5653a" }}>
+          This changes everything.
+        </motion.p>
+      </div>
     </div>
   ),
 };
