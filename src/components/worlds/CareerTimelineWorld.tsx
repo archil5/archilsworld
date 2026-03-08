@@ -862,7 +862,7 @@ const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, rev
    PUZZLE 6: AI RISK ASSESSMENT
    ═══════════════════════════════════════════════════════════ */
 
-const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [decisions, setDecisions] = useState<Record<string, boolean>>({});
   const [wrongId, setWrongId] = useState<string | null>(null);
   const [showReason, setShowReason] = useState<string | null>(null);
