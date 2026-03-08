@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { brandLogos } from "@/data/brandLogos";
 
 interface Milestone {
   title: string;
