@@ -894,7 +894,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   </div>
                 </div>
               </div>
-            ) : (
+            ) : stop.diagramPuzzle ? (
               <div
                 className="p-6 overflow-y-auto"
                 style={{
@@ -912,7 +912,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   }
                 />
               </div>
-            )}
+            ) : null}
 
             {/* Nav */}
             <div
