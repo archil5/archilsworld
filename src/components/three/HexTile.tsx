@@ -1,8 +1,8 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, Suspense } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { brandLogos, chapterImages, careerLogos } from "@/data/brandLogos";
+import TileSurface, { CareerSplitSurface } from "./TileSurface";
 
 const HexTile = ({
   position,
@@ -75,41 +75,6 @@ const HexTile = ({
   const imageSrc = image ? chapterImages[image] : null;
   const isCareer = brandLogo === "Career";
 
-  const tileSize = 130;
-
-  // Shared engraved filter style — simulates recessed carving
-  const engravedFilter = [
-    "contrast(1.1)",
-    "saturate(0.3)",
-    "brightness(0.85)",
-    "sepia(0.35)",
-    "drop-shadow(1px 2px 1px rgba(0,0,0,0.35))",
-    "drop-shadow(-1px -1px 0px rgba(255,250,240,0.4))",
-  ].join(" ");
-
-  const engravedFilterActive = [
-    "contrast(1.15)",
-    "saturate(0.45)",
-    "brightness(0.9)",
-    "sepia(0.2)",
-    "drop-shadow(1px 2px 2px rgba(0,0,0,0.4))",
-    "drop-shadow(-1px -1px 1px rgba(255,250,240,0.5))",
-  ].join(" ");
-
-  const containerStyle: React.CSSProperties = {
-    width: tileSize,
-    height: tileSize,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "50%",
-    overflow: "hidden",
-    // Subtle inner bevel shadow to simulate depth
-    boxShadow: "inset 0 2px 6px rgba(0,0,0,0.15), inset 0 -1px 3px rgba(255,250,240,0.2)",
-  };
-
-  const imgFilter = isActive ? engravedFilterActive : engravedFilter;
-
   return (
     <group position={position}>
       {/* Glow underneath */}
@@ -140,136 +105,22 @@ const HexTile = ({
           emissive={isActive ? color : "#000000"}
           emissiveIntensity={isActive ? 0.1 : 0}
         />
-      </mesh>
 
-      {/* Engraved overlay */}
-      <Html
-        position={[0, isActive ? 0.6 : 0.22, 0]}
-        center
-        distanceFactor={5.5}
-        style={{ pointerEvents: "none", userSelect: "none" }}
-      >
-        <div style={containerStyle}>
-          {/* ─── Career: 50/50 split RBC | BMO ─── */}
+        {/* 3D texture surfaces — rendered as children of the hex mesh so they move/scale together */}
+        <Suspense fallback={null}>
           {isCareer ? (
-            <div style={{
-              width: tileSize,
-              height: tileSize,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-            }}>
-              {/* Left half — RBC */}
-              <div style={{
-                flex: 1,
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRight: "1px solid rgba(160,130,100,0.2)",
-              }}>
-                <img src={careerLogos.RBC} alt="RBC" style={{
-                  height: "55%",
-                  objectFit: "contain",
-                  filter: imgFilter,
-                  mixBlendMode: "multiply",
-                  opacity: 0.85,
-                }} />
-              </div>
-              {/* Right half — BMO */}
-              <div style={{
-                flex: 1,
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
-                <img src={careerLogos.BMO} alt="BMO" style={{
-                  height: "55%",
-                  objectFit: "contain",
-                  filter: imgFilter,
-                  mixBlendMode: "multiply",
-                  opacity: 0.85,
-                }} />
-              </div>
-              {/* Divider notch */}
-              <div style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: 3,
-                height: "40%",
-                background: "linear-gradient(to bottom, transparent, rgba(140,120,90,0.3), transparent)",
-                borderRadius: 2,
-              }} />
-            </div>
+            <CareerSplitSurface
+              leftUrl={careerLogos.RBC}
+              rightUrl={careerLogos.BMO}
+              isActive={isActive}
+            />
           ) : imageSrc ? (
-            /* ─── Image tiles (curious-mind, web-network, archil) ─── */
-            <div style={{
-              width: tileSize,
-              height: tileSize,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              <img
-                src={imageSrc}
-                alt={label}
-                style={{
-                  width: "88%",
-                  height: "88%",
-                  objectFit: "contain",
-                  filter: imgFilter,
-                  mixBlendMode: "multiply",
-                  opacity: 0.8,
-                }}
-              />
-            </div>
+            <TileSurface textureUrl={imageSrc} isActive={isActive} size={0.55} />
           ) : logoSrc ? (
-            /* ─── Brand logo tiles (Dalhousie) ─── */
-            <div style={{
-              width: tileSize,
-              height: tileSize,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              <img
-                src={logoSrc}
-                alt={brandLogo}
-                style={{
-                  height: "60%",
-                  maxWidth: "80%",
-                  objectFit: "contain",
-                  filter: imgFilter,
-                  mixBlendMode: "multiply",
-                  opacity: 0.8,
-                }}
-              />
-            </div>
-          ) : (
-            /* ─── Fallback icon ─── */
-            <div style={{
-              width: tileSize,
-              height: tileSize,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              <span style={{
-                fontSize: 42,
-                lineHeight: 1,
-                filter: "grayscale(0.4) drop-shadow(1px 2px 1px rgba(0,0,0,0.3))",
-                opacity: 0.7,
-              }}>
-                {icon}
-              </span>
-            </div>
-          )}
-        </div>
-      </Html>
+            <TileSurface textureUrl={logoSrc} isActive={isActive} size={0.45} />
+          ) : null}
+        </Suspense>
+      </mesh>
 
       {/* Active highlight light */}
       {isActive && (
