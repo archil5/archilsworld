@@ -7,6 +7,7 @@ export interface ChapterData {
   title: string;
   subtitle: string;
   narrative: string;
+  tagline: string;
   skills?: string[];
   position: [number, number, number];
   color: string;
