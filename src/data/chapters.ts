@@ -65,7 +65,7 @@ export const CHAPTERS: ChapterData[] = [
     narrative: "Dalhousie wasn't just a degree — it was where curiosity became craft. The Master's programme taught me to think three moves ahead.",
     skills: ["Systems Thinking", "Security", "Automation", "Ethical Hacking"],
     position: [3, 0, -3],
-    color: "#FFD700",
+    color: "#8B6914",
     brandLogo: "Dalhousie",
   },
   {
