@@ -9,25 +9,29 @@ import GamePiece from "@/components/three/GamePiece";
 import BoardSurface from "@/components/three/BoardSurface";
 import CameraController from "@/components/three/CameraController";
 import ChapterOverlay from "@/components/ChapterOverlay";
+import WorldDive from "@/components/WorldDive";
 
 const Experience = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [visitedSet, setVisitedSet] = useState<Set<number>>(new Set([0]));
   const [showOverlay, setShowOverlay] = useState(false);
+  const [diveChapter, setDiveChapter] = useState<typeof CHAPTERS[0] | null>(null);
   const scrollRef = useRef(0);
   const targetScroll = useRef(0);
-  const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
+
+  // Disable scroll when diving
+  const isDiving = diveChapter !== null;
 
   // Handle scroll / wheel
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
+      if (isDiving) return;
       e.preventDefault();
       targetScroll.current += e.deltaY * 0.0003;
       targetScroll.current = Math.max(0, Math.min(1, targetScroll.current));
 
-      // Calculate active index from scroll
       const idx = Math.round(targetScroll.current * (CHAPTERS.length - 1));
       if (idx !== activeIndex) {
         setActiveIndex(idx);
@@ -35,21 +39,19 @@ const Experience = () => {
         setShowOverlay(false);
       }
 
-      // Show overlay after settling
       clearTimeout(scrollTimeout.current);
-      isScrolling.current = true;
       scrollTimeout.current = setTimeout(() => {
-        isScrolling.current = false;
         setShowOverlay(true);
       }, 800);
     };
 
-    // Touch handling
     let touchStartY = 0;
     const handleTouchStart = (e: TouchEvent) => {
+      if (isDiving) return;
       touchStartY = e.touches[0].clientY;
     };
     const handleTouchMove = (e: TouchEvent) => {
+      if (isDiving) return;
       e.preventDefault();
       const delta = touchStartY - e.touches[0].clientY;
       touchStartY = e.touches[0].clientY;
@@ -64,28 +66,30 @@ const Experience = () => {
       }
 
       clearTimeout(scrollTimeout.current);
-      isScrolling.current = true;
-      scrollTimeout.current = setTimeout(() => {
-        isScrolling.current = false;
-        setShowOverlay(true);
-      }, 800);
+      scrollTimeout.current = setTimeout(() => setShowOverlay(true), 800);
+    };
+
+    // ESC to close dive
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isDiving) setDiveChapter(null);
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("keydown", handleKey);
 
-    // Show initial overlay
     const t = setTimeout(() => setShowOverlay(true), 1500);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("keydown", handleKey);
       clearTimeout(scrollTimeout.current);
       clearTimeout(t);
     };
-  }, [activeIndex]);
+  }, [activeIndex, isDiving]);
 
   // Smooth scroll interpolation
   useEffect(() => {
@@ -99,16 +103,17 @@ const Experience = () => {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const handleTileClick = useCallback(
-    (index: number) => {
-      targetScroll.current = index / (CHAPTERS.length - 1);
-      setActiveIndex(index);
-      setVisitedSet((prev) => new Set(prev).add(index));
-      setShowOverlay(false);
-      setTimeout(() => setShowOverlay(true), 600);
-    },
-    []
-  );
+  const handleTileClick = useCallback((index: number) => {
+    targetScroll.current = index / (CHAPTERS.length - 1);
+    setActiveIndex(index);
+    setVisitedSet((prev) => new Set(prev).add(index));
+    setShowOverlay(false);
+    setTimeout(() => setShowOverlay(true), 600);
+  }, []);
+
+  const handleDive = useCallback(() => {
+    setDiveChapter(CHAPTERS[activeIndex]);
+  }, [activeIndex]);
 
   const chapter = CHAPTERS[activeIndex];
 
@@ -122,7 +127,6 @@ const Experience = () => {
         gl={{ antialias: true, toneMapping: 3 }}
       >
         <Suspense fallback={null}>
-          {/* Lighting */}
           <ambientLight intensity={0.15} color="#ffecd2" />
           <directionalLight
             position={[10, 15, 5]}
@@ -138,20 +142,12 @@ const Experience = () => {
             shadow-camera-bottom={-10}
           />
           <pointLight position={[3, 3, -2]} intensity={0.5} color="#ff9944" distance={15} />
-
-          {/* Fog */}
           <fog attach="fog" args={["#1a130b", 8, 30]} />
 
-          {/* Camera */}
           <CameraController scrollProgress={scrollProgress} activeIndex={activeIndex} />
-
-          {/* Board surface */}
           <BoardSurface />
-
-          {/* Path */}
           <BoardPath chapters={CHAPTERS} />
 
-          {/* Tiles */}
           {CHAPTERS.map((ch, i) => (
             <HexTile
               key={ch.id}
@@ -164,12 +160,8 @@ const Experience = () => {
             />
           ))}
 
-          {/* Game piece */}
           <GamePiece targetPosition={chapter.position} />
-
-          {/* Particles */}
           <Particles count={150} />
-
           <Environment preset="sunset" />
         </Suspense>
       </Canvas>
@@ -185,7 +177,7 @@ const Experience = () => {
       </div>
 
       {/* Scroll progress bar */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-0">
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
         <div
           className="w-0.5 rounded-full relative overflow-hidden"
           style={{ height: 200, background: "rgba(232,196,96,0.15)" }}
@@ -233,8 +225,8 @@ const Experience = () => {
         ))}
       </div>
 
-      {/* Chapter info overlay */}
-      <ChapterOverlay chapter={chapter} visible={showOverlay} />
+      {/* Chapter overlay with ENTER button */}
+      <ChapterOverlay chapter={chapter} visible={showOverlay && !isDiving} onDive={handleDive} />
 
       {/* Scroll hint */}
       {activeIndex === 0 && !showOverlay && (
@@ -250,6 +242,9 @@ const Experience = () => {
           </svg>
         </div>
       )}
+
+      {/* World dive overlay */}
+      <WorldDive chapter={diveChapter} onClose={() => setDiveChapter(null)} />
     </div>
   );
 };
