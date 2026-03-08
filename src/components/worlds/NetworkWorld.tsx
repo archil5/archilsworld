@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
-/* ── Board-game mechanic: ROUTE THE PACKET ──
-   Click nodes in the correct order to route a packet across the network.
-   Like a connection/path-building game (Ticket to Ride style). */
-
 interface Node {
   id: string;
   label: string;
@@ -63,12 +59,11 @@ const NetworkWorld = () => {
   const [activeTab, setActiveTab] = useState<"explore" | "skills" | "value">("explore");
   const packetId = useRef(0);
 
-  // Background packet animation
   useEffect(() => {
     const interval = setInterval(() => {
       const conn = connections[Math.floor(Math.random() * connections.length)];
       const reverse = Math.random() > 0.5;
-      const colors = ["#4fc3f7", "#e8c460", "#81c784", "#ff8a65"];
+      const colors = ["#0078D4", "#FF9900", "#00C853", "#E44D26"];
       setPackets(prev => [...prev.slice(-12), {
         id: packetId.current++,
         from: reverse ? conn[1] : conn[0],
@@ -90,20 +85,23 @@ const NetworkWorld = () => {
   const handleNodeClick = (node: Node) => {
     setSelectedNode(node);
     setActiveNodes(prev => new Set(prev).add(node.id));
-
-    // Route building
     if (!routeComplete) {
       const nextIdx = routeAttempt.length;
       if (correctRoute[nextIdx] === node.id) {
         const newRoute = [...routeAttempt, node.id];
         setRouteAttempt(newRoute);
-        if (newRoute.length === correctRoute.length) {
-          setRouteComplete(true);
-        }
+        if (newRoute.length === correctRoute.length) setRouteComplete(true);
       } else if (routeAttempt.length > 0 && node.id !== routeAttempt[routeAttempt.length - 1]) {
-        setRouteAttempt([]); // reset on wrong click
+        setRouteAttempt([]);
       }
     }
+  };
+
+  const handleRevealAll = () => {
+    setRouteAttempt([...correctRoute]);
+    setRouteComplete(true);
+    setActiveNodes(new Set(nodes.map(n => n.id)));
+    setSelectedNode(nodes[nodes.length - 1]);
   };
 
   const getNodePos = (id: string) => {
@@ -114,75 +112,63 @@ const NetworkWorld = () => {
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-5xl flex flex-col gap-4">
-        {/* Tabs */}
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-2 justify-center items-center">
           {(["explore", "skills", "value"] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
+            <button key={tab} onClick={() => setActiveTab(tab)}
               className="px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider cursor-pointer transition-all"
               style={{
-                background: activeTab === tab ? "rgba(232,196,96,0.15)" : "rgba(40,30,20,0.4)",
-                color: activeTab === tab ? "#e8c460" : "rgba(232,196,96,0.4)",
-                border: `1px solid ${activeTab === tab ? "rgba(232,196,96,0.3)" : "rgba(232,196,96,0.1)"}`,
-              }}
-            >
+                background: activeTab === tab ? "rgba(0,120,212,0.15)" : "rgba(15,23,42,0.6)",
+                color: activeTab === tab ? "#0078D4" : "rgba(148,163,184,0.5)",
+                border: `1px solid ${activeTab === tab ? "rgba(0,120,212,0.3)" : "rgba(148,163,184,0.1)"}`,
+              }}>
               {tab === "explore" ? "🔌 Route" : tab === "skills" ? "⚡ Stack" : "💎 Value"}
             </button>
           ))}
+          {activeTab === "explore" && !routeComplete && (
+            <button onClick={handleRevealAll}
+              className="px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider cursor-pointer transition-all"
+              style={{ color: "#FFD700", background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.25)" }}>
+              ⚡ Reveal All
+            </button>
+          )}
         </div>
 
         {activeTab === "explore" && (
           <div className="flex flex-col lg:flex-row gap-6 items-center">
-            {/* Network SVG */}
             <motion.div className="flex-1" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-              {/* Route challenge hint */}
               <div className="text-center mb-2">
-                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#81c784" : "rgba(232,196,96,0.4)" }}>
-                  {routeComplete ? "✓ PACKET ROUTED SUCCESSFULLY" : `🎯 Challenge: Route a packet — click: ${correctRoute.join(" → ")}`}
+                <span className="text-[10px] font-mono" style={{ color: routeComplete ? "#00C853" : "rgba(148,163,184,0.4)" }}>
+                  {routeComplete ? "✓ PACKET ROUTED SUCCESSFULLY" : `🎯 Route: ${correctRoute.join(" → ")}`}
                 </span>
                 {routeAttempt.length > 0 && !routeComplete && (
-                  <span className="text-[10px] font-mono ml-2" style={{ color: "#e8c460" }}>
+                  <span className="text-[10px] font-mono ml-2" style={{ color: "#0078D4" }}>
                     Progress: {routeAttempt.join(" → ")}
                   </span>
                 )}
               </div>
-
               <svg viewBox="0 0 640 400" className="w-full max-w-lg">
                 {connections.map(([from, to], i) => {
-                  const a = getNodePos(from);
-                  const b = getNodePos(to);
+                  const a = getNodePos(from); const b = getNodePos(to);
                   const onRoute = routeComplete && correctRoute.includes(from) && correctRoute.includes(to) &&
                     Math.abs(correctRoute.indexOf(from) - correctRoute.indexOf(to)) === 1;
-                  return (
-                    <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                      stroke={onRoute ? "#81c784" : "rgba(232,196,96,0.15)"}
-                      strokeWidth={onRoute ? 3 : 2} strokeDasharray={onRoute ? "0" : "4 4"}
-                    />
-                  );
+                  return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+                    stroke={onRoute ? "#00C853" : "rgba(0,120,212,0.15)"} strokeWidth={onRoute ? 3 : 2} strokeDasharray={onRoute ? "0" : "4 4"} />;
                 })}
-
                 {packets.map(p => {
-                  const a = getNodePos(p.from);
-                  const b = getNodePos(p.to);
-                  const x = a.x + (b.x - a.x) * p.progress;
-                  const y = a.y + (b.y - a.y) * p.progress;
-                  return (
-                    <circle key={p.id} cx={x} cy={y} r={3} fill={p.color} opacity={1 - p.progress * 0.5} />
-                  );
+                  const a = getNodePos(p.from); const b = getNodePos(p.to);
+                  return <circle key={p.id} cx={a.x + (b.x - a.x) * p.progress} cy={a.y + (b.y - a.y) * p.progress}
+                    r={3} fill={p.color} opacity={1 - p.progress * 0.5} />;
                 })}
-
                 {nodes.map(node => {
                   const inRoute = routeAttempt.includes(node.id);
                   return (
                     <g key={node.id} onClick={() => handleNodeClick(node)} className="cursor-pointer">
                       <circle cx={node.x} cy={node.y} r={30}
-                        fill={inRoute ? "rgba(129,199,132,0.2)" : activeNodes.has(node.id) ? "rgba(232,196,96,0.15)" : "rgba(40,30,20,0.8)"}
-                        stroke={inRoute ? "#81c784" : selectedNode?.id === node.id ? "#e8c460" : "rgba(232,196,96,0.3)"}
-                        strokeWidth={selectedNode?.id === node.id ? 3 : 2}
-                      />
+                        fill={inRoute ? "rgba(0,200,83,0.15)" : activeNodes.has(node.id) ? "rgba(0,120,212,0.12)" : "rgba(15,23,42,0.8)"}
+                        stroke={inRoute ? "#00C853" : selectedNode?.id === node.id ? "#0078D4" : "rgba(0,120,212,0.3)"}
+                        strokeWidth={selectedNode?.id === node.id ? 3 : 2} />
                       <text x={node.x} y={node.y + 4} textAnchor="middle"
-                        fill={inRoute ? "#81c784" : "#e8c460"} fontSize="10" fontFamily="JetBrains Mono, monospace">
+                        fill={inRoute ? "#00C853" : "#0078D4"} fontSize="10" fontFamily="JetBrains Mono, monospace">
                         {node.label}
                       </text>
                     </g>
@@ -190,36 +176,25 @@ const NetworkWorld = () => {
                 })}
               </svg>
             </motion.div>
-
-            {/* Selected node detail */}
             <div className="flex-1 max-w-sm">
               {selectedNode ? (
-                <motion.div
-                  key={selectedNode.id}
-                  className="rounded-xl p-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  style={{ background: "rgba(40,30,20,0.6)", border: "1px solid rgba(232,196,96,0.15)" }}
-                >
-                  <h3 className="font-display text-xl mb-2" style={{ color: "#e8c460" }}>{selectedNode.label}</h3>
-                  <p className="font-body text-sm italic" style={{ color: "rgba(240,230,208,0.7)" }}>{selectedNode.detail}</p>
+                <motion.div key={selectedNode.id} className="rounded-xl p-6"
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                  style={{ background: "rgba(15,23,42,0.6)", border: "1px solid rgba(0,120,212,0.2)" }}>
+                  <h3 className="font-display text-xl mb-2" style={{ color: "#0078D4" }}>{selectedNode.label}</h3>
+                  <p className="font-body text-sm italic" style={{ color: "rgba(226,232,240,0.7)" }}>{selectedNode.detail}</p>
                 </motion.div>
               ) : (
                 <div className="text-center">
-                  <p className="font-body text-sm italic" style={{ color: "rgba(232,196,96,0.3)" }}>
+                  <p className="font-body text-sm italic" style={{ color: "rgba(148,163,184,0.3)" }}>
                     Click a node to inspect it. Route the packet to win.
                   </p>
                 </div>
               )}
-
               {routeComplete && (
-                <motion.div
-                  className="mt-4 p-4 rounded-lg"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  style={{ background: "rgba(129,199,132,0.1)", border: "1px solid rgba(129,199,132,0.3)" }}
-                >
-                  <p className="text-sm font-body italic" style={{ color: "#81c784" }}>
+                <motion.div className="mt-4 p-4 rounded-lg" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                  style={{ background: "rgba(0,200,83,0.08)", border: "1px solid rgba(0,200,83,0.25)" }}>
+                  <p className="text-sm font-body italic" style={{ color: "#00C853" }}>
                     "Not when I learned what to build, but when I realized I could learn anything."
                   </p>
                 </motion.div>
@@ -233,8 +208,8 @@ const NetworkWorld = () => {
             {skillsLearned.map((skill, i) => (
               <motion.div key={skill} className="px-3 py-2 rounded text-center"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-                style={{ background: "rgba(74,158,255,0.08)", border: "1px solid rgba(74,158,255,0.2)" }}>
-                <span className="text-xs font-mono" style={{ color: "#4a9eff" }}>{skill}</span>
+                style={{ background: "rgba(0,120,212,0.08)", border: "1px solid rgba(0,120,212,0.2)" }}>
+                <span className="text-xs font-mono" style={{ color: "#0078D4" }}>{skill}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -245,9 +220,9 @@ const NetworkWorld = () => {
             {valueInsights.map((v, i) => (
               <motion.div key={i} className="p-4 rounded-lg"
                 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.12 }}
-                style={{ background: "rgba(232,196,96,0.06)", border: "1px solid rgba(232,196,96,0.12)" }}>
-                <p className="text-xs font-mono uppercase tracking-wider mb-1" style={{ color: "#e8c460" }}>{v.label}</p>
-                <p className="text-sm font-body" style={{ color: "rgba(240,230,208,0.75)" }}>{v.desc}</p>
+                style={{ background: "rgba(0,120,212,0.06)", border: "1px solid rgba(0,120,212,0.12)" }}>
+                <p className="text-xs font-mono uppercase tracking-wider mb-1" style={{ color: "#0078D4" }}>{v.label}</p>
+                <p className="text-sm font-body" style={{ color: "rgba(226,232,240,0.75)" }}>{v.desc}</p>
               </motion.div>
             ))}
           </motion.div>
