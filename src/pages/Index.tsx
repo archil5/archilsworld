@@ -126,7 +126,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1 }}
         >
-          {["Board Games", "Puzzles", "Riddles", "Strategy", "Cloud"].map((tag, i) => (
+          {["Problem Solver", "Builder", "Strategic Thinker", "Lifelong Learner", "Cloud"].map((tag, i) => (
             <motion.span
               key={tag}
               className="text-[11px] font-mono px-3 py-1.5 rounded-full"
