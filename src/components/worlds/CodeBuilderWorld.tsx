@@ -57,7 +57,7 @@ const CodeBuilderWorld = () => {
 
   const tabStyle = (active: boolean, color: string) => ({
     background: active ? `${color}10` : "rgba(45,42,38,0.03)",
-    color: active ? color : "rgba(80,70,60,0.4)",
+    color: active ? color : "rgba(80,70,60,0.6)",
     border: `1px solid ${active ? `${color}25` : "rgba(180,140,100,0.1)"}`,
   });
 
