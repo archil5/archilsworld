@@ -1,32 +1,23 @@
-import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useMemo } from "react";
 import * as THREE from "three";
+import { Line } from "@react-three/drei";
 import type { ChapterData } from "@/data/chapters";
 
 const BoardPath = ({ chapters }: { chapters: ChapterData[] }) => {
-  const lineRef = useRef<THREE.Line>(null);
-
   const points = useMemo(() => {
     const pts = chapters.map((c) => new THREE.Vector3(...c.position));
     const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
-    return curve.getPoints(100);
+    return curve.getPoints(100).map((p) => [p.x, p.y, p.z] as [number, number, number]);
   }, [chapters]);
 
-  const geometry = useMemo(() => {
-    const geo = new THREE.BufferGeometry().setFromPoints(points);
-    return geo;
-  }, [points]);
-
-  useFrame((state) => {
-    if (!lineRef.current) return;
-    const mat = lineRef.current.material as THREE.LineBasicMaterial;
-    mat.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-  });
-
   return (
-    <line ref={lineRef as any} geometry={geometry}>
-      <lineBasicMaterial color="#c9a96e" transparent opacity={0.3} linewidth={1} />
-    </line>
+    <Line
+      points={points}
+      color="#c9a96e"
+      lineWidth={1.5}
+      transparent
+      opacity={0.3}
+    />
   );
 };
 
