@@ -244,7 +244,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   </span>
                 </div>
                 <h3 className="font-display text-lg md:text-xl font-bold" style={{ color: "#2d2a26" }}>{role.title}</h3>
-                <p className="font-mono text-xs" style={{ color: "rgba(80,70,60,0.45)" }}>{role.period}</p>
+                <p className="font-mono text-xs" style={{ color: "rgba(80,70,60,0.6)" }}>{role.period}</p>
               </div>
             </div>
           </div>
