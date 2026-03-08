@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
 import { CHAPTERS } from "@/data/chapters";
+import { brandLogos } from "@/data/brandLogos";
 import HexTile from "@/components/three/HexTile";
 import BoardPath from "@/components/three/BoardPath";
 import Particles from "@/components/three/Particles";
