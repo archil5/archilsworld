@@ -8,6 +8,12 @@ import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/
    TYPES & DATA
    ═══════════════════════════════════════════════════════════ */
 
+interface ProjectShowcase {
+  name: string;
+  description: string;
+  highlights: string[];
+}
+
 interface RoleStop {
   company: string;
   title: string;
@@ -18,6 +24,7 @@ interface RoleStop {
   impact: string;
   techStack: string[];
   wins: string[];
+  project: ProjectShowcase;
   diagramPuzzle: DiagramPuzzleData;
 }
 
@@ -275,6 +282,17 @@ const stops: RoleStop[] = [
       "Content safety + model governance framework",
       "Full private networking — zero public exposure",
     ],
+    project: {
+      name: "Enterprise AI & RAG Platform",
+      description: "A secure, internal generative AI system leveraging Azure AI Search, Graph RAG (Cosmos DB), and OpenAI models. It ingests documents, processes them through an orchestration pipeline, and serves context-aware answers through a secure FastAPI backend, fully isolated behind API Gateways and strict content safety filters.",
+      highlights: [
+        "Azure AI Search + Graph RAG (Cosmos DB) for hybrid retrieval",
+        "OpenAI models (o1 & 4o) with content safety filters",
+        "Data Orchestrator ingestion pipeline with embedding generation",
+        "Full private networking — zero public exposure via APIM",
+        "RAIOps open-source evals for model quality monitoring",
+      ],
+    },
     diagramPuzzle: aiRagDiagram,
   },
   {
@@ -293,6 +311,17 @@ const stops: RoleStop[] = [
       "Private API Gateway — no public internet exposure",
       "Multi-region active-active serving 1000+ developers",
     ],
+    project: {
+      name: "Secure API Gateway & Identity Verification Pattern",
+      description: "A standardized, zero-trust network doorway for internal on-premise applications communicating with cloud backends. Traffic flows through a private Direct Connect to an AWS Load Balancer, hitting a Private API Gateway. Identity is validated via Custom Lambda Authorizers securely querying an Enterprise Identity Provider through a corporate proxy, before routing to serverless Fargate/Lambda backends.",
+      highlights: [
+        "NLB with TLS termination over Direct Connect",
+        "Private API Gateway via VPC Interface Endpoints",
+        "Custom Lambda Authorizers for enterprise identity verification",
+        "Corporate proxy integration for secure identity provider queries",
+        "VPC Link to ECS Fargate + direct Lambda backend integrations",
+      ],
+    },
     diagramPuzzle: apiGatewayDiagram,
   },
   {
@@ -311,6 +340,17 @@ const stops: RoleStop[] = [
       "Compliance-as-code via reusable workflows",
       "Corporate proxy integration for secure outbound",
     ],
+    project: {
+      name: "Ephemeral Autoscaling CI/CD Runners",
+      description: "A highly secure, automated pipeline using ephemeral ECS Fargate containers as self-hosted GitHub runners. Triggered by repository events via autoscaling Lambdas, these runners execute in an isolated operations account, pull secure credentials locally, route outbound traffic through a corporate proxy, and deploy to target environments before immediately terminating.",
+      highlights: [
+        "Ephemeral ECS Fargate containers as self-hosted GitHub runners",
+        "Autoscaling Lambda triggered by repository events",
+        "Isolated operations account with SSM, Secrets Manager, ECR",
+        "Corporate proxy for secure outbound to GitHub APIs",
+        "Reusable compliance workflows across application repos",
+      ],
+    },
     diagramPuzzle: cicdRunnersDiagram,
   },
 ];
@@ -764,6 +804,63 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                         </span>
                       </motion.div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Some of My Work — Project Showcase */}
+                <div className="col-span-1 md:col-span-2 mt-2">
+                  <div
+                    className="rounded-xl p-5"
+                    style={{
+                      background: `${stop.color}04`,
+                      border: `1px solid ${stop.color}12`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-sm">🏗️</span>
+                      <p
+                        className="text-[9px] font-mono uppercase tracking-widest"
+                        style={{ color: stop.color }}
+                      >
+                        Featured Project
+                      </p>
+                    </div>
+                    <h4
+                      className="font-display text-base font-bold mb-2"
+                      style={{ color: "#2d2a26" }}
+                    >
+                      {stop.project.name}
+                    </h4>
+                    <p
+                      className="text-xs font-body leading-relaxed mb-4"
+                      style={{ color: "rgba(45,42,38,0.75)" }}
+                    >
+                      {stop.project.description}
+                    </p>
+                    <div className="space-y-1.5">
+                      {stop.project.highlights.map((h, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex items-start gap-2 py-1"
+                          initial={{ opacity: 0, x: 8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 + i * 0.06 }}
+                        >
+                          <span
+                            className="text-[8px] mt-1 font-mono"
+                            style={{ color: stop.color }}
+                          >
+                            ◆
+                          </span>
+                          <span
+                            className="text-[11px] font-mono"
+                            style={{ color: "rgba(45,42,38,0.7)" }}
+                          >
+                            {h}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
