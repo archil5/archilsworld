@@ -188,7 +188,7 @@ const NetworkWorld = () => {
                 </motion.div>
               ) : (
                 <div className="text-center">
-                  <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.35)" }}>
+                  <p className="font-body text-sm italic" style={{ color: "rgba(80,70,60,0.55)" }}>
                     Click a node to inspect it. Route the packet to win.
                   </p>
                 </div>

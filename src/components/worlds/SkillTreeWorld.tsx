@@ -141,7 +141,7 @@ const SkillTreeWorld = () => {
               );
             })}
           </svg>
-          <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.3)" }}>
+          <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(80,70,60,0.55)" }}>
             Click available nodes to unlock skills
           </p>
         </div>

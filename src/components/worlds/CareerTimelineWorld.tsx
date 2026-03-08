@@ -432,7 +432,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           {activeRole < roles.length - 1 && (
             <motion.button
               className="mt-3 text-xs font-display tracking-wider flex items-center gap-2 mx-auto cursor-pointer"
-              style={{ color: "rgba(80,70,60,0.4)" }}
+              style={{ color: "rgba(80,70,60,0.6)" }}
               onClick={() => setActiveRole(prev => Math.min(prev + 1, roles.length - 1))}
               animate={{ x: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
