@@ -24,8 +24,8 @@ interface RoleStop {
   impact: string;
   techStack: string[];
   wins: string[];
-  project: ProjectShowcase;
-  diagramPuzzle: DiagramPuzzleData;
+  project?: ProjectShowcase;
+  diagramPuzzle?: DiagramPuzzleData;
 }
 
 /* ───────────────────────────────────────────────────────────
@@ -327,7 +327,7 @@ const stops: RoleStop[] = [
   {
     company: "BMO",
     title: "DevOps Engineer",
-    period: "Sep 2018–Jul 2022",
+    period: "Sep 2020–Jul 2022",
     color: "#24292e",
     narrative:
       "Built the CI/CD backbone. Ephemeral runners, automated compliance, and zero-trust deployment pipelines that process thousands of jobs daily.",
@@ -352,6 +352,34 @@ const stops: RoleStop[] = [
       ],
     },
     diagramPuzzle: cicdRunnersDiagram,
+  },
+  {
+    company: "RBC",
+    title: "DevOps Engineer — Cybersecurity",
+    period: "Sep 2018–Sep 2020",
+    color: "#003168",
+    narrative:
+      "Where the journey started. Automating cybersecurity operations at one of Canada's largest banks — vulnerability scanning, compliance automation, and building the tools the security team relied on daily.",
+    challenge: "Automate manual cybersecurity processes across enterprise infrastructure",
+    impact: "Reduced vulnerability remediation time by 60% through automation",
+    techStack: ["Python", "Ansible", "Jenkins", "Splunk", "Linux", "Bash"],
+    wins: [
+      "Automated vulnerability scanning & remediation workflows",
+      "Built security compliance dashboards in Splunk",
+      "CI/CD pipelines for security tooling deployment",
+      "Infrastructure-as-code for security appliances",
+    ],
+    project: {
+      name: "Cybersecurity Automation Platform",
+      description: "An end-to-end automation platform for enterprise cybersecurity operations. Automated vulnerability scanning across thousands of endpoints, integrated findings into Splunk dashboards for real-time visibility, and built Ansible playbooks for automated remediation — reducing manual security operations by over 60%.",
+      highlights: [
+        "Automated vulnerability scanning across 10,000+ endpoints",
+        "Splunk dashboards for real-time security posture visibility",
+        "Ansible playbooks for automated remediation workflows",
+        "Jenkins pipelines for security tooling CI/CD",
+        "Python-based threat intelligence aggregation",
+      ],
+    },
   },
 ];
 
@@ -421,7 +449,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [revealed, setRevealed] = useState(0);
   const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
   const [solvedStops, setSolvedStops] = useState<Set<number>>(new Set());
-  const allSolved = solvedStops.size === stops.length;
+  const puzzleStops = stops.filter(s => s.diagramPuzzle);
+  const allSolved = puzzleStops.length > 0 && solvedStops.size === puzzleStops.length;
 
   useEffect(() => {
     const timers = stops.map((_, i) =>
@@ -462,7 +491,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           Think you know cloud architecture?
         </p>
         <p className="text-sm font-display font-bold" style={{ color: "#2d2a26" }}>
-          Try solving these flows — {stops.length} real-world architectures, {stops.reduce((acc, s) => acc + s.diagramPuzzle.diagram.hiddenNodeIds.length, 0)} hidden nodes total
+          Try solving these flows — {stops.filter(s => s.diagramPuzzle).length} architecture puzzles, {stops.reduce((acc, s) => acc + (s.diagramPuzzle?.diagram.hiddenNodeIds.length || 0), 0)} hidden nodes total
         </p>
       </motion.div>
 
@@ -626,6 +655,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 >
                   Overview
                 </button>
+                {stop.diagramPuzzle && (
                 <button
                   onClick={() => setPanel("puzzle")}
                   className="relative text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
@@ -679,6 +709,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                     )}
                   </span>
                 </button>
+                )}
               </div>
             </div>
 
@@ -864,7 +895,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   </div>
                 </div>
               </div>
-            ) : (
+            ) : stop.diagramPuzzle ? (
               <div
                 className="p-6 overflow-y-auto"
                 style={{
@@ -882,7 +913,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   }
                 />
               </div>
-            )}
+            ) : null}
 
             {/* Nav */}
             <div
