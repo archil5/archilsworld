@@ -49,9 +49,9 @@ const previewStages: Record<number, JSX.Element> = {
       <h1 className="text-2xl font-bold mb-1" style={{ color: "#E44D26" }}>Hello, World.</h1>
       <p className="text-sm mb-2" style={{ color: "#2d2a26" }}>Built by a kid who wouldn't stop asking <em>how</em>.</p>
       <div style={{ overflow: "hidden", width: "100%" }}>
-        <motion.p className="text-xs italic whitespace-nowrap"
-          animate={{ x: ["100%", "-100%"] }}
-          transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
+        <motion.p className="text-xs italic inline-block"
+          animate={{ x: ["0%", "calc(100% - 180px)", "0%"] }}
+          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
           style={{ color: "#b5653a" }}>
           This changes everything.
         </motion.p>
