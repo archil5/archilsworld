@@ -202,11 +202,13 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 boxShadow: i === activeRole ? `0 2px 12px ${r.brandColor}12` : "none",
               }}
             >
-              <span className="text-sm font-bold px-1.5 py-0.5 rounded" style={{
-                color: "#fff",
-                background: r.brandColor,
-                fontSize: "9px",
-              }}>{r.company}</span>
+              {brandLogos[r.company] ? (
+                <img src={brandLogos[r.company]} alt={r.company} className="h-4 object-contain" />
+              ) : (
+                <span className="text-sm font-bold px-1.5 py-0.5 rounded" style={{
+                  color: "#fff", background: r.brandColor, fontSize: "9px",
+                }}>{r.company}</span>
+              )}
               <div className="text-left">
                 <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>{r.period}</p>
                 <p className="text-xs font-display whitespace-nowrap" style={{ color: i === activeRole ? "#2d2a26" : "rgba(80,70,60,0.45)" }}>
