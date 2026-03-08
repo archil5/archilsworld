@@ -10,7 +10,8 @@ export interface ChapterData {
   skills?: string[];
   position: [number, number, number];
   color: string;
-  brandLogo?: string; // text-based brand identifier
+  brandLogo?: string;
+  image?: string;
 }
 
 export const CHAPTERS: ChapterData[] = [
@@ -68,31 +69,30 @@ export const CHAPTERS: ChapterData[] = [
     brandLogo: "Dalhousie",
   },
   {
-    id: "rbc",
-    icon: "🏦",
-    label: "RBC",
-    year: "2018",
-    category: "career",
-    title: "First Move on the Board",
-    subtitle: "RBC · DevOps Engineer — Cyber Security",
-    narrative: "My first move on the board. I walked into one of the largest banks in the country and built automation for cybersecurity compliance.",
-    skills: ["Ansible", "Python", "Jenkins", "Palo Alto", "DevOps"],
-    position: [6, 0, -1],
-    color: "#005DAA",
-    brandLogo: "RBC",
-  },
-  {
-    id: "bmo",
-    icon: "☁️",
-    label: "BMO",
-    year: "2019–Present",
+    id: "career",
+    icon: "💼",
+    label: "Career",
+    year: "2018–Present",
     category: "career",
     title: "The Full Journey",
-    subtitle: "BMO · Cloud Infra → Senior → Lead → Principal → AI",
-    narrative: "From cloud infrastructure to AI architecture — seven years of building, leading, and transforming platform engineering at scale.",
-    skills: ["AWS", "Azure", "Kubernetes", "Terraform", "AI/ML"],
-    position: [9, 0, -3],
+    subtitle: "RBC → BMO · From DevOps to Principal to AI",
+    narrative: "From cybersecurity automation at RBC to architecting enterprise AI platforms at BMO — seven years of building, leading, and transforming at scale.",
+    skills: ["AWS", "Azure", "Kubernetes", "Terraform", "AI/ML", "Leadership"],
+    position: [6, 0, -1],
     color: "#0075BE",
-    brandLogo: "BMO",
+    brandLogo: "Career",
+  },
+  {
+    id: "contact",
+    icon: "📬",
+    label: "Contact",
+    year: "Now",
+    category: "current",
+    title: "Let's Connect",
+    subtitle: "The next chapter starts with a conversation",
+    narrative: "I'm always open to connecting — whether it's about cloud architecture, AI, leadership, or the next big thing.",
+    position: [9, 0, -3],
+    color: "#b5653a",
+    image: "archil",
   },
 ];

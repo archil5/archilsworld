@@ -5,8 +5,9 @@ import CodeBuilderWorld from "./worlds/CodeBuilderWorld";
 import NetworkWorld from "./worlds/NetworkWorld";
 import SkillTreeWorld from "./worlds/SkillTreeWorld";
 import CareerTimelineWorld from "./worlds/CareerTimelineWorld";
+import ContactWorld from "./worlds/ContactWorld";
 import type { ChapterData } from "@/data/chapters";
-import { brandLogos } from "@/data/brandLogos";
+import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 
 interface WorldDiveProps {
   chapter: ChapterData | null;
@@ -18,8 +19,8 @@ const worldMap: Record<string, () => JSX.Element> = {
   "html-css": () => <CodeBuilderWorld />,
   "networking": () => <NetworkWorld />,
   "dalhousie": () => <SkillTreeWorld />,
-  "rbc": () => <CareerTimelineWorld startRole="rbc" />,
-  "bmo": () => <CareerTimelineWorld startRole="bmo-infra" />,
+  "career": () => <CareerTimelineWorld startRole="rbc" />,
+  "contact": () => <ContactWorld />,
 };
 
 const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
@@ -67,15 +68,18 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             </button>
 
             <div className="flex items-center gap-3">
-              {chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
+              {chapter.image && chapterImages[chapter.image] ? (
+                <img src={chapterImages[chapter.image]} alt="Archil" className="w-8 h-8 rounded-full object-cover" style={{ border: `2px solid ${chapter.color}40` }} />
+              ) : chapter.brandLogo === "Career" ? (
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded" style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}20` }}>
+                  <img src={careerLogos.RBC} alt="RBC" className="h-5 object-contain" />
+                  <span style={{ color: "#aaa", fontSize: 8 }}>+</span>
+                  <img src={careerLogos.BMO} alt="BMO" className="h-5 object-contain" />
+                </span>
+              ) : chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
                 <span className="inline-flex items-center px-2 py-1 rounded" style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}20` }}>
                   <img src={brandLogos[chapter.brandLogo]} alt={chapter.brandLogo} className="h-6 object-contain" />
                 </span>
-              ) : chapter.brandLogo ? (
-                <span className="text-sm font-bold px-2 py-1 rounded" style={{
-                  color: "#fff",
-                  background: chapter.color,
-                }}>{chapter.brandLogo}</span>
               ) : (
                 <span className="text-2xl">{chapter.icon}</span>
               )}
@@ -83,7 +87,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
                 <p className="font-display text-sm tracking-wider" style={{ color: "#2d2a26" }}>
                   {chapter.title}
                 </p>
-                <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.45)" }}>
+                <p className="text-[10px] font-mono" style={{ color: "#6b6560" }}>
                   {chapter.year}
                 </p>
               </div>
@@ -105,7 +109,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
           >
-            <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.25)" }}>
+            <p className="text-[10px] font-mono" style={{ color: "#8a8078" }}>
               Press ESC or click Back to return to the board
             </p>
           </motion.div>
