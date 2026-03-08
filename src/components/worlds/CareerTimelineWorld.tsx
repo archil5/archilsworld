@@ -1275,6 +1275,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           </div>
         </motion.div>
       </AnimatePresence>
+      <AnimatePresence>
+        {allSolved && <AllSolvedTrophy color={stop.color} />}
+      </AnimatePresence>
     </div>
   );
 };
