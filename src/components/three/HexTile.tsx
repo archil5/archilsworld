@@ -11,6 +11,8 @@ const HexTile = ({
   isVisited,
   onClick,
   index,
+  icon,
+  label,
   brandLogo,
   image,
 }: {
@@ -52,8 +54,8 @@ const HexTile = ({
   useFrame((state) => {
     if (!groupRef.current) return;
     const t = state.clock.elapsedTime;
-
     const floatY = baseY + Math.sin(t * 0.8 + index * 0.5) * 0.05;
+
     groupRef.current.position.set(position[0], isActive ? baseY + 0.35 : floatY, position[2]);
 
     const s = isActive ? 1.12 + Math.sin(t * 3) * 0.02 : 1;
@@ -105,17 +107,22 @@ const HexTile = ({
           emissive={isActive ? color : "#000000"}
           emissiveIntensity={isActive ? 0.1 : 0}
         />
-      </mesh>
 
-      <Suspense fallback={null}>
-        {isCareer ? (
-          <CareerSplitSurface leftUrl={careerLogos.RBC} rightUrl={careerLogos.BMO} isActive={isActive} />
-        ) : imageSrc ? (
-          <TileSurface textureUrl={imageSrc} isActive={isActive} size={0.57} />
-        ) : logoSrc ? (
-          <TileSurface textureUrl={logoSrc} isActive={isActive} size={0.5} />
-        ) : null}
-      </Suspense>
+        <Suspense fallback={null}>
+          {isCareer ? (
+            <CareerSplitSurface leftUrl={careerLogos.RBC} rightUrl={careerLogos.BMO} isActive={isActive} />
+          ) : imageSrc ? (
+            <TileSurface textureUrl={imageSrc} isActive={isActive} size={0.82} />
+          ) : logoSrc ? (
+            <TileSurface textureUrl={logoSrc} isActive={isActive} size={0.74} />
+          ) : (
+            <mesh position={[0, 0, 0.158]}>
+              <circleGeometry args={[0.26, 40]} />
+              <meshBasicMaterial color={color} transparent opacity={0.22} toneMapped={false} />
+            </mesh>
+          )}
+        </Suspense>
+      </mesh>
 
       {isActive && <pointLight color={color} intensity={3} distance={5} position={[0, 1.8, 0]} />}
     </group>

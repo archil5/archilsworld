@@ -1,47 +1,62 @@
-import { useTexture } from "@react-three/drei";
+import { Decal, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useMemo } from "react";
 
-const prepareTexture = (texture: THREE.Texture) => {
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 8;
+const usePreparedTexture = (textureUrl: string) => {
+  const texture = useTexture(textureUrl);
+
+  useMemo(() => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.anisotropy = 8;
+    texture.needsUpdate = true;
+  }, [texture]);
+
+  return texture;
 };
 
 /**
- * Texture medallion placed on top of hex tile.
- * Rendered as sibling mesh in tile group (not child of extruded mesh).
+ * Reliable logo surface: projects as decal + visible top inlay plane fallback.
+ * Render this INSIDE the hex mesh (local Z is tile depth).
  */
 const TileSurface = ({
   textureUrl,
   isActive,
-  size = 0.55,
+  size = 0.72,
 }: {
   textureUrl: string;
   isActive: boolean;
   size?: number;
 }) => {
-  const texture = useTexture(textureUrl);
-
-  useMemo(() => {
-    prepareTexture(texture);
-  }, [texture]);
+  const texture = usePreparedTexture(textureUrl);
 
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.165, 0]} renderOrder={4}>
-      <circleGeometry args={[size, 64]} />
-      <meshStandardMaterial
-        map={texture}
-        color="#ffffff"
-        transparent
-        roughness={isActive ? 0.35 : 0.7}
-        metalness={isActive ? 0.08 : 0.02}
-        polygonOffset
-        polygonOffsetFactor={-2}
-        polygonOffsetUnits={-2}
-      />
-    </mesh>
+    <group>
+      <Decal position={[0, 0, 0.145]} scale={[size, size, size]}>
+        <meshStandardMaterial
+          map={texture}
+          transparent
+          roughness={isActive ? 0.35 : 0.75}
+          metalness={isActive ? 0.08 : 0.02}
+          polygonOffset
+          polygonOffsetFactor={-2}
+        />
+      </Decal>
+
+      {/* Inlay plate fallback (guarantees visibility) */}
+      <mesh position={[0, 0, 0.158]} renderOrder={10}>
+        <circleGeometry args={[size * 0.47, 64]} />
+        <meshBasicMaterial
+          map={texture}
+          transparent
+          opacity={0.96}
+          toneMapped={false}
+          depthTest
+          depthWrite={false}
+        />
+      </mesh>
+    </group>
   );
 };
 
@@ -54,47 +69,36 @@ export const CareerSplitSurface = ({
   rightUrl: string;
   isActive: boolean;
 }) => {
-  const leftTex = useTexture(leftUrl);
-  const rightTex = useTexture(rightUrl);
-
-  useMemo(() => {
-    prepareTexture(leftTex);
-    prepareTexture(rightTex);
-  }, [leftTex, rightTex]);
+  const leftTex = usePreparedTexture(leftUrl);
+  const rightTex = usePreparedTexture(rightUrl);
 
   return (
-    <group position={[0, 0.165, 0]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={4}>
-      <mesh position={[-0.28, 0, 0]}>
-        <circleGeometry args={[0.32, 64]} />
+    <group>
+      <Decal position={[0, 0, 0.145]} scale={[0.88, 0.88, 0.88]}>
         <meshStandardMaterial
-          map={leftTex}
-          color="#ffffff"
-          transparent
-          roughness={isActive ? 0.35 : 0.7}
+          color="#dfd7cb"
+          roughness={isActive ? 0.35 : 0.75}
           metalness={isActive ? 0.08 : 0.02}
           polygonOffset
           polygonOffsetFactor={-2}
-          polygonOffsetUnits={-2}
         />
+      </Decal>
+
+      {/* Left half (RBC) */}
+      <mesh position={[-0.26, 0, 0.158]} renderOrder={11}>
+        <circleGeometry args={[0.29, 64]} />
+        <meshBasicMaterial map={leftTex} transparent opacity={0.96} toneMapped={false} depthWrite={false} />
       </mesh>
 
-      <mesh position={[0, 0, 0.002]}>
-        <planeGeometry args={[0.02, 0.8]} />
-        <meshStandardMaterial color="#b0a898" roughness={1} metalness={0} transparent opacity={0.35} />
+      {/* Right half (BMO) */}
+      <mesh position={[0.26, 0, 0.158]} renderOrder={11}>
+        <circleGeometry args={[0.29, 64]} />
+        <meshBasicMaterial map={rightTex} transparent opacity={0.96} toneMapped={false} depthWrite={false} />
       </mesh>
 
-      <mesh position={[0.28, 0, 0]}>
-        <circleGeometry args={[0.32, 64]} />
-        <meshStandardMaterial
-          map={rightTex}
-          color="#ffffff"
-          transparent
-          roughness={isActive ? 0.35 : 0.7}
-          metalness={isActive ? 0.08 : 0.02}
-          polygonOffset
-          polygonOffsetFactor={-2}
-          polygonOffsetUnits={-2}
-        />
+      <mesh position={[0, 0, 0.159]} renderOrder={12}>
+        <planeGeometry args={[0.02, 0.72]} />
+        <meshBasicMaterial color="#b0a898" transparent opacity={0.45} toneMapped={false} depthWrite={false} />
       </mesh>
     </group>
   );
