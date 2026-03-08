@@ -327,7 +327,7 @@ const stops: RoleStop[] = [
   {
     company: "BMO",
     title: "DevOps Engineer",
-    period: "Sep 2018–Jul 2022",
+    period: "Sep 2020–Jul 2022",
     color: "#24292e",
     narrative:
       "Built the CI/CD backbone. Ephemeral runners, automated compliance, and zero-trust deployment pipelines that process thousands of jobs daily.",
@@ -352,6 +352,34 @@ const stops: RoleStop[] = [
       ],
     },
     diagramPuzzle: cicdRunnersDiagram,
+  },
+  {
+    company: "RBC",
+    title: "DevOps Engineer — Cybersecurity",
+    period: "Sep 2018–Sep 2020",
+    color: "#003168",
+    narrative:
+      "Where the journey started. Automating cybersecurity operations at one of Canada's largest banks — vulnerability scanning, compliance automation, and building the tools the security team relied on daily.",
+    challenge: "Automate manual cybersecurity processes across enterprise infrastructure",
+    impact: "Reduced vulnerability remediation time by 60% through automation",
+    techStack: ["Python", "Ansible", "Jenkins", "Splunk", "Linux", "Bash"],
+    wins: [
+      "Automated vulnerability scanning & remediation workflows",
+      "Built security compliance dashboards in Splunk",
+      "CI/CD pipelines for security tooling deployment",
+      "Infrastructure-as-code for security appliances",
+    ],
+    project: {
+      name: "Cybersecurity Automation Platform",
+      description: "An end-to-end automation platform for enterprise cybersecurity operations. Automated vulnerability scanning across thousands of endpoints, integrated findings into Splunk dashboards for real-time visibility, and built Ansible playbooks for automated remediation — reducing manual security operations by over 60%.",
+      highlights: [
+        "Automated vulnerability scanning across 10,000+ endpoints",
+        "Splunk dashboards for real-time security posture visibility",
+        "Ansible playbooks for automated remediation workflows",
+        "Jenkins pipelines for security tooling CI/CD",
+        "Python-based threat intelligence aggregation",
+      ],
+    },
   },
 ];
 
