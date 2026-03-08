@@ -974,17 +974,52 @@ const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: Risk
 };
 
 /* ═══════════════════════════════════════════════════════════
+   REVEAL SOLUTION BUTTON
+   ═══════════════════════════════════════════════════════════ */
+
+const RevealButton = ({ onReveal, color, solved }: { onReveal: () => void; color: string; solved: boolean }) => {
+  if (solved) return null;
+  return (
+    <motion.button
+      onClick={onReveal}
+      className="flex items-center gap-1.5 text-[9px] font-mono px-3 py-1.5 rounded-lg cursor-pointer transition-all mt-2"
+      style={{
+        color: "rgba(80,70,60,0.5)",
+        background: "rgba(180,140,100,0.04)",
+        border: "1px solid rgba(180,140,100,0.12)",
+      }}
+      whileHover={{ scale: 1.03, background: `${color}08` }}
+      whileTap={{ scale: 0.97 }}
+    >
+      <Eye size={10} /> Reveal Solution
+    </motion.button>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
    PUZZLE ROUTER
    ═══════════════════════════════════════════════════════════ */
 
 const PuzzleRouter = ({ puzzle, color, solved, onSolve }: { puzzle: RolePuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+  const [autoReveal, setAutoReveal] = useState(false);
+
+  const handleReveal = useCallback(() => {
+    setAutoReveal(true);
+    onSolve();
+  }, [onSolve]);
+
+  // Reset autoReveal when puzzle changes
+  useEffect(() => { setAutoReveal(false); }, [puzzle.title]);
+
+  const revealButton = <RevealButton onReveal={handleReveal} color={color} solved={solved || autoReveal} />;
+
   switch (puzzle.type) {
-    case "terminal-seq": return <TerminalSequencerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "arch-flow": return <ArchFlowPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "gov-matrix": return <GovMatrixPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "pipeline": return <PipelineAssemblerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "capacity": return <CapacityPlannerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
-    case "risk-assess": return <RiskAssessmentPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} />;
+    case "terminal-seq": return <TerminalSequencerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "arch-flow": return <ArchFlowPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "gov-matrix": return <GovMatrixPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "pipeline": return <PipelineAssemblerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "capacity": return <CapacityPlannerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "risk-assess": return <RiskAssessmentPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
   }
 };
 
