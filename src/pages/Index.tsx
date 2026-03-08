@@ -1,7 +1,7 @@
-import GameBoard from "@/components/GameBoard";
+import Experience from "@/components/Experience";
 
 const Index = () => {
-  return <GameBoard />;
+  return <Experience />;
 };
 
 export default Index;
