@@ -269,7 +269,7 @@ const stops: JourneyStop[] = [
    PUZZLE 1: TERMINAL SEQUENCER
    ═══════════════════════════════════════════════════════════ */
 
-const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: TerminalPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: TerminalPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
@@ -298,7 +298,7 @@ const TerminalSequencerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
           <Terminal size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        {!isDone && <button onClick={() => { setPlaced([]); setWrongId(null); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>}
+        <button onClick={() => { setPlaced([]); setWrongId(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
@@ -384,7 +384,7 @@ const PAD_X = 20;
 const PAD_Y = 30;
 const getNodeCenter = (node: ArchNode) => ({ x: PAD_X + node.col * GRID_GAP_X + NODE_W / 2, y: PAD_Y + node.row * GRID_GAP_Y + NODE_H / 2 });
 
-const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: ArchFlowPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [connected, setConnected] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const svgW = PAD_X * 2 + 3 * GRID_GAP_X + NODE_W;
@@ -424,7 +424,7 @@ const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButt
           <Network size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        {!isDone && <button onClick={() => { setConnected([]); setWrongId(null); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>}
+        <button onClick={() => { setConnected([]); setWrongId(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
@@ -500,7 +500,7 @@ const ArchFlowPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButt
    PUZZLE 3: GOVERNANCE MATRIX
    ═══════════════════════════════════════════════════════════ */
 
-const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: GovMatrixPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [matched, setMatched] = useState<Record<string, string>>({});
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const [wrongPair, setWrongPair] = useState<string | null>(null);
@@ -535,7 +535,7 @@ const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealBut
           <Grid3X3 size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        {!isDone && <button onClick={() => { setMatched({}); setSelectedAccount(null); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>}
+        <button onClick={() => { setMatched({}); setSelectedAccount(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
       <p className="text-[9px] font-mono" style={{ color: `${color}80` }}>
@@ -611,7 +611,7 @@ const GovMatrixPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealBut
    PUZZLE 4: PIPELINE ASSEMBLER
    ═══════════════════════════════════════════════════════════ */
 
-const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: PipelinePuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [placed, setPlaced] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const isDone = solved || autoReveal || placed.length === puzzle.correctOrder.length;
@@ -641,7 +641,7 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
           <Workflow size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        {!isDone && <button onClick={() => { setPlaced([]); setWrongId(null); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>}
+        <button onClick={() => { setPlaced([]); setWrongId(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
@@ -724,7 +724,7 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
    PUZZLE 5: CAPACITY PLANNER
    ═══════════════════════════════════════════════════════════ */
 
-const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [assignments, setAssignments] = useState<Record<string, string>>({});
   const [selectedWorkload, setSelectedWorkload] = useState<string | null>(null);
   const [wrongRegion, setWrongRegion] = useState<string | null>(null);
@@ -766,7 +766,7 @@ const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, rev
           <BarChart3 size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        {!isDone && <button onClick={() => { setAssignments({}); setSelectedWorkload(null); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>}
+        <button onClick={() => { setAssignments({}); setSelectedWorkload(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
@@ -862,7 +862,7 @@ const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, rev
    PUZZLE 6: AI RISK ASSESSMENT
    ═══════════════════════════════════════════════════════════ */
 
-const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
+const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton, onReset }: { puzzle: RiskAssessPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode; onReset?: () => void }) => {
   const [decisions, setDecisions] = useState<Record<string, boolean>>({});
   const [wrongId, setWrongId] = useState<string | null>(null);
   const [showReason, setShowReason] = useState<string | null>(null);
@@ -893,7 +893,7 @@ const RiskAssessmentPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, reve
           <Shield size={14} style={{ color }} />
           <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color }}>{puzzle.title}</p>
         </div>
-        {!isDone && <button onClick={() => { setDecisions({}); setWrongId(null); setShowReason(null); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>}
+        <button onClick={() => { setDecisions({}); setWrongId(null); setShowReason(null); onReset?.(); }} className="text-[9px] font-mono px-2 py-1 rounded cursor-pointer" style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>Reset</button>
       </div>
       <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>{puzzle.prompt}</p>
 
@@ -1017,7 +1017,7 @@ const RevealButton = ({ onReveal, color, solved }: { onReveal: () => void; color
    PUZZLE ROUTER
    ═══════════════════════════════════════════════════════════ */
 
-const PuzzleRouter = ({ puzzle, color, solved, onSolve }: { puzzle: RolePuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const PuzzleRouter = ({ puzzle, color, solved, onSolve, onUnsolve }: { puzzle: RolePuzzle; color: string; solved: boolean; onSolve: () => void; onUnsolve: () => void }) => {
   const [autoReveal, setAutoReveal] = useState(false);
 
   const handleReveal = useCallback(() => {
@@ -1025,18 +1025,23 @@ const PuzzleRouter = ({ puzzle, color, solved, onSolve }: { puzzle: RolePuzzle; 
     onSolve();
   }, [onSolve]);
 
+  const handleReset = useCallback(() => {
+    setAutoReveal(false);
+    onUnsolve();
+  }, [onUnsolve]);
+
   // Reset autoReveal when puzzle changes
   useEffect(() => { setAutoReveal(false); }, [puzzle.title]);
 
   const revealButton = <RevealButton onReveal={handleReveal} color={color} solved={solved || autoReveal} />;
 
   switch (puzzle.type) {
-    case "terminal-seq": return <TerminalSequencerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
-    case "arch-flow": return <ArchFlowPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
-    case "gov-matrix": return <GovMatrixPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
-    case "pipeline": return <PipelineAssemblerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
-    case "capacity": return <CapacityPlannerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
-    case "risk-assess": return <RiskAssessmentPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} />;
+    case "terminal-seq": return <TerminalSequencerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "arch-flow": return <ArchFlowPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "gov-matrix": return <GovMatrixPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "pipeline": return <PipelineAssemblerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "capacity": return <CapacityPlannerPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
+    case "risk-assess": return <RiskAssessmentPuzzle puzzle={puzzle} color={color} solved={solved} onSolve={onSolve} autoReveal={autoReveal} revealButton={revealButton} onReset={handleReset} />;
   }
 };
 
@@ -1192,7 +1197,8 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
             ) : (
               <div className="p-6 overflow-y-auto" style={{ background: "#fefcf9", maxHeight: "60vh" }}>
                 <PuzzleRouter puzzle={stop.puzzle} color={stop.color} solved={solvedStops.has(activeStop)}
-                  onSolve={() => setSolvedStops(prev => new Set(prev).add(activeStop))} />
+                  onSolve={() => setSolvedStops(prev => new Set(prev).add(activeStop))}
+                  onUnsolve={() => setSolvedStops(prev => { const next = new Set(prev); next.delete(activeStop); return next; })} />
               </div>
             )}
 
