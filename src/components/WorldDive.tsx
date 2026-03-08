@@ -5,7 +5,6 @@ import CodeBuilderWorld from "./worlds/CodeBuilderWorld";
 import NetworkWorld from "./worlds/NetworkWorld";
 import SkillTreeWorld from "./worlds/SkillTreeWorld";
 import CareerTimelineWorld from "./worlds/CareerTimelineWorld";
-import NeuralNetworkWorld from "./worlds/NeuralNetworkWorld";
 import type { ChapterData } from "@/data/chapters";
 
 interface WorldDiveProps {
@@ -13,17 +12,13 @@ interface WorldDiveProps {
   onClose: () => void;
 }
 
-const worldMap: Record<string, (chapterId?: string) => JSX.Element> = {
+const worldMap: Record<string, () => JSX.Element> = {
   "dos-games": () => <DosTerminalWorld />,
   "html-css": () => <CodeBuilderWorld />,
   "networking": () => <NetworkWorld />,
   "dalhousie": () => <SkillTreeWorld />,
-  "rbc": (id) => <CareerTimelineWorld startRole={id} />,
-  "bmo-infra": (id) => <CareerTimelineWorld startRole={id} />,
-  "bmo-senior": (id) => <CareerTimelineWorld startRole={id} />,
-  "bmo-lead": (id) => <CareerTimelineWorld startRole={id} />,
-  "bmo-principal": (id) => <CareerTimelineWorld startRole={id} />,
-  "bmo-ai": () => <NeuralNetworkWorld />,
+  "rbc": () => <CareerTimelineWorld startRole="rbc" />,
+  "bmo": () => <CareerTimelineWorld startRole="bmo-infra" />,
 };
 
 const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
@@ -32,7 +27,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
       {chapter && (
         <motion.div
           className="fixed inset-0 z-50 flex flex-col"
-          style={{ background: "#0d0a06" }}
+          style={{ background: "#080c12" }}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
@@ -42,7 +37,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: `radial-gradient(ellipse at 50% 80%, ${chapter.color}10, transparent 70%)`,
+              background: `radial-gradient(ellipse at 50% 80%, ${chapter.color}12, transparent 70%)`,
             }}
           />
 
@@ -57,15 +52,15 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
               onClick={onClose}
               className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all cursor-pointer"
               style={{
-                color: "#e8c460",
-                background: "rgba(232,196,96,0.08)",
-                border: "1px solid rgba(232,196,96,0.15)",
+                color: "#94a3b8",
+                background: "rgba(148,163,184,0.08)",
+                border: "1px solid rgba(148,163,184,0.15)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(232,196,96,0.15)";
+                e.currentTarget.style.background = "rgba(148,163,184,0.15)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(232,196,96,0.08)";
+                e.currentTarget.style.background = "rgba(148,163,184,0.08)";
               }}
             >
               <ArrowLeft size={16} />
@@ -73,12 +68,20 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             </button>
 
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{chapter.icon}</span>
+              {chapter.brandLogo ? (
+                <span className="text-sm font-bold px-2 py-1 rounded" style={{
+                  color: chapter.color,
+                  background: `${chapter.color}15`,
+                  border: `1px solid ${chapter.color}30`,
+                }}>{chapter.brandLogo}</span>
+              ) : (
+                <span className="text-2xl">{chapter.icon}</span>
+              )}
               <div className="text-right">
-                <p className="font-display text-sm tracking-wider" style={{ color: "#e8c460" }}>
+                <p className="font-display text-sm tracking-wider" style={{ color: "#e2e8f0" }}>
                   {chapter.title}
                 </p>
-                <p className="text-[10px] font-mono" style={{ color: "rgba(232,196,96,0.4)" }}>
+                <p className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.5)" }}>
                   {chapter.year}
                 </p>
               </div>
@@ -92,7 +95,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            {worldMap[chapter.id]?.(chapter.id)}
+            {worldMap[chapter.id]?.()}
           </motion.div>
 
           {/* Bottom hint */}
@@ -102,7 +105,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
           >
-            <p className="text-[10px] font-mono" style={{ color: "rgba(232,196,96,0.25)" }}>
+            <p className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.25)" }}>
               Press ESC or click Back to return to the board
             </p>
           </motion.div>

@@ -7,6 +7,13 @@ interface ChapterOverlayProps {
   onDive?: () => void;
 }
 
+const categoryLabels: Record<string, string> = {
+  origin: "Origin Story",
+  education: "Education",
+  career: "Career",
+  current: "Present Day",
+};
+
 const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
   return (
     <AnimatePresence mode="wait">
@@ -22,7 +29,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, rgba(26,19,11,0.95) 0%, rgba(26,19,11,0.7) 40%, transparent 100%)",
+              background: "linear-gradient(to top, rgba(8,12,18,0.95) 0%, rgba(8,12,18,0.7) 40%, transparent 100%)",
             }}
           />
 
@@ -33,7 +40,14 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               transition={{ delay: 0.1, duration: 0.5 }}
               className="flex items-center gap-3 mb-3"
             >
-              <span className="text-3xl">{chapter.icon}</span>
+              {chapter.brandLogo ? (
+                <span className="text-sm font-bold px-3 py-1 rounded" style={{
+                  color: "#fff",
+                  background: chapter.color,
+                }}>{chapter.brandLogo}</span>
+              ) : (
+                <span className="text-3xl">{chapter.icon}</span>
+              )}
               <span
                 className="text-[10px] font-display uppercase tracking-[0.3em] px-3 py-1 rounded-full"
                 style={{
@@ -42,19 +56,16 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
                   background: `${chapter.color}15`,
                 }}
               >
-                {chapter.category === "origin" ? "Origin Story"
-                  : chapter.category === "education" ? "Education"
-                  : chapter.category === "current" ? "Present Day"
-                  : "Career"}
+                {categoryLabels[chapter.category] || "Career"}
               </span>
-              <span className="text-xs font-mono" style={{ color: "rgba(232,196,96,0.4)" }}>
+              <span className="text-xs font-mono" style={{ color: "rgba(148,163,184,0.5)" }}>
                 {chapter.year}
               </span>
             </motion.div>
 
             <motion.h2
               className="font-display text-3xl md:text-5xl font-bold mb-2"
-              style={{ color: "#f0e6d0" }}
+              style={{ color: "#e2e8f0" }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -64,7 +75,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
 
             <motion.p
               className="font-display text-xs uppercase tracking-[0.2em] mb-5"
-              style={{ color: "rgba(232,196,96,0.6)" }}
+              style={{ color: "rgba(148,163,184,0.6)" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
@@ -72,22 +83,21 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               {chapter.subtitle}
             </motion.p>
 
-            {/* Enter World button */}
             {onDive && (
               <motion.button
                 onClick={onDive}
                 className="flex items-center gap-3 px-6 py-3 rounded-xl cursor-pointer transition-all"
                 style={{
-                  background: `${chapter.color}15`,
-                  border: `1px solid ${chapter.color}40`,
+                  background: `${chapter.color}20`,
+                  border: `1px solid ${chapter.color}50`,
                   color: chapter.color,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = `${chapter.color}30`;
-                  e.currentTarget.style.boxShadow = `0 0 30px ${chapter.color}20`;
+                  e.currentTarget.style.background = `${chapter.color}35`;
+                  e.currentTarget.style.boxShadow = `0 0 30px ${chapter.color}25`;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = `${chapter.color}15`;
+                  e.currentTarget.style.background = `${chapter.color}20`;
                   e.currentTarget.style.boxShadow = "none";
                 }}
                 initial={{ opacity: 0, y: 20 }}

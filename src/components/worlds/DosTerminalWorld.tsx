@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 
-/* ── Board-game mechanic: TEXT ADVENTURE ──
-   User types commands to "explore" memories, unlocking hidden facts.
-   Like a classic interactive fiction game. */
-
 const fileSystem: Record<string, string[]> = {
   "C:\\>": ["Type HELP for commands", ""],
   "HELP": [
@@ -95,14 +91,13 @@ const DosTerminalWorld = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Boot sequence
   useEffect(() => {
     const boot = [
       { text: "ARCHIL-DOS v1.0 — Personal History Terminal", type: "system" },
       { text: "Copyright (C) Archil's Memory Bank", type: "system" },
       { text: "", type: "blank" },
       { text: "Type HELP for available commands.", type: "output" },
-      { text: "Explore every command to unlock the full story.", type: "hint" },
+      { text: "Or click 'Reveal All' to see everything at once.", type: "hint" },
       { text: "", type: "blank" },
     ];
     const timers = boot.map((line, i) =>
@@ -117,7 +112,6 @@ const DosTerminalWorld = () => {
     const newLines: { text: string; type: string }[] = [
       { text: `C:\\> ${cmd}`, type: "command" },
     ];
-
     if (fileSystem[upper]) {
       setCommandsUsed(prev => new Set(prev).add(upper));
       fileSystem[upper].forEach(line => {
@@ -132,29 +126,46 @@ const DosTerminalWorld = () => {
       newLines.push({ text: `Bad command or file name: '${cmd}'`, type: "error" });
       newLines.push({ text: "Type HELP for available commands.", type: "hint" });
     }
-
     setHistory(prev => [...prev, ...newLines]);
     setInput("");
   }, []);
 
+  const handleRevealAll = () => {
+    const allLines: { text: string; type: string }[] = [
+      { text: "C:\\> REVEAL_ALL", type: "command" },
+      { text: "", type: "blank" },
+    ];
+    validCommands.forEach(cmd => {
+      allLines.push({ text: `═══ ${cmd} ═══`, type: "highlight" });
+      fileSystem[cmd]?.forEach(line => {
+        const type = line.startsWith("█") ? "highlight" :
+                     line.startsWith("  ✓") ? "skill" :
+                     line.startsWith("VALUE") ? "value" :
+                     line.startsWith("│") || line.startsWith("┌") || line.startsWith("├") || line.startsWith("└") ? "box" :
+                     "output";
+        allLines.push({ text: line, type });
+      });
+    });
+    setCommandsUsed(new Set(validCommands));
+    setHistory(prev => [...prev, ...allLines]);
+  };
+
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
+    if (containerRef.current) containerRef.current.scrollTop = containerRef.current.scrollHeight;
   }, [history]);
 
   const getColor = (type: string) => {
     switch (type) {
-      case "command": return "#ffffff";
-      case "output": return "#55ff55";
-      case "highlight": return "#ffff55";
-      case "system": return "#55ffff";
-      case "hint": return "#888888";
-      case "error": return "#ff5555";
-      case "skill": return "#55ffff";
-      case "value": return "#ff9955";
-      case "box": return "#aaaaaa";
-      default: return "#888888";
+      case "command": return "#e2e8f0";
+      case "output": return "#00C853";
+      case "highlight": return "#FFD700";
+      case "system": return "#0078D4";
+      case "hint": return "#64748b";
+      case "error": return "#ef4444";
+      case "skill": return "#0078D4";
+      case "value": return "#FF9900";
+      case "box": return "#94a3b8";
+      default: return "#64748b";
     }
   };
 
@@ -163,113 +174,74 @@ const DosTerminalWorld = () => {
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-3xl flex flex-col gap-4">
-        {/* Progress bar — game mechanic tracker */}
-        <motion.div
-          className="flex items-center gap-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-        >
-          <span className="text-[10px] font-mono" style={{ color: "#55ffff" }}>
+        {/* Progress + Reveal All */}
+        <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
+          <span className="text-[10px] font-mono" style={{ color: "#0078D4" }}>
             DISCOVERY: {commandsUsed.size}/{validCommands.length}
           </span>
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(85,255,85,0.1)" }}>
-            <motion.div
-              className="h-full rounded-full"
-              style={{ background: "#55ff55" }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5 }}
-            />
+          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(0,120,212,0.1)" }}>
+            <motion.div className="h-full rounded-full" style={{ background: "#0078D4" }}
+              animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
           </div>
+          {progress < 100 && (
+            <button onClick={handleRevealAll}
+              className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer transition-all"
+              style={{ color: "#FFD700", background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.25)" }}>
+              ⚡ Reveal All
+            </button>
+          )}
           {progress === 100 && (
-            <motion.span
-              className="text-[10px] font-mono"
-              style={{ color: "#ffff55" }}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-            >
-              ★ COMPLETE
-            </motion.span>
+            <motion.span className="text-[10px] font-mono" style={{ color: "#FFD700" }}
+              initial={{ scale: 0 }} animate={{ scale: 1 }}>★ COMPLETE</motion.span>
           )}
         </motion.div>
 
-        <motion.div
-          className="rounded-lg overflow-hidden shadow-2xl"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+        <motion.div className="rounded-lg overflow-hidden shadow-2xl"
+          initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, type: "spring" }}
-          style={{
-            background: "#0a0a0a",
-            border: "2px solid #333",
-            boxShadow: "0 0 60px rgba(0,255,0,0.1), inset 0 0 100px rgba(0,0,0,0.5)",
-          }}
-          onClick={() => inputRef.current?.focus()}
-        >
-          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "#1a1a2e", borderBottom: "1px solid #333" }}>
+          style={{ background: "#0a0e14", border: "2px solid #1e293b",
+            boxShadow: "0 0 60px rgba(0,120,212,0.1), inset 0 0 100px rgba(0,0,0,0.5)" }}
+          onClick={() => inputRef.current?.focus()}>
+          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "#0f172a", borderBottom: "1px solid #1e293b" }}>
             <div className="w-3 h-3 rounded-full bg-red-500/70" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
             <div className="w-3 h-3 rounded-full bg-green-500/70" />
-            <span className="ml-2 text-xs font-mono text-gray-500">ARCHIL-DOS — Interactive Terminal</span>
+            <span className="ml-2 text-xs font-mono text-slate-500">ARCHIL-DOS — Interactive Terminal</span>
           </div>
 
-          <div
-            ref={containerRef}
-            className="p-6 font-mono text-sm leading-relaxed overflow-y-auto"
-            style={{ height: 400, background: "linear-gradient(180deg, #0a0a0a, #0f0f1a)" }}
-          >
+          <div ref={containerRef} className="p-6 font-mono text-sm leading-relaxed overflow-y-auto"
+            style={{ height: 400, background: "linear-gradient(180deg, #0a0e14, #0f172a)" }}>
             {history.map((line, i) => (
               <div key={i} className="min-h-[1.4em]">
-                <span style={{
-                  color: getColor(line.type),
-                  textShadow: line.type === "highlight" ? "0 0 10px rgba(255,255,85,0.5)" : undefined,
-                  fontStyle: line.type === "value" ? "italic" : undefined,
-                }}>
+                <span style={{ color: getColor(line.type),
+                  textShadow: line.type === "highlight" ? "0 0 10px rgba(255,215,0,0.5)" : undefined,
+                  fontStyle: line.type === "value" ? "italic" : undefined }}>
                   {line.text}
                 </span>
               </div>
             ))}
-
-            {/* Interactive input */}
             <div className="flex items-center min-h-[1.4em]">
-              <span style={{ color: "#aaaaaa" }}>C:\&gt;&nbsp;</span>
-              <input
-                ref={inputRef}
-                value={input}
+              <span style={{ color: "#64748b" }}>C:\&gt;&nbsp;</span>
+              <input ref={inputRef} value={input}
                 onChange={(e) => setInput(e.target.value.toUpperCase())}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && input.trim()) executeCommand(input);
-                }}
+                onKeyDown={(e) => { if (e.key === "Enter" && input.trim()) executeCommand(input); }}
                 className="bg-transparent border-none outline-none font-mono text-sm flex-1"
-                style={{ color: "#ffffff", caretColor: "#55ff55" }}
-                autoFocus
-                spellCheck={false}
-              />
-              {cursorBlink && !input && (
-                <span className="inline-block w-2 h-4" style={{ background: "#55ff55" }} />
-              )}
+                style={{ color: "#e2e8f0", caretColor: "#0078D4" }} autoFocus spellCheck={false} />
+              {cursorBlink && !input && <span className="inline-block w-2 h-4" style={{ background: "#0078D4" }} />}
             </div>
           </div>
         </motion.div>
 
-        {/* Command hints */}
-        <motion.div
-          className="flex flex-wrap gap-2 justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-        >
+        <motion.div className="flex flex-wrap gap-2 justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
           {validCommands.map(cmd => (
-            <button
-              key={cmd}
-              onClick={() => executeCommand(cmd)}
+            <button key={cmd} onClick={() => executeCommand(cmd)}
               className="text-[10px] font-mono px-2 py-1 rounded cursor-pointer transition-all"
               style={{
-                color: commandsUsed.has(cmd) ? "#55ff55" : "rgba(85,255,85,0.4)",
-                background: commandsUsed.has(cmd) ? "rgba(85,255,85,0.1)" : "rgba(85,255,85,0.05)",
-                border: `1px solid ${commandsUsed.has(cmd) ? "rgba(85,255,85,0.3)" : "rgba(85,255,85,0.1)"}`,
+                color: commandsUsed.has(cmd) ? "#00C853" : "rgba(0,200,83,0.4)",
+                background: commandsUsed.has(cmd) ? "rgba(0,200,83,0.1)" : "rgba(0,200,83,0.05)",
+                border: `1px solid ${commandsUsed.has(cmd) ? "rgba(0,200,83,0.3)" : "rgba(0,200,83,0.1)"}`,
                 textDecoration: commandsUsed.has(cmd) ? "line-through" : "none",
-              }}
-            >
+              }}>
               {cmd}
             </button>
           ))}

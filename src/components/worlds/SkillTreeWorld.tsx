@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-/* ── Board-game mechanic: TECH TREE / SKILL UNLOCK ──
-   Click nodes to "invest" in skills. Each unlock reveals course details.
-   Like a civilization tech-tree mechanic. */
-
 interface SkillNode {
   id: string;
   label: string;
@@ -49,7 +45,7 @@ const valueDelivered = [
 const SkillTreeWorld = () => {
   const [unlockedNodes, setUnlockedNodes] = useState<Set<string>>(new Set());
   const [selectedNode, setSelectedNode] = useState<SkillNode | null>(null);
-  const [xpPoints, setXpPoints] = useState(9); // start with enough to unlock all
+  const [xpPoints, setXpPoints] = useState(9);
 
   const canUnlock = (node: SkillNode) => {
     if (unlockedNodes.has(node.id)) return false;
@@ -64,14 +60,16 @@ const SkillTreeWorld = () => {
   };
 
   const handleClick = (node: SkillNode) => {
-    if (unlockedNodes.has(node.id)) {
-      setSelectedNode(node);
-    } else {
-      handleUnlock(node);
-    }
+    if (unlockedNodes.has(node.id)) setSelectedNode(node);
+    else handleUnlock(node);
   };
 
-  // Auto-unlock root on mount
+  const handleRevealAll = () => {
+    setUnlockedNodes(new Set(skillNodes.map(n => n.id)));
+    setXpPoints(0);
+    setSelectedNode(skillNodes[skillNodes.length - 1]);
+  };
+
   useEffect(() => {
     setTimeout(() => {
       setUnlockedNodes(new Set(["cs"]));
@@ -83,21 +81,25 @@ const SkillTreeWorld = () => {
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-6">
       <div className="flex flex-col lg:flex-row gap-6 max-w-5xl w-full items-start">
-        {/* Skill tree */}
         <div className="flex-1 flex flex-col items-center">
-          {/* XP counter */}
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-xs font-mono" style={{ color: "rgba(60,179,113,0.6)" }}>
+            <span className="text-xs font-mono" style={{ color: "rgba(255,215,0,0.6)" }}>
               DALHOUSIE UNIVERSITY · 2017–2018
             </span>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded"
-              style={{ background: "rgba(232,196,96,0.1)", color: "#e8c460", border: "1px solid rgba(232,196,96,0.2)" }}>
+              style={{ background: "rgba(255,215,0,0.1)", color: "#FFD700", border: "1px solid rgba(255,215,0,0.2)" }}>
               {unlockedNodes.size}/{skillNodes.length} unlocked
             </span>
+            {unlockedNodes.size < skillNodes.length && (
+              <button onClick={handleRevealAll}
+                className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer transition-all"
+                style={{ color: "#FFD700", background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.25)" }}>
+                ⚡ Unlock All
+              </button>
+            )}
           </div>
 
           <svg viewBox="0 0 600 420" className="w-full max-w-xl">
-            {/* Connection lines */}
             {skillNodes.map(node =>
               node.connections.map(targetId => {
                 const target = skillNodes.find(n => n.id === targetId)!;
@@ -105,37 +107,33 @@ const SkillTreeWorld = () => {
                 return (
                   <line key={`${node.id}-${targetId}`}
                     x1={node.x} y1={node.y + 20} x2={target.x} y2={target.y - 10}
-                    stroke={unlocked ? "#3cb371" : unlockedNodes.has(node.id) ? "rgba(60,179,113,0.3)" : "rgba(232,196,96,0.08)"}
-                    strokeWidth={unlocked ? 2 : 1} strokeDasharray={unlocked ? "0" : "4 4"}
-                  />
+                    stroke={unlocked ? "#FFD700" : unlockedNodes.has(node.id) ? "rgba(255,215,0,0.3)" : "rgba(148,163,184,0.08)"}
+                    strokeWidth={unlocked ? 2 : 1} strokeDasharray={unlocked ? "0" : "4 4"} />
                 );
               })
             )}
-
-            {/* Nodes */}
             {skillNodes.map(node => {
               const unlocked = unlockedNodes.has(node.id);
               const available = canUnlock(node);
               return (
                 <g key={node.id} onClick={() => handleClick(node)} className="cursor-pointer">
                   {unlocked && (
-                    <circle cx={node.x} cy={node.y} r={35} fill="rgba(60,179,113,0.08)">
+                    <circle cx={node.x} cy={node.y} r={35} fill="rgba(255,215,0,0.06)">
                       <animate attributeName="r" values="30;38;30" dur="2s" repeatCount="indefinite" />
                     </circle>
                   )}
                   {available && !unlocked && (
-                    <circle cx={node.x} cy={node.y} r={32} fill="none" stroke="rgba(232,196,96,0.3)" strokeWidth="1" strokeDasharray="4 4">
+                    <circle cx={node.x} cy={node.y} r={32} fill="none" stroke="rgba(255,215,0,0.3)" strokeWidth="1" strokeDasharray="4 4">
                       <animate attributeName="stroke-opacity" values="0.2;0.6;0.2" dur="1.5s" repeatCount="indefinite" />
                     </circle>
                   )}
                   <rect x={node.x - 42} y={node.y - 18} width={84} height={40} rx={8}
-                    fill={unlocked ? "rgba(60,179,113,0.15)" : available ? "rgba(232,196,96,0.08)" : "rgba(40,30,20,0.5)"}
-                    stroke={unlocked ? "#3cb371" : available ? "rgba(232,196,96,0.3)" : "rgba(232,196,96,0.1)"}
-                    strokeWidth={selectedNode?.id === node.id ? 2.5 : 1.5}
-                  />
+                    fill={unlocked ? "rgba(255,215,0,0.1)" : available ? "rgba(148,163,184,0.08)" : "rgba(15,23,42,0.5)"}
+                    stroke={unlocked ? "#FFD700" : available ? "rgba(255,215,0,0.3)" : "rgba(148,163,184,0.1)"}
+                    strokeWidth={selectedNode?.id === node.id ? 2.5 : 1.5} />
                   <text x={node.x - 27} y={node.y + 5} fontSize="14">{node.icon}</text>
                   <text x={node.x + 5} y={node.y + 5} textAnchor="middle"
-                    fill={unlocked ? "#3cb371" : available ? "rgba(232,196,96,0.6)" : "rgba(232,196,96,0.2)"}
+                    fill={unlocked ? "#FFD700" : available ? "rgba(255,215,0,0.6)" : "rgba(148,163,184,0.2)"}
                     fontSize="8" fontFamily="Cinzel, serif">
                     {node.label}
                   </text>
@@ -143,44 +141,37 @@ const SkillTreeWorld = () => {
               );
             })}
           </svg>
-
-          <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(232,196,96,0.3)" }}>
+          <p className="text-[10px] font-mono mt-1" style={{ color: "rgba(148,163,184,0.3)" }}>
             Click available nodes to unlock skills
           </p>
         </div>
 
-        {/* Detail panel */}
         <div className="lg:w-80 w-full">
           <AnimatePresence mode="wait">
             {selectedNode && (
-              <motion.div
-                key={selectedNode.id}
-                className="rounded-xl p-6"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                style={{ background: "rgba(40,30,20,0.6)", border: "1px solid rgba(60,179,113,0.2)" }}
-              >
+              <motion.div key={selectedNode.id} className="rounded-xl p-6"
+                initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+                style={{ background: "rgba(15,23,42,0.6)", border: "1px solid rgba(255,215,0,0.2)" }}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-3xl">{selectedNode.icon}</span>
                   <div>
-                    <h3 className="font-display text-lg" style={{ color: "#3cb371" }}>{selectedNode.label}</h3>
-                    <p className="text-[10px] font-mono" style={{ color: "rgba(232,196,96,0.4)" }}>Tier {selectedNode.tier}</p>
+                    <h3 className="font-display text-lg" style={{ color: "#FFD700" }}>{selectedNode.label}</h3>
+                    <p className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.4)" }}>Tier {selectedNode.tier}</p>
                   </div>
                 </div>
-                <p className="font-body text-sm mb-3" style={{ color: "rgba(240,230,208,0.8)" }}>{selectedNode.detail}</p>
+                <p className="font-body text-sm mb-3" style={{ color: "rgba(226,232,240,0.8)" }}>{selectedNode.detail}</p>
                 {selectedNode.course && (
-                  <div className="px-3 py-2 rounded mb-4" style={{ background: "rgba(60,179,113,0.08)", border: "1px solid rgba(60,179,113,0.15)" }}>
-                    <p className="text-[10px] font-mono" style={{ color: "rgba(60,179,113,0.6)" }}>COURSE</p>
-                    <p className="text-xs font-mono" style={{ color: "#3cb371" }}>{selectedNode.course}</p>
+                  <div className="px-3 py-2 rounded mb-4" style={{ background: "rgba(255,215,0,0.06)", border: "1px solid rgba(255,215,0,0.15)" }}>
+                    <p className="text-[10px] font-mono" style={{ color: "rgba(255,215,0,0.5)" }}>COURSE</p>
+                    <p className="text-xs font-mono" style={{ color: "#FFD700" }}>{selectedNode.course}</p>
                   </div>
                 )}
                 {selectedNode.prereqs.length > 0 && (
                   <div className="flex gap-1.5 flex-wrap">
-                    <span className="text-[10px] font-mono" style={{ color: "rgba(232,196,96,0.3)" }}>Requires:</span>
+                    <span className="text-[10px] font-mono" style={{ color: "rgba(148,163,184,0.3)" }}>Requires:</span>
                     {selectedNode.prereqs.map(p => (
                       <span key={p} className="text-[10px] font-mono px-1.5 py-0.5 rounded"
-                        style={{ background: "rgba(60,179,113,0.1)", color: "#3cb371" }}>
+                        style={{ background: "rgba(255,215,0,0.08)", color: "#FFD700" }}>
                         {skillNodes.find(n => n.id === p)?.label}
                       </span>
                     ))}
@@ -190,22 +181,16 @@ const SkillTreeWorld = () => {
             )}
           </AnimatePresence>
 
-          {/* Value delivered section */}
           {unlockedNodes.size >= 5 && (
-            <motion.div
-              className="mt-4 rounded-xl p-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{ background: "rgba(232,196,96,0.04)", border: "1px solid rgba(232,196,96,0.1)" }}
-            >
-              <p className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: "#e8c460" }}>
-                Value Delivered
-              </p>
+            <motion.div className="mt-4 rounded-xl p-4"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              style={{ background: "rgba(148,163,184,0.04)", border: "1px solid rgba(148,163,184,0.1)" }}>
+              <p className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: "#FFD700" }}>Value Delivered</p>
               {valueDelivered.map((v, i) => (
                 <motion.div key={i} className="flex items-start gap-2 mb-2"
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.2 }}>
                   <span className="text-xs mt-0.5">🎓</span>
-                  <span className="text-xs font-body" style={{ color: "rgba(240,230,208,0.7)" }}>{v}</span>
+                  <span className="text-xs font-body" style={{ color: "rgba(226,232,240,0.7)" }}>{v}</span>
                 </motion.div>
               ))}
             </motion.div>
