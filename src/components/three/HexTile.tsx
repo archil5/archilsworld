@@ -55,9 +55,7 @@ const HexTile = ({
     if (!groupRef.current) return;
     const t = state.clock.elapsedTime;
     const floatY = baseY + Math.sin(t * 0.8 + index * 0.5) * 0.05;
-
     groupRef.current.position.set(position[0], isActive ? baseY + 0.35 : floatY, position[2]);
-
     const s = isActive ? 1.12 + Math.sin(t * 3) * 0.02 : 1;
     groupRef.current.scale.setScalar(s);
 
@@ -65,7 +63,6 @@ const HexTile = ({
       const mat = glowRef.current.material as THREE.MeshBasicMaterial;
       mat.opacity = isActive ? 0.35 + Math.sin(t * 4) * 0.12 : isVisited ? 0.06 : 0.0;
     }
-
     if (ringRef.current) {
       ringRef.current.rotation.z = t * 0.5;
       const ringMat = ringRef.current.material as THREE.MeshBasicMaterial;
@@ -80,22 +77,22 @@ const HexTile = ({
 
   return (
     <group ref={groupRef} position={position}>
+      {/* Glow */}
       <mesh ref={glowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
         <circleGeometry args={[1.4, 32]} />
         <meshBasicMaterial color={color} transparent opacity={0} />
       </mesh>
 
+      {/* Active ring */}
       <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.35, 0]}>
         <ringGeometry args={[0.85, 0.95, 6]} />
         <meshBasicMaterial color={color} transparent opacity={0} side={THREE.DoubleSide} />
       </mesh>
 
+      {/* Hex body */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }}
+        onClick={(e) => { e.stopPropagation(); onClick(); }}
         castShadow
         receiveShadow
       >
@@ -107,22 +104,18 @@ const HexTile = ({
           emissive={isActive ? color : "#000000"}
           emissiveIntensity={isActive ? 0.1 : 0}
         />
-
-        <Suspense fallback={null}>
-          {isCareer ? (
-            <CareerSplitSurface leftUrl={careerLogos.RBC} rightUrl={careerLogos.BMO} isActive={isActive} />
-          ) : imageSrc ? (
-            <TileSurface textureUrl={imageSrc} isActive={isActive} size={0.82} />
-          ) : logoSrc ? (
-            <TileSurface textureUrl={logoSrc} isActive={isActive} size={0.74} />
-          ) : (
-            <mesh position={[0, 0, 0.158]}>
-              <circleGeometry args={[0.26, 40]} />
-              <meshBasicMaterial color={color} transparent opacity={0.22} toneMapped={false} />
-            </mesh>
-          )}
-        </Suspense>
       </mesh>
+
+      {/* Logo/image surfaces — SIBLING meshes, not children of the hex */}
+      <Suspense fallback={null}>
+        {isCareer ? (
+          <CareerSplitSurface leftUrl={careerLogos.RBC} rightUrl={careerLogos.BMO} isActive={isActive} />
+        ) : imageSrc ? (
+          <TileSurface textureUrl={imageSrc} isActive={isActive} size={0.5} />
+        ) : logoSrc ? (
+          <TileSurface textureUrl={logoSrc} isActive={isActive} size={0.42} />
+        ) : null}
+      </Suspense>
 
       {isActive && <pointLight color={color} intensity={3} distance={5} position={[0, 1.8, 0]} />}
     </group>
