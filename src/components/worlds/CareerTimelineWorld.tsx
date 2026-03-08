@@ -724,12 +724,13 @@ const PipelineAssemblerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, r
    PUZZLE 5: CAPACITY PLANNER
    ═══════════════════════════════════════════════════════════ */
 
-const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void }) => {
+const CapacityPlannerPuzzle = ({ puzzle, color, solved, onSolve, autoReveal, revealButton }: { puzzle: CapacityPuzzle; color: string; solved: boolean; onSolve: () => void; autoReveal?: boolean; revealButton?: React.ReactNode }) => {
   const [assignments, setAssignments] = useState<Record<string, string>>({});
   const [selectedWorkload, setSelectedWorkload] = useState<string | null>(null);
   const [wrongRegion, setWrongRegion] = useState<string | null>(null);
-  const isDone = solved || Object.keys(assignments).length === puzzle.workloads.length;
+  const isDone = solved || autoReveal || Object.keys(assignments).length === puzzle.workloads.length;
 
+  useEffect(() => { if (autoReveal) setAssignments({ ...puzzle.solution }); }, [autoReveal, puzzle.solution]);
   useEffect(() => { setAssignments({}); setSelectedWorkload(null); }, [puzzle.title]);
 
   const getRegionUsage = (regionId: string) => {
