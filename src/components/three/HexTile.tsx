@@ -140,7 +140,7 @@ const HexTile = ({
         sprite={false}
       >
         <div
-          onClick={(e) => { e.stopPropagation(); onClick(); }}
+          onClick={(e) => { e.stopPropagation(); if (isActive && onExplore) { onExplore(); } else { onClick(); } }}
           style={{ ...containerStyle, clipPath: "polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)" }}
         >
           {isCareer ? (
