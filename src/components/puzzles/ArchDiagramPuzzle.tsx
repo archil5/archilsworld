@@ -565,8 +565,8 @@ const ArchDiagramPuzzle = ({
                       className="text-[9px] font-mono font-bold text-center leading-tight"
                       style={{
                         color: placed
-                          ? "#7ee8a8"
-                          : "rgba(255,255,255,0.85)",
+                          ? "#2a7d4f"
+                          : "#2d2a26",
                       }}
                     >
                       {placed || node.label}
