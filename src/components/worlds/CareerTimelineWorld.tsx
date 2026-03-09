@@ -11,7 +11,10 @@ import {
   mlOpsPipelineDiagram,
   haContainerDiagram,
   multiAccountMlOpsDiagram,
-  genericCloudPuzzle
+  funPuzzleAI,
+  funPuzzleServerless,
+  funPuzzleDevOps,
+  funPuzzleSecurity
 } from "@/data/careerDiagrams";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
