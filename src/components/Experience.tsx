@@ -121,7 +121,11 @@ const Experience = () => {
   }, [goTo]);
 
   const handleDive = useCallback(() => {
-    setDiveChapter(CHAPTERS[activeIndex]);
+    setDiveAnimating(true);
+    setTimeout(() => {
+      setDiveChapter(CHAPTERS[activeIndex]);
+      setDiveAnimating(false);
+    }, 700);
   }, [activeIndex]);
 
   const chapter = CHAPTERS[activeIndex];
