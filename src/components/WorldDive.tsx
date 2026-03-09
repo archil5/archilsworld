@@ -18,7 +18,7 @@ const worldMap: Record<string, () => JSX.Element> = {
   "dos-games": () => <DosTerminalWorld />,
   "web-foundations": () => <WebFoundationsWorld />,
   "dalhousie": () => <SkillTreeWorld />,
-  "career": () => <CareerTimelineWorld startRole="rbc" />,
+  "career": () => <CareerTimelineWorld />,
   "contact": () => <ContactWorld />,
 };
 
