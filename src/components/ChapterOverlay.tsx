@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { ChapterData } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 import type { ProgressiveTheme } from "@/hooks/useProgressiveTheme";
+import { useProgressiveTheme } from "@/hooks/useProgressiveTheme";
 
 interface ChapterOverlayProps {
   chapter: ChapterData;
   visible: boolean;
   onDive?: () => void;
-  theme: ProgressiveTheme;
+  theme?: ProgressiveTheme;
 }
 
 const categoryLabels: Record<string, string> = {
@@ -79,7 +80,9 @@ const TypewriterText = ({ text, delay = 0, cursorColor }: { text: string; delay?
   );
 };
 
-const ChapterOverlay = ({ chapter, visible, onDive, theme }: ChapterOverlayProps) => {
+const ChapterOverlay = ({ chapter, visible, onDive, theme: themeProp }: ChapterOverlayProps) => {
+  const fallback = useProgressiveTheme(0, 5);
+  const theme = themeProp || fallback;
   return (
     <AnimatePresence mode="wait">
       {visible && (
