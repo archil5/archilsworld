@@ -115,10 +115,12 @@ const ArchDiagramPuzzle = ({
   data,
   solved,
   onSolve,
+  onReset,
 }: {
   data: DiagramPuzzleData;
   solved: boolean;
   onSolve: () => void;
+  onReset?: () => void;
 }) => {
   const { diagram, color } = data;
 
