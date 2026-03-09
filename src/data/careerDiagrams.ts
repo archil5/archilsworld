@@ -158,7 +158,7 @@ export const cicdRunnersDiagram: DiagramPuzzleData = {
     "You've mapped an enterprise-grade ephemeral runner architecture — zero persistent infrastructure, maximum security, fully automated scaling. This pattern processes thousands of CI/CD jobs daily. 🚀",
   techStack: ["GitHub Actions", "ECS Fargate", "Lambda", "Terraform", "Docker"],
   services: ["Secrets Manager", "ECR", "S3", "VPC Endpoints", "OIDC", "On-Prem Proxy"],
-  layers: ["BMO Operations Account", "Runner VPC", "Private Subnet", "VPC Endpoints", "BMO Target Account"]
+  layers: ["BMO Operations Account", "Runner VPC", "Private Subnet", "VPC Endpoints", "BMO Target Account"],
   diagram: {
     groups: [
       { id: "ops", label: "BMO Operations Account", x: 10, y: 20, w: 88, h: 55, color: "#FF9900" },
