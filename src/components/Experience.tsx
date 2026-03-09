@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CHAPTERS } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
@@ -10,14 +10,119 @@ import BoardPath from "@/components/three/BoardPath";
 import Particles from "@/components/three/Particles";
 import BoardSurface from "@/components/three/BoardSurface";
 import CameraController from "@/components/three/CameraController";
-import ChapterOverlay from "@/components/ChapterOverlay";
 import WorldDive from "@/components/WorldDive";
+
+/* ═══════════════════════════════════════════════════════════
+   TILE POPUP — small cloud/tooltip to explore a world
+   ═══════════════════════════════════════════════════════════ */
+
+const TilePopup = ({
+  chapter,
+  visible,
+  onDive,
+}: {
+  chapter: typeof CHAPTERS[0];
+  visible: boolean;
+  onDive: () => void;
+}) => (
+  <AnimatePresence>
+    {visible && (
+      <motion.div
+        key={chapter.id}
+        className="absolute z-40 pointer-events-auto"
+        style={{ bottom: 100, left: "50%", transform: "translateX(-50%)" }}
+        initial={{ opacity: 0, y: 16, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      >
+        <div
+          className="relative rounded-2xl px-5 py-4 flex items-center gap-4 shadow-lg backdrop-blur-sm"
+          style={{
+            background: "rgba(254,252,249,0.96)",
+            border: `1.5px solid ${chapter.color}30`,
+            boxShadow: `0 8px 32px rgba(0,0,0,0.10), 0 0 0 1px ${chapter.color}10`,
+            minWidth: 280,
+          }}
+        >
+          {/* Tail / arrow pointing down */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 rotate-45"
+            style={{
+              background: "rgba(254,252,249,0.96)",
+              borderRight: `1.5px solid ${chapter.color}30`,
+              borderBottom: `1.5px solid ${chapter.color}30`,
+            }}
+          />
+
+          {/* Icon / image */}
+          <div className="flex-shrink-0">
+            {chapter.image && chapterImages[chapter.image] ? (
+              <img
+                src={chapterImages[chapter.image]}
+                alt={chapter.label}
+                className="w-10 h-10 rounded-full object-cover"
+                style={{ border: `2px solid ${chapter.color}35` }}
+              />
+            ) : chapter.brandLogo === "Career" ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-1 rounded" style={{ background: `${chapter.color}08` }}>
+                <img src={careerLogos.RBC} alt="RBC" className="h-4 object-contain" />
+                <img src={careerLogos.BMO} alt="BMO" className="h-4 object-contain" />
+              </span>
+            ) : chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
+              <span className="inline-flex items-center px-1.5 py-1 rounded" style={{ background: `${chapter.color}08` }}>
+                <img src={brandLogos[chapter.brandLogo]} alt={chapter.brandLogo} className="h-5 object-contain" />
+              </span>
+            ) : (
+              <span className="text-2xl">{chapter.icon}</span>
+            )}
+          </div>
+
+          {/* Text */}
+          <div className="flex-1 min-w-0">
+            <p className="font-display text-sm font-bold truncate" style={{ color: "#2d2a26" }}>
+              {chapter.title}
+            </p>
+            <p className="text-[10px] font-mono mt-0.5 truncate" style={{ color: "#6b6560" }}>
+              {chapter.subtitle}
+            </p>
+          </div>
+
+          {/* Explore button */}
+          <motion.button
+            onClick={onDive}
+            className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl cursor-pointer font-display text-xs tracking-wide"
+            style={{
+              background: `${chapter.color}15`,
+              border: `1px solid ${chapter.color}30`,
+              color: chapter.color,
+            }}
+            whileHover={{ scale: 1.06, background: `${chapter.color}25` }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Explore
+            <motion.span
+              animate={{ x: [0, 3, 0] }}
+              transition={{ repeat: Infinity, duration: 1.2 }}
+            >
+              →
+            </motion.span>
+          </motion.button>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN EXPERIENCE
+   ═══════════════════════════════════════════════════════════ */
 
 const Experience = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [visitedSet, setVisitedSet] = useState<Set<number>>(new Set([0]));
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const [diveChapter, setDiveChapter] = useState<typeof CHAPTERS[0] | null>(null);
   const scrollRef = useRef(0);
   const targetScroll = useRef(0);
@@ -30,8 +135,8 @@ const Experience = () => {
     targetScroll.current = clamped / (CHAPTERS.length - 1);
     setActiveIndex(clamped);
     setVisitedSet(prev => new Set(prev).add(clamped));
-    setShowOverlay(false);
-    setTimeout(() => setShowOverlay(true), 600);
+    setShowPopup(false);
+    setTimeout(() => setShowPopup(true), 600);
   }, []);
 
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
@@ -47,10 +152,10 @@ const Experience = () => {
       if (idx !== activeIndex) {
         setActiveIndex(idx);
         setVisitedSet(prev => new Set(prev).add(idx));
-        setShowOverlay(false);
+        setShowPopup(false);
       }
       clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => setShowOverlay(true), 800);
+      scrollTimeout.current = setTimeout(() => setShowPopup(true), 800);
     };
 
     let touchStartX = 0;
@@ -93,7 +198,7 @@ const Experience = () => {
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("keydown", handleKey);
-    const t = setTimeout(() => setShowOverlay(true), 1500);
+    const t = setTimeout(() => setShowPopup(true), 1500);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
@@ -188,7 +293,7 @@ const Experience = () => {
         </p>
       </div>
 
-      {/* Navigation arrows */}
+      {/* Single bottom navigation bar */}
       {!isDiving && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
           <motion.button
@@ -207,26 +312,48 @@ const Experience = () => {
             <ChevronLeft size={18} />
           </motion.button>
 
-          <div className="flex items-center gap-1.5 px-3 py-2 rounded-full" style={{
-            background: "rgba(245,240,232,0.9)",
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full" style={{
+            background: "rgba(245,240,232,0.95)",
             border: "1px solid rgba(180,140,100,0.2)",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
           }}>
             {CHAPTERS.map((ch, i) => (
               <button
                 key={ch.id}
                 onClick={() => goTo(i)}
-                className="transition-all duration-300 cursor-pointer rounded-full"
+                className="relative group transition-all duration-300 cursor-pointer rounded-full flex items-center justify-center"
                 style={{
-                  width: i === activeIndex ? 24 : 8,
-                  height: 8,
-                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(107,101,96,0.4)" : "rgba(107,101,96,0.15)",
-                  boxShadow: i === activeIndex ? `0 0 8px ${ch.color}50` : "none",
+                  width: i === activeIndex ? 32 : 10,
+                  height: 10,
+                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(107,101,96,0.45)" : "rgba(107,101,96,0.15)",
+                  boxShadow: i === activeIndex ? `0 0 10px ${ch.color}60` : "none",
                 }}
                 title={ch.label}
-              />
+              >
+                {/* Hover label */}
+                <span
+                  className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-0.5 rounded"
+                  style={{
+                    color: "#2d2a26",
+                    background: "rgba(245,240,232,0.95)",
+                    border: "1px solid rgba(180,140,100,0.2)",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  {ch.label}
+                </span>
+              </button>
             ))}
           </div>
+
+          {/* Step counter */}
+          <span className="text-[10px] font-mono px-2 py-1 rounded-full" style={{
+            color: "#6b6560",
+            background: "rgba(245,240,232,0.9)",
+            border: "1px solid rgba(180,140,100,0.15)",
+          }}>
+            {activeIndex + 1}/{CHAPTERS.length}
+          </span>
 
           <motion.button
             onClick={goNext}
@@ -246,54 +373,10 @@ const Experience = () => {
         </div>
       )}
 
-      {/* Scroll progress */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
-        <div className="w-0.5 rounded-full relative overflow-hidden" style={{ height: 200, background: "rgba(180,140,100,0.15)" }}>
-          <div
-            className="w-full rounded-full transition-all duration-300"
-            style={{ height: `${scrollProgress * 100}%`, background: "linear-gradient(to bottom, #b5653a, #d4a574)" }}
-          />
-        </div>
-        <p className="text-[10px] font-mono mt-2" style={{ color: "#6b6560" }}>
-          {activeIndex + 1}/{CHAPTERS.length}
-        </p>
-      </div>
+      {/* Tile popup — small cloud near bottom center */}
+      <TilePopup chapter={chapter} visible={showPopup && !isDiving} onDive={handleDive} />
 
-      {/* Nav dots - left side */}
-      <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2">
-        {CHAPTERS.map((ch, i) => (
-          <button key={ch.id} className="group relative flex items-center" onClick={() => goTo(i)}>
-            <div
-              className="w-2.5 h-2.5 rounded-full transition-all duration-500 cursor-pointer"
-              style={{
-                background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(107,101,96,0.5)" : "rgba(107,101,96,0.2)",
-                boxShadow: i === activeIndex ? `0 0 10px ${ch.color}60` : "none",
-                transform: i === activeIndex ? "scale(1.4)" : "scale(1)",
-              }}
-            />
-            <span
-              className="absolute left-5 whitespace-nowrap text-xs font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-1 rounded flex items-center gap-2"
-              style={{ color: "#2d2a26", background: "rgba(245,240,232,0.95)", border: "1px solid rgba(180,140,100,0.2)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
-            >
-              {ch.image && chapterImages[ch.image] ? (
-                <img src={chapterImages[ch.image]} alt={ch.label} className="h-4 w-4 rounded-full object-cover" />
-              ) : ch.brandLogo === "Career" ? (
-                <>
-                  <img src={careerLogos.RBC} alt="RBC" className="h-3.5 object-contain" />
-                  <img src={careerLogos.BMO} alt="BMO" className="h-3.5 object-contain" />
-                </>
-              ) : ch.brandLogo && brandLogos[ch.brandLogo] ? (
-                <img src={brandLogos[ch.brandLogo]} alt={ch.brandLogo} className="h-3.5 object-contain" />
-              ) : null}
-              {ch.label}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      <ChapterOverlay chapter={chapter} visible={showOverlay && !isDiving} onDive={handleDive} />
-
-      {activeIndex === 0 && !showOverlay && (
+      {activeIndex === 0 && !showPopup && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
           <p className="text-xs font-display tracking-[0.3em] uppercase" style={{ color: "#6b6560" }}>
             Scroll or use arrows
