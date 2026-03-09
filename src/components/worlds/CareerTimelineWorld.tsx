@@ -64,17 +64,17 @@ const stops: RoleStop[] = [
       "Full private networking — zero public exposure",
     ],
     project: {
-      name: "Enterprise AI & RAG Platform",
-      description: "A secure, internal generative AI system leveraging Azure AI Search, Graph RAG (Cosmos DB), and OpenAI models. It ingests documents, processes them through an orchestration pipeline, and serves context-aware answers through a secure FastAPI backend, fully isolated behind API Gateways and strict content safety filters.",
+      name: "Multiple AI & MLOps Solutions",
+      description: "Architected multiple enterprise-grade AI platforms including dual-RAG Azure systems and multi-account MLOps pipelines with strict governance.",
       highlights: [
         "Azure AI Search + Graph RAG (Cosmos DB) for hybrid retrieval",
         "OpenAI models (o1 & 4o) with content safety filters",
-        "Data Orchestrator ingestion pipeline with embedding generation",
-        "Full private networking — zero public exposure via APIM",
-        "RAIOps open-source evals for model quality monitoring",
+        "Multi-account MLOps platform with SageMaker Pipelines",
+        "Cross-account model deployment automation",
+        "Enterprise governance with IAM trusts and CMK encryption",
       ],
     },
-    diagramPuzzle: aiRagDiagram,
+    diagramPuzzles: [aiRagDiagram, multiAccountMlOpsDiagram],
   },
   {
     company: "BMO",
