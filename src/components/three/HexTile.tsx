@@ -15,6 +15,8 @@ const HexTile = ({
   label,
   brandLogo,
   image,
+  showExplore,
+  onExplore,
 }: {
   position: [number, number, number];
   color: string;
@@ -26,6 +28,8 @@ const HexTile = ({
   label: string;
   brandLogo?: string;
   image?: string;
+  showExplore?: boolean;
+  onExplore?: () => void;
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
