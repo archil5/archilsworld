@@ -152,8 +152,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           style={{
             color: "#f5f0e8",
             background: "linear-gradient(135deg, #b5653a, #8b4a2a)",
-            border: "1px solid rgba(212,165,116,0.3)",
-            boxShadow: "0 4px 20px rgba(181,101,58,0.25)",
+            border: "1px solid rgba(181,101,58,0.4)",
+            boxShadow: "0 4px 20px rgba(181,101,58,0.3)",
           }}
           whileHover={{
             scale: 1.05,
