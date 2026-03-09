@@ -14,31 +14,31 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
-      style={{ background: "#2d2a26" }}
+      style={{ background: "#f5f0e8" }}
       exit={{ opacity: 0, scale: 1.1 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
     >
       {/* Parchment texture overlay */}
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-20"
         style={{
           backgroundImage: "url('/images/parchment-bg.jpg')",
           backgroundSize: "cover",
-          mixBlendMode: "overlay",
+          mixBlendMode: "multiply",
         }}
       />
 
       {/* Subtle grid pattern */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
+      <div className="absolute inset-0 opacity-[0.06]" style={{
         backgroundImage: `
-          linear-gradient(rgba(181,101,58,0.3) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(181,101,58,0.3) 1px, transparent 1px)
+          linear-gradient(rgba(181,101,58,0.25) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(181,101,58,0.25) 1px, transparent 1px)
         `,
         backgroundSize: "60px 60px",
       }} />
 
       {/* Hex decorations */}
-      <svg className="absolute inset-0 w-full h-full opacity-[0.06]" viewBox="0 0 1200 800">
+      <svg className="absolute inset-0 w-full h-full opacity-[0.08]" viewBox="0 0 1200 800">
         {[
           [100, 150], [300, 50], [500, 200], [700, 100], [900, 250], [1100, 150],
           [200, 400], [400, 350], [600, 450], [800, 380], [1000, 420],
@@ -72,7 +72,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
         {/* Title */}
         <motion.h1
           className="font-display text-4xl md:text-6xl font-bold tracking-wider mb-3"
-          style={{ color: "#f5f0e8" }}
+          style={{ color: "#2d2a26" }}
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
@@ -102,8 +102,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
         <motion.div
           className="rounded-xl px-6 py-5 mb-8 max-w-md"
           style={{
-            background: "rgba(181,101,58,0.08)",
-            border: "1px solid rgba(181,101,58,0.2)",
+            background: "rgba(181,101,58,0.06)",
+            border: "1px solid rgba(181,101,58,0.15)",
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,7 +112,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           <p className="text-xs font-mono uppercase tracking-wider mb-3" style={{ color: "#b5653a" }}>
             How I Think
           </p>
-          <p className="font-body text-sm leading-relaxed" style={{ color: "rgba(245,240,232,0.7)" }}>
+          <p className="font-body text-sm leading-relaxed" style={{ color: "#6b6560" }}>
             I take things apart to understand how they work — then build them back better.
             Whether it's a board game, a cloud architecture, or a stubborn bug, I think three moves ahead
             and treat every problem like a puzzle waiting to be cracked. This portfolio is my game board —
@@ -132,8 +132,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
               key={tag}
               className="text-[11px] font-mono px-3 py-1.5 rounded-full"
               style={{
-                color: "#d4a574",
-                border: "1px solid rgba(181,101,58,0.25)",
+                color: "#8b4a2a",
+                border: "1px solid rgba(181,101,58,0.2)",
                 background: "rgba(181,101,58,0.06)",
               }}
               initial={{ opacity: 0, scale: 0.8 }}
@@ -152,8 +152,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           style={{
             color: "#f5f0e8",
             background: "linear-gradient(135deg, #b5653a, #8b4a2a)",
-            border: "1px solid rgba(212,165,116,0.3)",
-            boxShadow: "0 4px 20px rgba(181,101,58,0.25)",
+            border: "1px solid rgba(181,101,58,0.4)",
+            boxShadow: "0 4px 20px rgba(181,101,58,0.3)",
           }}
           whileHover={{
             scale: 1.05,
@@ -177,7 +177,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
 
         <motion.p
           className="text-[10px] font-mono mt-6"
-          style={{ color: "rgba(245,240,232,0.25)" }}
+          style={{ color: "rgba(107,101,96,0.4)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}
