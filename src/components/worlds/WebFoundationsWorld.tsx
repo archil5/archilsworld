@@ -324,10 +324,18 @@ const OSIPuzzle = () => {
           "Understanding the OSI model taught me to debug any system — layer by layer, from cable to cloud."
         </motion.p>
       )}
-      <button onClick={resetPuzzle} className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
-        style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
-        {solved ? "Replay" : "Shuffle"}
-      </button>
+      <div className="flex gap-2">
+        {!solved && (
+          <button onClick={revealOSI} className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
+            style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
+            ⚡ Reveal All
+          </button>
+        )}
+        <button onClick={resetPuzzle} className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
+          style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
+          {solved ? "Replay" : "Shuffle"}
+        </button>
+      </div>
     </div>
   );
 };
