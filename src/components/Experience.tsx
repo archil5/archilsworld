@@ -170,6 +170,7 @@ const Experience = () => {
               brandLogo={ch.brandLogo}
               image={ch.image}
               showExplore={i === activeIndex && showOverlay && !isDiving}
+              onExplore={handleDive}
               exploreHint={ch.subtitle}
             />
           ))}
