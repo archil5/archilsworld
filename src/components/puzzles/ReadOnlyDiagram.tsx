@@ -135,7 +135,7 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[8px] font-mono hidden md:inline" style={{ color: subtleText }}>
-              Scroll to pan · Ctrl+Scroll to zoom · Drag to move
+              Drag to pan · Ctrl+Scroll to zoom
             </span>
             <button
               onClick={() => { setIsFullscreen(f => !f); handleReset(); }}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, RefreshCw, Trophy, Lightbulb, Target, Layers } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
 import ReadOnlyDiagram from "@/components/puzzles/ReadOnlyDiagram";
@@ -11,10 +11,10 @@ import {
   mlOpsPipelineDiagram,
   haContainerDiagram,
   multiAccountMlOpsDiagram,
-  funPuzzleAI,
-  funPuzzleServerless,
-  funPuzzleDevOps,
-  funPuzzleSecurity
+  aiPuzzles,
+  serverlessPuzzles,
+  devOpsPuzzles,
+  securityPuzzles
 } from "@/data/careerDiagrams";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,13 @@ interface SolutionArchitecture {
   layers?: string[];
 }
 
+interface RoleOverview {
+  philosophy: string;
+  frameworks: string[];
+  deliverables: string[];
+  learnings: string[];
+}
+
 interface RoleStop {
   company: string;
   title: string;
@@ -48,9 +55,10 @@ interface RoleStop {
   impact: string;
   techStack: string[];
   wins: string[];
+  overview: RoleOverview;
   project?: ProjectShowcase;
   solutions?: SolutionArchitecture[];
-  funPuzzle: DiagramPuzzleData;
+  funPuzzles: DiagramPuzzleData[];
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -79,6 +87,12 @@ const stops: RoleStop[] = [
       "Content safety + model governance framework",
       "Full private networking — zero public exposure",
     ],
+    overview: {
+      philosophy: "Every AI system I build starts with a question: 'How do we make this enterprise-ready without sacrificing innovation?' I approach AI architecture through the lens of security-first design, ensuring models and data never cross trust boundaries.",
+      frameworks: ["Zero-Trust AI Networking", "Dual-RAG Pattern (Vector + Graph)", "Model Governance & Content Safety", "Private Endpoint Architecture", "Customer Managed Key (CMK) Encryption"],
+      deliverables: ["Production RAG platform on Azure", "GraphRAG with Cosmos DB", "Multi-account MLOps control plane", "AI governance framework"],
+      learnings: ["Graph-based retrieval outperforms vector-only for complex enterprise queries", "User Managed Identities eliminate credential sprawl entirely", "Content Safety filters are non-negotiable for enterprise GenAI"],
+    },
     project: {
       name: "Multiple AI & MLOps Solutions",
       description: "Architected multiple enterprise-grade AI platforms including dual-RAG Azure systems and multi-account MLOps pipelines with strict governance.",
@@ -94,7 +108,7 @@ const stops: RoleStop[] = [
       { name: "Enterprise AI Platform", description: "Dual RAG implementation with Azure OpenAI", diagram: aiRagDiagram },
       { name: "Multi-Account MLOps Platform", description: "Cross-account model deployment automation", diagram: multiAccountMlOpsDiagram }
     ],
-    funPuzzle: funPuzzleAI,
+    funPuzzles: aiPuzzles,
   },
   {
     company: "BMO",
@@ -113,6 +127,12 @@ const stops: RoleStop[] = [
       "Multi-region active-active serving 1000+ developers",
       "End-to-end MLOps pipeline with automated retraining",
     ],
+    overview: {
+      philosophy: "I believe great platform engineering means developers never have to think about infrastructure. Every pattern I designed was built to be self-service, secure by default, and invisible to the teams consuming it.",
+      frameworks: ["Zero-Trust API Integration", "Event-Driven Serverless Orchestration", "Multi-AZ High Availability", "Least-Privilege IAM Design", "Automated MLOps Lifecycle"],
+      deliverables: ["Bank-wide API Gateway standard", "HA container platform (multi-AZ)", "Self-service MLOps pipeline", "Custom Lambda Authorizer library"],
+      learnings: ["Private API Gateways + VPC Links are the gold standard for enterprise integration", "Automated model monitoring catches drift before humans notice", "PostgreSQL Master-Replica across AZs provides near-instant failover"],
+    },
     project: {
       name: "Multiple Serverless & Container Solutions",
       description: "Architected multiple production-grade serverless solutions including zero-trust API gateways, highly-available container platforms, and automated MLOps pipelines.",
@@ -129,7 +149,7 @@ const stops: RoleStop[] = [
       { name: "HA Container Platform", description: "Multi-AZ ECS Fargate with PostgreSQL failover", diagram: haContainerDiagram },
       { name: "Automated MLOps Pipeline", description: "End-to-end model training and deployment", diagram: mlOpsPipelineDiagram }
     ],
-    funPuzzle: funPuzzleServerless,
+    funPuzzles: serverlessPuzzles,
   },
   {
     company: "BMO",
@@ -147,9 +167,15 @@ const stops: RoleStop[] = [
       "Compliance-as-code via reusable workflows",
       "Corporate proxy integration for secure outbound",
     ],
+    overview: {
+      philosophy: "I treat CI/CD pipelines as production systems — they deserve the same rigor as the applications they deploy. Every runner is ephemeral, every secret is encrypted, and every outbound connection is controlled.",
+      frameworks: ["Ephemeral Infrastructure Pattern", "OIDC-Based Cross-Account Access", "Compliance-as-Code", "Zero-Trust Outbound Networking", "Event-Driven Runner Provisioning"],
+      deliverables: ["Ephemeral runner platform on ECS Fargate", "Reusable compliance workflow library", "Corporate proxy integration layer", "Autoscaling Lambda orchestrator"],
+      learnings: ["Ephemeral runners eliminate entire classes of security vulnerabilities", "OIDC roles are far superior to long-lived access keys", "Reusable workflows enforce consistency better than documentation ever could"],
+    },
     project: {
       name: "Ephemeral Autoscaling CI/CD Runners",
-      description: "A highly secure, automated pipeline using ephemeral ECS Fargate containers as self-hosted GitHub runners. Triggered by repository events via autoscaling Lambdas, these runners execute in an isolated operations account, pull secure credentials locally, route outbound traffic through a corporate proxy, and deploy to target environments before immediately terminating.",
+      description: "A highly secure, automated pipeline using ephemeral ECS Fargate containers as self-hosted GitHub runners.",
       highlights: [
         "Ephemeral ECS Fargate containers as self-hosted GitHub runners",
         "Autoscaling Lambda triggered by repository events",
@@ -161,7 +187,7 @@ const stops: RoleStop[] = [
     solutions: [
       { name: "Ephemeral CI/CD Runners", description: "Autoscaling GitHub runners on ECS Fargate", diagram: cicdRunnersDiagram }
     ],
-    funPuzzle: funPuzzleDevOps,
+    funPuzzles: devOpsPuzzles,
   },
   {
     company: "RBC",
@@ -179,9 +205,15 @@ const stops: RoleStop[] = [
       "CI/CD pipelines for security tooling deployment",
       "Infrastructure-as-code for security appliances",
     ],
+    overview: {
+      philosophy: "Cybersecurity isn't just about firewalls — it's about automating the boring parts so humans can focus on the threats that matter. I built systems that turned weeks of manual work into minutes of automated execution.",
+      frameworks: ["Security Automation at Scale", "SIEM-Driven Observability", "Infrastructure-as-Code for Security", "Automated Vulnerability Lifecycle", "Compliance Dashboard Design"],
+      deliverables: ["Automated scanning across 10,000+ endpoints", "Real-time Splunk security dashboards", "Ansible remediation playbooks", "Jenkins-based security CI/CD"],
+      learnings: ["Automation is the best security investment — it's faster, more consistent, and never forgets", "Visibility through dashboards changes how teams prioritize security", "Ansible playbooks for remediation scale infinitely better than manual runbooks"],
+    },
     project: {
       name: "Cybersecurity Automation Platform",
-      description: "An end-to-end automation platform for enterprise cybersecurity operations. Automated vulnerability scanning across thousands of endpoints, integrated findings into Splunk dashboards for real-time visibility, and built Ansible playbooks for automated remediation — reducing manual security operations by over 60%.",
+      description: "An end-to-end automation platform for enterprise cybersecurity operations.",
       highlights: [
         "Automated vulnerability scanning across 10,000+ endpoints",
         "Splunk dashboards for real-time security posture visibility",
@@ -190,7 +222,7 @@ const stops: RoleStop[] = [
         "Python-based threat intelligence aggregation",
       ],
     },
-    funPuzzle: funPuzzleSecurity,
+    funPuzzles: securityPuzzles,
   },
 ];
 
@@ -260,10 +292,16 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [revealed, setRevealed] = useState(0);
   const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
   const [activeDiagram, setActiveDiagram] = useState(0);
-  const [solvedPuzzles, setSolvedPuzzles] = useState<Set<number>>(new Set());
+  const [solvedPuzzles, setSolvedPuzzles] = useState<Set<string>>(new Set());
+  const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState<Record<number, number>>({});
   
   // Per-role puzzle state
-  const currentPuzzleSolved = solvedPuzzles.has(activeStop);
+  const puzzleIdx = currentPuzzleIndex[activeStop] || 0;
+  const stop = stops[activeStop];
+  const currentPuzzle = stop.funPuzzles[puzzleIdx];
+  const puzzleKey = `${activeStop}-${puzzleIdx}`;
+  const currentPuzzleSolved = solvedPuzzles.has(puzzleKey);
+  const totalSolvedForRole = stop.funPuzzles.filter((_, i) => solvedPuzzles.has(`${activeStop}-${i}`)).length;
 
   useEffect(() => {
     const timers = stops.map((_, i) =>
@@ -287,7 +325,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
     setActiveDiagram(0);
   }, [activeStop]);
 
-  const stop = stops[activeStop];
+  // stop already declared above
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-start p-4 md:p-6 overflow-y-auto">
@@ -517,125 +555,114 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
             {panel === "overview" ? (
               <div
-                className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5"
+                className="p-6 space-y-5"
                 style={{ background: "#fefcf9" }}
               >
-                <div className="space-y-4">
+                {/* Philosophy / Story */}
+                <div className="rounded-xl p-4" style={{ background: `${stop.color}05`, border: `1px solid ${stop.color}12` }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Lightbulb size={14} style={{ color: stop.color }} />
+                    <p className="text-[9px] font-mono uppercase tracking-wider" style={{ color: stop.color }}>My Approach</p>
+                  </div>
+                  <p className="text-sm font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.85)" }}>
+                    {stop.overview.philosophy}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Challenge & Impact */}
+                  <div className="space-y-3">
+                    <div className="rounded-lg p-3" style={{ background: "rgba(228,77,38,0.04)", border: "1px solid rgba(228,77,38,0.1)" }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Target size={12} style={{ color: "#c0553a" }} />
+                        <p className="text-[9px] font-mono uppercase" style={{ color: "#c0553a" }}>Challenge</p>
+                      </div>
+                      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.75)" }}>{stop.challenge}</p>
+                    </div>
+                    <div className="rounded-lg p-3" style={{ background: `${stop.color}08`, border: `1px solid ${stop.color}15` }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Trophy size={12} style={{ color: stop.color }} />
+                        <p className="text-[9px] font-mono uppercase" style={{ color: stop.color }}>Impact</p>
+                      </div>
+                      <p className="text-xs font-mono font-bold" style={{ color: stop.color }}>{stop.impact}</p>
+                    </div>
+                  </div>
+
+                  {/* Key Wins */}
                   <div>
-                    <p
-                      className="text-[9px] font-mono uppercase tracking-wider mb-1.5"
-                      style={{ color: stop.color }}
-                    >
-                      The Story
-                    </p>
-                    <p
-                      className="text-sm font-body italic leading-relaxed"
-                      style={{ color: "rgba(45,42,38,0.8)" }}
-                    >
-                      "{stop.narrative}"
-                    </p>
-                  </div>
-                  <div
-                    className="rounded-lg p-3"
-                    style={{
-                      background: "rgba(228,77,38,0.04)",
-                      border: "1px solid rgba(228,77,38,0.1)",
-                    }}
-                  >
-                    <p
-                      className="text-[9px] font-mono uppercase mb-1"
-                      style={{ color: "#c0553a" }}
-                    >
-                      Challenge
-                    </p>
-                    <p
-                      className="text-xs font-body"
-                      style={{ color: "rgba(45,42,38,0.75)" }}
-                    >
-                      {stop.challenge}
-                    </p>
-                  </div>
-                  <div
-                    className="rounded-lg p-3"
-                    style={{
-                      background: `${stop.color}08`,
-                      border: `1px solid ${stop.color}15`,
-                    }}
-                  >
-                    <p
-                      className="text-[9px] font-mono uppercase mb-1"
-                      style={{ color: stop.color }}
-                    >
-                      Impact
-                    </p>
-                    <p
-                      className="text-xs font-mono font-bold"
-                      style={{ color: stop.color }}
-                    >
-                      {stop.impact}
-                    </p>
-                  </div>
-                  <div>
-                    <p
-                      className="text-[9px] font-mono uppercase tracking-wider mb-2"
-                      style={{ color: stop.color }}
-                    >
-                      Tech Stack
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {stop.techStack.map((t) => (
-                        <span
-                          key={t}
-                          className="text-[10px] font-mono px-2 py-0.5 rounded"
-                          style={{
-                            background: `${stop.color}08`,
-                            border: `1px solid ${stop.color}15`,
-                            color: stop.color,
-                          }}
+                    <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>Key Wins</p>
+                    <div className="space-y-1.5">
+                      {stop.wins.map((w, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex items-start gap-2 p-2 rounded-lg"
+                          initial={{ opacity: 0, x: 10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.15 + i * 0.06 }}
+                          style={{ background: "rgba(42,125,79,0.04)", border: "1px solid rgba(42,125,79,0.08)" }}
                         >
-                          {t}
-                        </span>
+                          <span className="text-[10px] mt-0.5" style={{ color: "#2a7d4f" }}>▸</span>
+                          <span className="text-xs font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{w}</span>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
                 </div>
-                <div>
-                  <p
-                    className="text-[9px] font-mono uppercase tracking-wider mb-2"
-                    style={{ color: "#2a7d4f" }}
-                  >
-                    Key Wins
-                  </p>
-                  <div className="space-y-2">
-                    {stop.wins.map((w, i) => (
-                      <motion.div
-                        key={i}
-                        className="flex items-start gap-2 p-2.5 rounded-lg"
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          delay: 0.15 + i * 0.08,
-                        }}
+
+                {/* Frameworks & Lenses */}
+                <div className="rounded-xl p-4" style={{ background: "rgba(180,140,100,0.03)", border: "1px solid rgba(180,140,100,0.1)" }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Layers size={14} style={{ color: stop.color }} />
+                    <p className="text-[9px] font-mono uppercase tracking-wider" style={{ color: stop.color }}>Frameworks & Lenses I Apply</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {stop.overview.frameworks.map((f, i) => (
+                      <motion.span
+                        key={f}
+                        className="text-[10px] font-mono px-3 py-1.5 rounded-lg"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 + i * 0.05 }}
                         style={{
-                          background: "rgba(42,125,79,0.04)",
-                          border: "1px solid rgba(42,125,79,0.1)",
+                          background: `${stop.color}08`,
+                          border: `1px solid ${stop.color}18`,
+                          color: stop.color,
                         }}
                       >
-                        <span
-                          className="text-[10px] mt-0.5"
-                          style={{ color: "#2a7d4f" }}
-                        >
-                          ▸
-                        </span>
-                        <span
-                          className="text-xs font-body"
-                          style={{
-                            color: "rgba(45,42,38,0.8)",
-                          }}
-                        >
-                          {w}
-                        </span>
+                        {f}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Deliverables & Learnings side by side */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="rounded-lg p-3" style={{ background: `${stop.color}04`, border: `1px solid ${stop.color}10` }}>
+                    <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>What I Delivered</p>
+                    {stop.overview.deliverables.map((d, i) => (
+                      <motion.div key={i} className="flex items-center gap-2 py-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 + i * 0.05 }}>
+                        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: stop.color }} />
+                        <span className="text-[11px] font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{d}</span>
                       </motion.div>
+                    ))}
+                  </div>
+                  <div className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.03)", border: "1px solid rgba(42,125,79,0.1)" }}>
+                    <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>What I Learned</p>
+                    {stop.overview.learnings.map((l, i) => (
+                      <motion.div key={i} className="flex items-start gap-2 py-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 + i * 0.05 }}>
+                        <span className="text-[10px] mt-0.5" style={{ color: "#2a7d4f" }}>💡</span>
+                        <span className="text-[11px] font-body italic" style={{ color: "rgba(45,42,38,0.7)" }}>{l}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tech Stack */}
+                <div>
+                  <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>Tech Stack</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {stop.techStack.map((t) => (
+                      <span key={t} className="text-[10px] font-mono px-2 py-0.5 rounded" style={{ background: `${stop.color}08`, border: `1px solid ${stop.color}15`, color: stop.color }}>{t}</span>
                     ))}
                   </div>
                 </div>
@@ -780,7 +807,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 )}
               </div>
             ) : (
-              /* Puzzle Tab - Single Generic Fun Puzzle */
+              /* Puzzle Tab - Multiple Fun Puzzles */
               <div
                 className="p-6 overflow-y-auto"
                 style={{
@@ -788,56 +815,104 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   maxHeight: "70vh",
                 }}
               >
-                <motion.div
-                  className="rounded-xl overflow-hidden"
-                  style={{
-                    border: `1px solid ${stop.funPuzzle.color}25`,
-                    background: "#fff",
-                  }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <div
-                    className="px-5 py-3 flex items-center justify-between"
+                {/* Puzzle Progress Bar */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
+                      Puzzle {puzzleIdx + 1} of {stop.funPuzzles.length}
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full" style={{ background: `${stop.color}10`, color: stop.color }}>
+                      {totalSolvedForRole}/{stop.funPuzzles.length} solved
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {stop.funPuzzles.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentPuzzleIndex(prev => ({ ...prev, [activeStop]: i }))}
+                        className="w-2.5 h-2.5 rounded-full transition-all cursor-pointer"
+                        style={{
+                          background: solvedPuzzles.has(`${activeStop}-${i}`) ? "#2a7d4f" : i === puzzleIdx ? stop.color : "rgba(180,140,100,0.2)",
+                          transform: i === puzzleIdx ? "scale(1.3)" : "scale(1)",
+                          boxShadow: i === puzzleIdx ? `0 0 6px ${stop.color}40` : "none",
+                        }}
+                        title={`Puzzle ${i + 1}${solvedPuzzles.has(`${activeStop}-${i}`) ? " ✓" : ""}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={puzzleKey}
+                    className="rounded-xl overflow-hidden"
                     style={{
-                      background: `${stop.funPuzzle.color}08`,
-                      borderBottom: `1px solid ${stop.funPuzzle.color}12`,
+                      border: `1px solid ${currentPuzzle.color}25`,
+                      background: "#fff",
                     }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
-                        style={{ background: `${stop.funPuzzle.color}15` }}
-                      >
-                        🎮
+                    <div
+                      className="px-5 py-3 flex items-center justify-between"
+                      style={{
+                        background: `${currentPuzzle.color}08`,
+                        borderBottom: `1px solid ${currentPuzzle.color}12`,
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
+                          style={{ background: `${currentPuzzle.color}15` }}
+                        >
+                          🎮
+                        </div>
+                        <div>
+                          <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
+                            {currentPuzzle.projectName}
+                          </h4>
+                          <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
+                            Fun puzzle — test your cloud architecture skills!
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
-                          {stop.funPuzzle.projectName}
-                        </h4>
-                        <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
-                          Fun puzzle — test your cloud architecture skills!
-                        </p>
+                      <div className="flex items-center gap-2">
+                        {currentPuzzleSolved && (
+                          <span
+                            className="text-[10px] font-mono px-3 py-1 rounded-full"
+                            style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
+                          >
+                            ✓ Solved
+                          </span>
+                        )}
+                        {currentPuzzleSolved && puzzleIdx < stop.funPuzzles.length - 1 && (
+                          <motion.button
+                            onClick={() => setCurrentPuzzleIndex(prev => ({ ...prev, [activeStop]: puzzleIdx + 1 }))}
+                            className="flex items-center gap-1 text-[10px] font-mono px-3 py-1.5 rounded-lg cursor-pointer"
+                            style={{
+                              background: `${stop.color}10`,
+                              color: stop.color,
+                              border: `1px solid ${stop.color}20`,
+                            }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <RefreshCw size={10} /> Next Puzzle
+                          </motion.button>
+                        )}
                       </div>
                     </div>
-                    {currentPuzzleSolved && (
-                      <span
-                        className="text-[10px] font-mono px-3 py-1 rounded-full"
-                        style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
-                      >
-                        ✓ Solved
-                      </span>
-                    )}
-                  </div>
 
-                  <div className="p-5">
-                    <ArchDiagramPuzzle
-                      data={stop.funPuzzle}
-                      solved={currentPuzzleSolved}
-                      onSolve={() => setSolvedPuzzles(prev => new Set(prev).add(activeStop))}
-                    />
-                  </div>
-                </motion.div>
+                    <div className="p-5">
+                      <ArchDiagramPuzzle
+                        data={currentPuzzle}
+                        solved={currentPuzzleSolved}
+                        onSolve={() => setSolvedPuzzles(prev => new Set(prev).add(puzzleKey))}
+                      />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             )}
 
@@ -891,7 +966,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {solvedPuzzles.size === stops.length && <AllSolvedTrophy />}
+        {solvedPuzzles.size >= stops.reduce((sum, s) => sum + s.funPuzzles.length, 0) && <AllSolvedTrophy />}
       </AnimatePresence>
     </div>
   );
