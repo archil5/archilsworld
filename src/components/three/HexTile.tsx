@@ -101,7 +101,7 @@ const HexTile = ({
 
   return (
     <group position={position}>
-      <mesh ref={glowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
+      <mesh ref={glowRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} raycast={() => null}>
         <circleGeometry args={[1.4, 32]} />
         <meshBasicMaterial color={color} transparent opacity={0} />
       </mesh>
