@@ -302,7 +302,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
             {stops.slice(0, revealed).map((s, i) => {
               const isActive = i === activeStop;
               const isPast = i < activeStop;
-              const isSolved = solvedStops.has(i);
+              // Check if all diagrams for this role are solved
+              const rolePuzzles = s.diagramPuzzles?.map((_, idx) => `${i}-${idx}`) || [];
+              const isSolved = rolePuzzles.length > 0 && rolePuzzles.every(id => solvedStops.has(id));
               return (
                 <motion.button
                   key={i}
