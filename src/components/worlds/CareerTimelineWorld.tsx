@@ -370,17 +370,6 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                         {s.company}
                       </span>
                     )}
-                    {isSolved && (
-                      <span
-                        className="absolute -bottom-1 -right-1 text-[8px] px-1 rounded"
-                        style={{
-                          background: "#2a7d4f",
-                          color: "#fff",
-                        }}
-                      >
-                        ✓
-                      </span>
-                    )}
                   </motion.div>
                   <span
                     className="text-[8px] font-mono text-center leading-tight max-w-[90px]"
