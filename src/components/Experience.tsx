@@ -196,6 +196,21 @@ const Experience = () => {
           <Environment preset="apartment" />
         </Suspense>
       </Canvas>
+      </motion.div>
+
+      {/* Dive flash overlay */}
+      <AnimatePresence>
+        {diveAnimating && (
+          <motion.div
+            className="fixed inset-0 z-50 pointer-events-none"
+            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #f5f0e8)` }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.6, 1] }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: "easeIn" }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Title */}
       <div className="absolute top-6 left-8 z-20 pointer-events-none">
