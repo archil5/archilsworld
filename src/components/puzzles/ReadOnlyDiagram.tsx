@@ -60,11 +60,10 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
     }
   }, []);
 
-  // Register/unregister click outside listener
-  useState(() => {
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  });
+  }, [handleClickOutside]);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     if (!isActive && !isFullscreen) return; // Only intercept scroll when active
