@@ -681,14 +681,17 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       ))}
                     </div>
 
-                    {/* Read-only architecture diagram */}
-                    {stop.diagramPuzzle && (
-                      <div className="mt-4">
-                        <ReadOnlyDiagram
-                          diagram={stop.diagramPuzzle.diagram}
-                          color={stop.color}
-                          title={stop.diagramPuzzle.projectName}
-                        />
+                    {/* Read-only architecture diagrams */}
+                    {stop.diagramPuzzles && stop.diagramPuzzles.length > 0 && (
+                      <div className="mt-4 space-y-4">
+                        {stop.diagramPuzzles.map((puzzle, idx) => (
+                          <ReadOnlyDiagram
+                            key={idx}
+                            diagram={puzzle.diagram}
+                            color={stop.color}
+                            title={puzzle.projectName}
+                          />
+                        ))}
                       </div>
                     )}
                   </div>
