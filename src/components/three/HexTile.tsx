@@ -183,14 +183,14 @@ const HexTile = ({
             style={{
               background: "linear-gradient(135deg, rgba(15,15,20,0.92), rgba(25,25,35,0.95))",
               border: `1px solid ${color}50`,
-              borderRadius: 8,
-              padding: "10px 16px",
+              borderRadius: 6,
+              padding: "6px 10px",
               cursor: "pointer",
-              boxShadow: `0 0 20px ${color}25, 0 0 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)`,
+              boxShadow: `0 0 16px ${color}25, 0 0 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)`,
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              maxWidth: 280,
+              gap: 6,
+              maxWidth: 220,
               position: "relative" as const,
               overflow: "hidden" as const,
             }}
@@ -203,40 +203,34 @@ const HexTile = ({
               animation: "float-piece 3s ease-in-out infinite",
               pointerEvents: "none",
             }} />
-            {/* Terminal bracket */}
-            <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color: `${color}90`, fontWeight: 500 }}>
-              {"["}
-            </span>
             {/* Blinking cursor */}
             <span style={{
-              width: 6, height: 6, borderRadius: 1,
+              width: 5, height: 5, borderRadius: 1,
               background: color,
-              boxShadow: `0 0 8px ${color}80`,
+              boxShadow: `0 0 6px ${color}80`,
               animation: "pulse-glow 1.5s ease-in-out infinite",
               flexShrink: 0,
             }} />
             <span style={{
-              fontSize: 10,
+              fontSize: 9,
               fontFamily: "'JetBrains Mono', monospace",
               fontWeight: 600,
               color: "#e0e0e0",
-              letterSpacing: 0.6,
+              letterSpacing: 0.4,
+              lineHeight: 1.3,
             }}>
               {exploreHint || `Inside ${label}`}
             </span>
-            <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color }}>
+            <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color, flexShrink: 0 }}>
               →
-            </span>
-            <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color: `${color}90`, fontWeight: 500 }}>
-              {"]"}
             </span>
           </div>
           {/* Pointer triangle */}
           <div style={{
             width: 0, height: 0,
-            borderLeft: "5px solid transparent",
-            borderRight: "5px solid transparent",
-            borderTop: `5px solid rgba(25,25,35,0.95)`,
+            borderLeft: "4px solid transparent",
+            borderRight: "4px solid transparent",
+            borderTop: `4px solid rgba(25,25,35,0.95)`,
             margin: "0 auto",
           }} />
         </Html>

@@ -96,16 +96,16 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
             }}
           />
 
-          <div className="relative px-8 md:px-16 pb-10 pt-32 max-w-3xl">
+          <div className="relative px-4 md:px-16 pb-6 md:pb-10 pt-20 md:pt-32 max-w-3xl">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="flex items-center gap-3 mb-3"
+              className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3 flex-wrap"
             >
               <BrandBadge chapter={chapter} />
               <span
-                className="text-[10px] font-display uppercase tracking-[0.3em] px-3 py-1 rounded-full"
+                className="text-[8px] md:text-[10px] font-display uppercase tracking-[0.2em] md:tracking-[0.3em] px-2 md:px-3 py-0.5 md:py-1 rounded-full"
                 style={{
                   color: chapter.color,
                   border: `1px solid ${chapter.color}30`,
@@ -114,13 +114,13 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               >
                 {categoryLabels[chapter.category] || "Career"}
               </span>
-              <span className="text-xs font-mono" style={{ color: "#6b6560" }}>
+              <span className="text-[10px] md:text-xs font-mono" style={{ color: "#6b6560" }}>
                 {chapter.year}
               </span>
             </motion.div>
 
             <motion.h2
-              className="font-display text-3xl md:text-5xl font-bold mb-2"
+              className="font-display text-2xl md:text-5xl font-bold mb-1 md:mb-2"
               style={{ color: "#2d2a26" }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -130,7 +130,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
             </motion.h2>
 
             <motion.p
-              className="font-display text-xs uppercase tracking-[0.2em] mb-3"
+              className="font-display text-[10px] md:text-xs uppercase tracking-[0.15em] md:tracking-[0.2em] mb-2 md:mb-3"
               style={{ color: "#6b6560" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -140,7 +140,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
             </motion.p>
 
             <motion.div
-              className="font-body text-sm leading-relaxed mb-5 max-w-md"
+              className="font-body text-xs md:text-sm leading-relaxed mb-4 md:mb-5 max-w-md"
               style={{ color: "rgba(45,42,38,0.6)", fontStyle: "italic" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
