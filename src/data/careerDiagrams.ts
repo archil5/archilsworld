@@ -362,14 +362,17 @@ export const mlOpsPipelineDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const haContainerDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Team Lead",
+  title: "Solution Architecture",
+  roleTitle: "Principal — Serverless & Containers",
   projectName: "Highly Available Container Architecture",
   description:
     "A highly resilient, multi-AZ container platform utilizing ECS Fargate. To meet enterprise security mandates, I decoupled the network perimeter using an Application Load Balancer behind AWS WAF, routing traffic to private subnets. Every container utilizes distinct IAM Task Execution roles, pulls configurations via VPC Endpoints from ECR and Secrets Manager, and encrypts ephemeral data via AWS KMS. The database tier utilizes a PostgreSQL Master-Replica architecture across Availability Zones for immediate failover capabilities.",
   color: "#FF9900",
   successMessage:
     "You've mapped a production-grade, highly available container architecture with multi-AZ failover, WAF protection, and encrypted data at rest. 🏗️",
+  techStack: ["ECS Fargate", "PostgreSQL", "Docker", "Terraform", "CDK"],
+  services: ["ALB", "WAF", "Route 53", "KMS", "VPC Endpoints", "ECR", "Secrets Manager"],
+  layers: ["Edge", "BMO Production VPC", "Availability Zone A", "Availability Zone B"]
   diagram: {
     groups: [
       { id: "edge", label: "Edge", x: 8, y: 8, w: 12, h: 25, color: "#FF5722" },
