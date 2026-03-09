@@ -372,7 +372,7 @@ export const haContainerDiagram: DiagramPuzzleData = {
     "You've mapped a production-grade, highly available container architecture with multi-AZ failover, WAF protection, and encrypted data at rest. 🏗️",
   techStack: ["ECS Fargate", "PostgreSQL", "Docker", "Terraform", "CDK"],
   services: ["ALB", "WAF", "Route 53", "KMS", "VPC Endpoints", "ECR", "Secrets Manager"],
-  layers: ["Edge", "BMO Production VPC", "Availability Zone A", "Availability Zone B"]
+  layers: ["Edge", "BMO Production VPC", "Availability Zone A", "Availability Zone B"],
   diagram: {
     groups: [
       { id: "edge", label: "Edge", x: 8, y: 8, w: 12, h: 25, color: "#FF5722" },
