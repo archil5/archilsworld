@@ -86,7 +86,10 @@ const stops: RoleStop[] = [
         "Enterprise governance with IAM trusts and CMK encryption",
       ],
     },
-    diagramPuzzles: [aiRagDiagram, multiAccountMlOpsDiagram],
+    solutions: [
+      { name: "Enterprise AI Platform", description: "Dual RAG implementation with Azure OpenAI", diagram: aiRagDiagram },
+      { name: "Multi-Account MLOps Platform", description: "Cross-account model deployment automation", diagram: multiAccountMlOpsDiagram }
+    ],
   },
   {
     company: "BMO",
