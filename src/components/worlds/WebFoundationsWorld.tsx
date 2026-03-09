@@ -90,6 +90,13 @@ const HTMLBuilderPuzzle = () => {
     setComplete(false);
   };
 
+  const revealAll = () => {
+    const sorted = [...codePieces].sort((a, b) => a.order - b.order);
+    setPlaced(sorted);
+    setAvailable([]);
+    setComplete(true);
+  };
+
   const lastPlacedOrder = placed.length > 0 ? placed[placed.length - 1].order : -1;
 
   return (
