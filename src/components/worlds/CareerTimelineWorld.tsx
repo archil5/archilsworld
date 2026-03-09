@@ -129,6 +129,7 @@ const stops: RoleStop[] = [
       { name: "HA Container Platform", description: "Multi-AZ ECS Fargate with PostgreSQL failover", diagram: haContainerDiagram },
       { name: "Automated MLOps Pipeline", description: "End-to-end model training and deployment", diagram: mlOpsPipelineDiagram }
     ],
+    funPuzzle: funPuzzleServerless,
   },
   {
     company: "BMO",
