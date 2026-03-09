@@ -94,6 +94,7 @@ const stops: RoleStop[] = [
       { name: "Enterprise AI Platform", description: "Dual RAG implementation with Azure OpenAI", diagram: aiRagDiagram },
       { name: "Multi-Account MLOps Platform", description: "Cross-account model deployment automation", diagram: multiAccountMlOpsDiagram }
     ],
+    funPuzzle: funPuzzleAI,
   },
   {
     company: "BMO",
