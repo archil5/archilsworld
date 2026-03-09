@@ -45,13 +45,29 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const lastMouse = useRef({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleZoomIn = () => setZoom(z => Math.min(3, z + 0.3));
   const handleZoomOut = () => setZoom(z => Math.max(0.5, z - 0.3));
   const handleReset = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
 
+  // Click outside to deactivate
+  const handleClickOutside = useCallback((e: MouseEvent) => {
+    if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      setIsActive(false);
+    }
+  }, []);
+
+  // Register/unregister click outside listener
+  useState(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  });
+
   const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (!isActive && !isFullscreen) return; // Only intercept scroll when active
     e.preventDefault();
     e.stopPropagation();
 
@@ -65,7 +81,7 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
       x: p.x - e.deltaX / zoom,
       y: p.y - e.deltaY / zoom,
     }));
-  }, [zoom]);
+  }, [zoom, isActive, isFullscreen]);
 
   // Pinch-to-zoom via touch events
   const lastTouchDist = useRef(0);
