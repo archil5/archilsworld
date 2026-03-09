@@ -115,7 +115,7 @@ const stops: RoleStop[] = [
     company: "BMO",
     title: "Principal — Serverless & Containers",
     period: "Jul 2022–Aug 2025",
-    color: "#FF9900",
+    color: "#0078D4",
     narrative:
       "Owning the platform. From serverless microservices to container orchestration at scale — multi-region architectures, service mesh patterns, and the zero-trust API gateway adopted bank-wide.",
     challenge: "Create a secure, standardized API gateway pattern for 1000+ developers",
