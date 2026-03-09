@@ -53,11 +53,12 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     if (e.ctrlKey || e.metaKey) {
-      e.preventDefault();
       setZoom(z => Math.max(0.5, Math.min(3, z - e.deltaY * 0.003)));
     } else {
-      setPan(p => ({ x: p.x - e.deltaX * 0.5, y: p.y - e.deltaY * 0.5 }));
+      // Regular scroll = pan, allow zoom with pinch/ctrl
+      setZoom(z => Math.max(0.5, Math.min(3, z - e.deltaY * 0.005)));
     }
   }, []);
 
