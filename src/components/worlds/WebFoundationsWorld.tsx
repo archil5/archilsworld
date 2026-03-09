@@ -90,6 +90,13 @@ const HTMLBuilderPuzzle = () => {
     setComplete(false);
   };
 
+  const revealAll = () => {
+    const sorted = [...codePieces].sort((a, b) => a.order - b.order);
+    setPlaced(sorted);
+    setAvailable([]);
+    setComplete(true);
+  };
+
   const lastPlacedOrder = placed.length > 0 ? placed[placed.length - 1].order : -1;
 
   return (
@@ -100,11 +107,20 @@ const HTMLBuilderPuzzle = () => {
           <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>
             index.html — {placed.length}/{codePieces.length} lines
           </span>
-          <button onClick={reset}
-            className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
-            style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
-            Reset
-          </button>
+          <div className="flex gap-2">
+            {!complete && (
+              <button onClick={revealAll}
+                className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
+                style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
+                ⚡ Reveal All
+              </button>
+            )}
+            <button onClick={reset}
+              className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
+              style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
+              Reset
+            </button>
+          </div>
         </div>
 
         {/* Editor area */}
@@ -245,6 +261,14 @@ const OSIPuzzle = () => {
     }
   };
 
+  const revealOSI = () => {
+    const sorted = [...osiLayers].sort((a, b) => a.number - b.number);
+    setStack(sorted);
+    setPool([]);
+    setWrong(null);
+    setSolved(true);
+  };
+
   const resetPuzzle = () => { setPool(shuffle(osiLayers)); setStack([]); setWrong(null); setSolved(false); };
 
   return (
@@ -300,10 +324,18 @@ const OSIPuzzle = () => {
           "Understanding the OSI model taught me to debug any system — layer by layer, from cable to cloud."
         </motion.p>
       )}
-      <button onClick={resetPuzzle} className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
-        style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
-        {solved ? "Replay" : "Shuffle"}
-      </button>
+      <div className="flex gap-2">
+        {!solved && (
+          <button onClick={revealOSI} className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
+            style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
+            ⚡ Reveal All
+          </button>
+        )}
+        <button onClick={resetPuzzle} className="text-[10px] font-mono px-4 py-1.5 rounded-lg cursor-pointer"
+          style={{ color: "rgba(80,70,60,0.6)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
+          {solved ? "Replay" : "Shuffle"}
+        </button>
+      </div>
     </div>
   );
 };

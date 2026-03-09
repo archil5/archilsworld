@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
-import { Linkedin, Github, Mail } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 import { chapterImages } from "@/data/brandLogos";
 
 const links = [
-  { label: "LinkedIn", url: "https://linkedin.com/in/archilpatel", Icon: Linkedin },
-  { label: "GitHub", url: "https://github.com/archilpatel", Icon: Github },
-  { label: "Email", url: "mailto:archil@example.com", Icon: Mail },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/archil5/", Icon: Linkedin },
+  { label: "Email", url: "mailto:archil620@gmail.com", Icon: Mail },
 ];
 
 const ContactWorld = () => {
