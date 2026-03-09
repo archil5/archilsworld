@@ -13,7 +13,7 @@ export default {
     extend: {
       fontFamily: {
         display: ["Cinzel", "serif"],
-        body: ["Crimson Text", "serif"],
+        body: ["Source Sans 3", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
