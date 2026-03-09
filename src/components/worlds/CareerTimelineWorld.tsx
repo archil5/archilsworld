@@ -325,7 +325,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
     setActiveDiagram(0);
   }, [activeStop]);
 
-  const stop = stops[activeStop];
+  // stop already declared above
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-start p-4 md:p-6 overflow-y-auto">
