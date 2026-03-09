@@ -261,6 +261,14 @@ const OSIPuzzle = () => {
     }
   };
 
+  const revealOSI = () => {
+    const sorted = [...osiLayers].sort((a, b) => a.number - b.number);
+    setStack(sorted);
+    setPool([]);
+    setWrong(null);
+    setSolved(true);
+  };
+
   const resetPuzzle = () => { setPool(shuffle(osiLayers)); setStack([]); setWrong(null); setSolved(false); };
 
   return (
