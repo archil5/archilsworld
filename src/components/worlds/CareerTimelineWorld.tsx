@@ -30,14 +30,9 @@ interface RoleStop {
   diagramPuzzle?: DiagramPuzzleData;
 }
 
-/* ───────────────────────────────────────────────────────────
-   DIAGRAM 1: Enterprise AI & RAG Platform
-   ─────────────────────────────────────────────────────────── */
-
-const aiRagDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Principal Cloud Engineer — AI",
-  projectName: "Enterprise AI & RAG Platform",
+/* ═══════════════════════════════════════════════════════════
+   Diagrams imported from src/data/careerDiagrams.ts
+   ═══════════════════════════════════════════════════════════ */
   description:
     "A secure, internal generative AI system leveraging Azure AI Search, Graph RAG (Cosmos DB), and OpenAI models. It ingests documents, processes them through an orchestration pipeline, and serves context-aware answers through a secure FastAPI backend, fully isolated behind API Gateways and strict content safety filters.",
   color: "#0078D4",
