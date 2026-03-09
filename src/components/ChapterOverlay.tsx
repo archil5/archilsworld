@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { ChapterData } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 import type { ProgressiveTheme } from "@/hooks/useProgressiveTheme";
+import { useProgressiveTheme } from "@/hooks/useProgressiveTheme";
 
 interface ChapterOverlayProps {
   chapter: ChapterData;
   visible: boolean;
   onDive?: () => void;
-  theme: ProgressiveTheme;
+  theme?: ProgressiveTheme;
 }
 
 const categoryLabels: Record<string, string> = {
