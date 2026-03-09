@@ -297,7 +297,7 @@ export const mlOpsPipelineDiagram: DiagramPuzzleData = {
     "You've assembled a production MLOps pipeline that automatically trains, evaluates, registers, deploys, and monitors ML models — with full lineage tracking and bias detection. 🤖",
   techStack: ["SageMaker", "Step Functions", "Lambda", "KubeFlow", "Docker"],
   services: ["Feature Store", "Model Registry", "Model Monitor", "Clarify", "CodeCommit", "CodeBuild", "CloudFormation"],
-  layers: ["CI Pipeline (Build)", "AWS Step Functions Workflow", "Data & Quality", "CD Pipeline (Deploy)", "Inference"]
+  layers: ["CI Pipeline (Build)", "AWS Step Functions Workflow", "Data & Quality", "CD Pipeline (Deploy)", "Inference"],
   diagram: {
     groups: [
       { id: "ci", label: "CI Pipeline (Build)", x: 8, y: 8, w: 22, h: 25, color: "#4CAF50" },
