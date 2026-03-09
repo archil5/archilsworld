@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CHAPTERS } from "@/data/chapters";
 import HexTile from "@/components/three/HexTile";
