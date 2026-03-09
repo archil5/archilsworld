@@ -72,7 +72,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
         {/* Title */}
         <motion.h1
           className="font-display text-4xl md:text-6xl font-bold tracking-wider mb-3"
-          style={{ color: "#f5f0e8" }}
+          style={{ color: "#2d2a26" }}
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
