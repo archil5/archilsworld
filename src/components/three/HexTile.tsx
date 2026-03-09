@@ -220,10 +220,13 @@ const HexTile = ({
               fontFamily: "'JetBrains Mono', monospace",
               fontWeight: 600,
               color: "#e0e0e0",
-              letterSpacing: 1.5,
-              textTransform: "uppercase" as const,
+              letterSpacing: 0.6,
+              textTransform: "none" as const,
+              maxWidth: 180,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}>
-              EXPLORE
+              {exploreHint || `Inside ${label}`}
             </span>
             <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color }}>
               →
