@@ -891,7 +891,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {genericPuzzleSolved && <AllSolvedTrophy />}
+        {solvedPuzzles.size === stops.length && <AllSolvedTrophy />}
       </AnimatePresence>
     </div>
   );
