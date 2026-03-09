@@ -75,7 +75,7 @@ export const CHAPTERS: ChapterData[] = [
     subtitle: "RBC → BMO · From DevOps to Principal to AI",
     narrative: "From cybersecurity automation at RBC to architecting enterprise AI platforms at BMO — seven years of building, leading, and transforming at scale.",
     tagline: "Seven years of building what banks run on",
-    exploreHint: ">> deploy into the career timeline",
+    exploreHint: "⟩ deploy —production",
     skills: ["AWS", "Azure", "Kubernetes", "Terraform", "AI/ML", "Leadership"],
     position: [5.5, 0, -1],
     color: "#0075BE",
