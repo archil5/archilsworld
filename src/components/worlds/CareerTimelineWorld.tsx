@@ -133,7 +133,7 @@ const stops: RoleStop[] = [
         "Reusable compliance workflows across application repos",
       ],
     },
-    diagramPuzzle: cicdRunnersDiagram,
+    diagramPuzzles: [cicdRunnersDiagram],
   },
   {
     company: "RBC",
