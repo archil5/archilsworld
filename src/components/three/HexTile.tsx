@@ -17,6 +17,7 @@ const HexTile = ({
   image,
   showExplore,
   onExplore,
+  exploreHint,
 }: {
   position: [number, number, number];
   color: string;
@@ -30,6 +31,7 @@ const HexTile = ({
   image?: string;
   showExplore?: boolean;
   onExplore?: () => void;
+  exploreHint?: string;
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
