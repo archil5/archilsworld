@@ -28,10 +28,10 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
         <motion.div
           className="fixed inset-0 z-50 flex flex-col"
           style={{ background: "#faf8f4" }}
-          initial={{ opacity: 0, scale: 1.1 }}
+          initial={{ opacity: 0, scale: 2.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          exit={{ opacity: 0, scale: 0.3, filter: "blur(8px)" }}
+          transition={{ duration: 0.6, ease: [0.45, 0, 0.15, 1] }}
         >
           <div className="absolute inset-0 pointer-events-none"
             style={{ background: `radial-gradient(ellipse at 50% 80%, ${chapter.color}08, transparent 70%)` }} />
