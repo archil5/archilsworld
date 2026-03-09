@@ -10,8 +10,11 @@ import {
   cicdRunnersDiagram,
   mlOpsPipelineDiagram,
   haContainerDiagram,
-  multiAccountMlOpsDiagram
+  multiAccountMlOpsDiagram,
+  genericCloudPuzzle
 } from "@/data/careerDiagrams";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 /* ═══════════════════════════════════════════════════════════
    TYPES & DATA
