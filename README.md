@@ -82,7 +82,7 @@ This project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`)
 
 ## 👩‍💻 About Me
 
-**Binita Patel** — Principal Cloud Engineer specializing in enterprise AI platforms, serverless architectures, and zero-trust security patterns. Currently building secure GenAI solutions at scale in Canada's financial sector.
+**Archil Patel** — Principal Cloud Engineer specializing in enterprise AI platforms, serverless architectures, and zero-trust security patterns. Currently building secure GenAI solutions at scale in Canada's financial sector.
 
 **Domains**: Azure AI (RAG/GraphRAG), AWS Serverless & Containers, MLOps, DevSecOps, Cybersecurity Automation
 
