@@ -34,7 +34,7 @@ interface RoleStop {
   techStack: string[];
   wins: string[];
   project?: ProjectShowcase;
-  diagramPuzzle?: DiagramPuzzleData;
+  diagramPuzzles?: DiagramPuzzleData[]; // Changed to array
 }
 
 /* ═══════════════════════════════════════════════════════════
