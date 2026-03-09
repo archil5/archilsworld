@@ -365,19 +365,20 @@ const ArchDiagramPuzzle = ({
       <div
         className="relative rounded-xl overflow-hidden"
         style={{
-          background: "#0f1117",
-          border: `1px solid ${color}30`,
+          background: "#fefcf9",
+          border: `1px solid ${color}20`,
           paddingBottom: `${(containerH / containerW) * 100}%`,
+          boxShadow: "0 2px 12px rgba(180,140,100,0.08)",
         }}
       >
         <div className="absolute inset-0">
           {/* Subtle grid */}
           <div
-            className="absolute inset-0 opacity-[0.04]"
+            className="absolute inset-0 opacity-[0.06]"
             style={{
               backgroundImage: `
-                linear-gradient(${color}40 1px, transparent 1px),
-                linear-gradient(90deg, ${color}40 1px, transparent 1px)
+                linear-gradient(${color}30 1px, transparent 1px),
+                linear-gradient(90deg, ${color}30 1px, transparent 1px)
               `,
               backgroundSize: "40px 40px",
             }}
