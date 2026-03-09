@@ -14,31 +14,31 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
-      style={{ background: "#2d2a26" }}
+      style={{ background: "#f5f0e8" }}
       exit={{ opacity: 0, scale: 1.1 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
     >
       {/* Parchment texture overlay */}
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-20"
         style={{
           backgroundImage: "url('/images/parchment-bg.jpg')",
           backgroundSize: "cover",
-          mixBlendMode: "overlay",
+          mixBlendMode: "multiply",
         }}
       />
 
       {/* Subtle grid pattern */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
+      <div className="absolute inset-0 opacity-[0.06]" style={{
         backgroundImage: `
-          linear-gradient(rgba(181,101,58,0.3) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(181,101,58,0.3) 1px, transparent 1px)
+          linear-gradient(rgba(181,101,58,0.25) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(181,101,58,0.25) 1px, transparent 1px)
         `,
         backgroundSize: "60px 60px",
       }} />
 
       {/* Hex decorations */}
-      <svg className="absolute inset-0 w-full h-full opacity-[0.06]" viewBox="0 0 1200 800">
+      <svg className="absolute inset-0 w-full h-full opacity-[0.08]" viewBox="0 0 1200 800">
         {[
           [100, 150], [300, 50], [500, 200], [700, 100], [900, 250], [1100, 150],
           [200, 400], [400, 350], [600, 450], [800, 380], [1000, 420],
