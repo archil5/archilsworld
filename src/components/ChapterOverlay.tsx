@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ChapterData } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
+import type { ProgressiveTheme } from "@/hooks/useProgressiveTheme";
 
 interface ChapterOverlayProps {
   chapter: ChapterData;
   visible: boolean;
   onDive?: () => void;
+  theme: ProgressiveTheme;
 }
 
 const categoryLabels: Record<string, string> = {
@@ -42,7 +44,7 @@ const BrandBadge = ({ chapter }: { chapter: ChapterData }) => {
   return <span className="text-3xl">{chapter.icon}</span>;
 };
 
-const TypewriterText = ({ text, delay = 0 }: { text: string; delay?: number }) => {
+const TypewriterText = ({ text, delay = 0, cursorColor }: { text: string; delay?: number; cursorColor?: string }) => {
   const [displayed, setDisplayed] = useState("");
   const [started, setStarted] = useState(false);
 
@@ -68,7 +70,7 @@ const TypewriterText = ({ text, delay = 0 }: { text: string; delay?: number }) =
       {displayed.length < text.length ? (
         <motion.span
           className="inline-block w-[2px] h-[14px] ml-0.5 align-middle"
-          style={{ background: "rgba(45,42,38,0.4)" }}
+          style={{ background: cursorColor || "rgba(45,42,38,0.4)" }}
           animate={{ opacity: [1, 0, 1] }}
           transition={{ repeat: Infinity, duration: 0.6 }}
         />
@@ -77,7 +79,7 @@ const TypewriterText = ({ text, delay = 0 }: { text: string; delay?: number }) =
   );
 };
 
-const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
+const ChapterOverlay = ({ chapter, visible, onDive, theme }: ChapterOverlayProps) => {
   return (
     <AnimatePresence mode="wait">
       {visible && (
@@ -92,7 +94,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, rgba(245,240,232,0.97) 0%, rgba(245,240,232,0.75) 40%, transparent 100%)",
+              background: `linear-gradient(to top, ${theme.surfaceAlpha} 0%, ${theme.surface.replace("0.97", "0.75")} 40%, transparent 100%)`,
             }}
           />
 
@@ -114,14 +116,14 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               >
                 {categoryLabels[chapter.category] || "Career"}
               </span>
-              <span className="text-xs font-mono" style={{ color: "#6b6560" }}>
+              <span className="text-xs font-mono" style={{ color: theme.textMuted }}>
                 {chapter.year}
               </span>
             </motion.div>
 
             <motion.h2
-              className="font-display text-3xl md:text-5xl font-bold mb-2"
-              style={{ color: "#2d2a26" }}
+              className="font-display text-3xl md:text-5xl font-bold mb-2 transition-colors duration-700"
+              style={{ color: theme.text }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -130,8 +132,8 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
             </motion.h2>
 
             <motion.p
-              className="font-display text-xs uppercase tracking-[0.2em] mb-3"
-              style={{ color: "#6b6560" }}
+              className="font-display text-xs uppercase tracking-[0.2em] mb-3 transition-colors duration-700"
+              style={{ color: theme.textMuted }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
@@ -141,12 +143,12 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
 
             <motion.div
               className="font-body text-sm leading-relaxed mb-5 max-w-md"
-              style={{ color: "rgba(45,42,38,0.6)", fontStyle: "italic" }}
+              style={{ color: theme.textMuted, fontStyle: "italic" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.3 }}
             >
-              <TypewriterText text={chapter.tagline} delay={0.6} />
+              <TypewriterText text={chapter.tagline} delay={0.6} cursorColor={theme.textMuted} />
             </motion.div>
 
             {onDive && (
@@ -156,7 +158,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
                 style={{
                   background: `${chapter.color}12`,
                   border: `1px solid ${chapter.color}35`,
-                  color: chapter.color,
+                  color: theme.isDark ? "#f0ebe3" : chapter.color,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = `${chapter.color}22`;

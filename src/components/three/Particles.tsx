@@ -2,7 +2,13 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const Particles = ({ count = 200 }: { count?: number }) => {
+interface ParticlesProps {
+  count?: number;
+  color?: string;
+  opacity?: number;
+}
+
+const Particles = ({ count = 200, color = "#c8956c", opacity = 0.35 }: ParticlesProps) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = new THREE.Object3D();
 
@@ -37,7 +43,7 @@ const Particles = ({ count = 200 }: { count?: number }) => {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial color="#c8956c" transparent opacity={0.35} />
+      <meshBasicMaterial color={color} transparent opacity={opacity} />
     </instancedMesh>
   );
 };
