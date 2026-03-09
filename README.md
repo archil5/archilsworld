@@ -1,90 +1,133 @@
-# Archil Patel — Cloud Architecture Portfolio
+# Archil Patel — Interactive 3D Portfolio
 
-An interactive, gamified portfolio showcasing enterprise cloud architecture solutions built across AI/ML, serverless, containers, DevOps, and cybersecurity domains.
+An immersive, board-game-inspired portfolio built with React Three Fiber. Navigate a 3D hex-tile journey through my career — from childhood curiosity to enterprise AI architecture.
 
-## 🎮 What This Portfolio Offers
+## ✨ Live Demo
 
-- **Interactive Architecture Diagrams** — Real-world solution architectures (Azure RAG, AWS MLOps, Zero-Trust API Gateways) presented as explorable, zoomable diagrams
-- **Fun Architecture Puzzles** — 20 drag-and-drop puzzles across 4 career roles with difficulty levels (Easy → Expert), covering real-world scenarios like LLMOps, Service Mesh, GraphRAG, and SOAR platforms
-- **Storytelling Career Timeline** — Each role tells the story of challenges faced, architectures designed, and lessons learned
-- **Board Game Theme** — The entire portfolio is designed as a strategy board game, reflecting my problem-solving mindset
+**[archilpatel.com](https://archilpatel.com)** *(or your deployed URL)*
 
-## 🏗️ Architecture & Code Structure
+## 🎮 Experience Overview
+
+This isn't a typical portfolio. It's an **interactive 3D board game** where each hex tile represents a chapter of my journey:
+
+| Tile | Chapter | What's Inside |
+|------|---------|---------------|
+| 🕹️ | **Curious Mind** | DOS terminal nostalgia — where my tech curiosity began |
+| 🌐 | **Web & Network** | Early days of HTML/CSS and network fundamentals |
+| 🎓 | **Dalhousie** | Master's in Applied CS — skill tree visualization |
+| 💼 | **Career** | RBC → BMO timeline with interactive architecture diagrams |
+| 📬 | **Contact** | Connect with me |
+
+### Key Features
+
+- **3D Board Navigation** — Scroll/swipe/arrow keys to move between hex tiles
+- **Cinematic Dive Animations** — Zoom into each "world" with dramatic transitions
+- **Interactive Architecture Puzzles** — 20+ drag-and-drop cloud architecture challenges
+- **Mobile-Friendly** — Full touch support with responsive layouts
+- **Parchment Aesthetic** — Strategy board game visual design (think Wingspan/Catan)
+
+## 🏗️ Architecture
 
 ```
 src/
-├── pages/
-│   └── Index.tsx              # Entry point with intro screen
 ├── components/
-│   ├── Experience.tsx         # Main game board with chapter tiles
-│   ├── ChapterOverlay.tsx     # Full-screen chapter view
-│   ├── WorldDive.tsx          # World container
-│   ├── worlds/                # Each "world" is a chapter section
-│   │   ├── CareerTimelineWorld.tsx   # Career journey with puzzles
-│   │   ├── SkillTreeWorld.tsx        # Technical skills visualization
-│   │   ├── CodeBuilderWorld.tsx      # Code showcase
-│   │   ├── NetworkWorld.tsx          # Professional network
-│   │   ├── ContactWorld.tsx          # Contact information
-│   │   └── ...
-│   ├── puzzles/               # Interactive puzzle components
-│   │   ├── ArchDiagramPuzzle.tsx     # Drag-and-drop architecture puzzle
-│   │   └── ReadOnlyDiagram.tsx       # Zoomable read-only diagram viewer
-│   └── ui/                    # Reusable UI components (shadcn/ui)
+│   ├── Experience.tsx           # Main 3D scene orchestrator
+│   ├── WorldDive.tsx            # Chapter world container + animations
+│   ├── ChapterOverlay.tsx       # Bottom info panel with typewriter effect
+│   │
+│   ├── three/                   # React Three Fiber components
+│   │   ├── HexTile.tsx          # Interactive hex tiles with popups
+│   │   ├── BoardPath.tsx        # Connecting paths between tiles
+│   │   ├── BoardSurface.tsx     # Parchment board background
+│   │   ├── CameraController.tsx # Smooth camera follow
+│   │   ├── GamePiece.tsx        # Meeple game piece
+│   │   └── Particles.tsx        # Ambient floating particles
+│   │
+│   ├── worlds/                  # Each chapter's immersive content
+│   │   ├── DosTerminalWorld.tsx       # Retro DOS terminal
+│   │   ├── WebFoundationsWorld.tsx    # Web/network learning journey
+│   │   ├── SkillTreeWorld.tsx         # Interactive skill visualization
+│   │   ├── CareerTimelineWorld.tsx    # Full career with arch diagrams
+│   │   └── ContactWorld.tsx           # Contact form
+│   │
+│   └── puzzles/                 # Architecture puzzle system
+│       ├── ArchDiagramPuzzle.tsx      # Drag-and-drop puzzle engine
+│       └── ReadOnlyDiagram.tsx        # Zoomable diagram viewer
+│
 ├── data/
-│   ├── careerDiagrams.ts      # All architecture diagrams + 20 puzzles
-│   ├── chapters.ts            # Chapter/tile definitions
-│   └── brandLogos.ts          # Company logo mappings
-└── assets/                    # Images and static assets
+│   ├── chapters.ts              # Tile positions, colors, narratives
+│   ├── careerDiagrams.ts        # 20+ architecture diagrams & puzzles
+│   └── brandLogos.ts            # Company logo mappings
+│
+└── assets/                      # Images (curious-mind, web-network, etc.)
 ```
 
 ## 🛠️ Tech Stack
 
-- **React 18** + **TypeScript** — Type-safe component architecture
-- **Vite** — Fast build tooling
-- **Tailwind CSS** — Utility-first styling with custom design tokens
-- **Framer Motion** — Smooth animations and transitions
-- **shadcn/ui** — Accessible component primitives
-- **React Router** — Client-side routing
+| Category | Technology |
+|----------|------------|
+| **3D Engine** | React Three Fiber + Drei |
+| **Framework** | React 18 + TypeScript |
+| **Styling** | Tailwind CSS + Custom Design Tokens |
+| **Animation** | Framer Motion |
+| **Build** | Vite |
+| **UI Components** | shadcn/ui |
 
 ## 🚀 Getting Started
 
 ```bash
-# Clone the repository
+# Clone
 git clone https://github.com/archil5/archilsworld.git
 cd archilsworld
 
-# Install dependencies
+# Install
 npm install
 
-# Start development server
+# Dev server (localhost:8080)
 npm run dev
-```
 
-The app will be available at `http://localhost:8080`.
-
-## 📦 Build & Deploy
-
-```bash
 # Production build
 npm run build
-
-# Preview production build
-npm run preview
 ```
 
-### GitHub Pages Deployment
+## 📦 Deployment
 
-This project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) for automated deployment to GitHub Pages.
+### GitHub Pages (Automated)
 
-1. Enable GitHub Pages in your repo settings (Settings → Pages → Source: GitHub Actions)
-2. Push to `main` — the workflow will build and deploy automatically
+The repo includes `.github/workflows/deploy.yml` for automatic deployment:
+
+1. Enable GitHub Pages: **Settings → Pages → Source: GitHub Actions**
+2. Push to `main` — deploys automatically
+
+### Manual Deploy
+
+```bash
+npm run build
+# Deploy the `dist/` folder to any static host
+```
+
+## 🎯 Career Highlights
+
+The **Career** world showcases real enterprise architectures I've designed:
+
+- **Enterprise AI Platform** — Agentic AI, LLMOps, GraphRAG on Azure
+- **Zero-Trust API Gateway** — Private API Gateway + Lambda Authorizers
+- **Multi-Account MLOps** — Cross-account SageMaker pipelines
+- **Ephemeral CI/CD** — Autoscaling GitHub runners on ECS Fargate
+- **Cybersecurity Automation** — 10,000+ endpoint vulnerability scanning
+
+Each architecture includes interactive puzzles to test your cloud knowledge!
 
 ## 👨‍💻 About Me
 
-**Archil Patel** — Principal Cloud Engineer specializing in enterprise AI platforms, serverless architectures, and zero-trust security patterns. Currently building secure GenAI solutions at scale in Canada's financial sector.
+**Archil Patel** — Principal Cloud Engineer specializing in enterprise AI platforms, serverless architectures, and zero-trust security patterns. Currently building secure GenAI solutions at BMO in Canada.
 
-**Domains**: Azure AI (RAG/GraphRAG), AWS Serverless & Containers, MLOps, DevSecOps, Cybersecurity Automation
+**Domains**: Azure AI (RAG/GraphRAG/LLMOps), AWS Serverless & Containers, MLOps, DevSecOps
 
 ## 📄 License
 
-This project is for portfolio/personal use.
+Personal portfolio project. Architecture diagrams represent simplified versions of enterprise solutions.
+
+---
+
+*Built with ❤️ using React Three Fiber and way too much coffee.*
