@@ -229,7 +229,7 @@ const AllSolvedTrophy = () => (
 const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [activeStop, setActiveStop] = useState(0);
   const [revealed, setRevealed] = useState(0);
-  const [panel, setPanel] = useState<"overview" | "puzzle">("puzzle");
+  const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
   const [activeDiagram, setActiveDiagram] = useState(0);
   const [solvedStops, setSolvedStops] = useState<Set<string>>(new Set());
   
