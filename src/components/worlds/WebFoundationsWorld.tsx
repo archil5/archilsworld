@@ -107,11 +107,20 @@ const HTMLBuilderPuzzle = () => {
           <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>
             index.html — {placed.length}/{codePieces.length} lines
           </span>
-          <button onClick={reset}
-            className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
-            style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
-            Reset
-          </button>
+          <div className="flex gap-2">
+            {!complete && (
+              <button onClick={revealAll}
+                className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
+                style={{ color: "rgba(80,70,60,0.5)", background: "rgba(80,70,60,0.04)", border: "1px solid rgba(80,70,60,0.1)" }}>
+                ⚡ Reveal All
+              </button>
+            )}
+            <button onClick={reset}
+              className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer"
+              style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
+              Reset
+            </button>
+          </div>
         </div>
 
         {/* Editor area */}
