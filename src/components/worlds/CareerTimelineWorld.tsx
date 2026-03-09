@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
 import ReadOnlyDiagram from "@/components/puzzles/ReadOnlyDiagram";
+import { aiRagDiagram, apiGatewayDiagram, cicdRunnersDiagram } from "@/data/careerDiagrams";
 
 /* ═══════════════════════════════════════════════════════════
    TYPES & DATA
