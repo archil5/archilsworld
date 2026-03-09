@@ -1,224 +1,926 @@
 import type { DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
 
 /* ═══════════════════════════════════════════════════════════
-   FUN PUZZLES — One unique puzzle per career role
+   FUN PUZZLES — 5 unique puzzles per career role
+   Real-world enterprise scenarios with difficulty levels
    ═══════════════════════════════════════════════════════════ */
 
-/* Role 0: BMO Principal Cloud Engineer — AI */
+/* ─── AI Role Puzzles ─────────────────────────────────────── */
+
 export const funPuzzleAI: DiagramPuzzleData = {
   title: "Fun Puzzle",
   roleTitle: "☁️ AI Architecture Challenge",
-  projectName: "Archie the AI Butler 🤖",
+  projectName: "Enterprise RAG Chatbot 🤖",
+  difficulty: "Easy",
   description:
-    "Oh no — Archie the AI Butler has lost his brain! He can't remember how to process voice commands, look up recipes, or control the smart home. Rebuild his neural pipeline so he can get back to making the perfect cup of tea.",
+    "Your company's internal knowledge base chatbot can't answer questions. The RAG pipeline between the vector store and the LLM is disconnected. Wire it up so employees can query policies and docs again.",
   color: "#0078D4",
-  successMessage:
-    "🎉 Archie is back online! He's already brewing tea and dimming the lights. You're a certified AI whisperer! 🧠☕",
+  successMessage: "🎉 The RAG chatbot is live! Employees are getting instant answers from the knowledge base. 🧠",
   diagram: {
     groups: [
-      { id: "input", label: "Voice Input Layer", x: 8, y: 8, w: 20, h: 30, color: "#2196F3" },
-      { id: "brain", label: "Archie's Brain", x: 30, y: 8, w: 38, h: 30, color: "#9C27B0" },
-      { id: "output", label: "Smart Home Actions", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
+      { id: "input", label: "User Query", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
+      { id: "rag", label: "RAG Pipeline", x: 28, y: 8, w: 40, h: 30, color: "#9C27B0" },
+      { id: "output", label: "Response", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
     ],
     nodes: [
-      { id: "mic", label: "Smart Microphone", x: 18, y: 18, w: 130, h: 30, icon: "🎙️" },
-      { id: "stt", label: "Speech-to-Text", x: 18, y: 30, w: 115, h: 30, icon: "📝", hidden: true },
-      { id: "nlu", label: "Intent Classifier (NLU)", x: 49, y: 14, w: 155, h: 30, icon: "🧠", hidden: true },
-      { id: "rag", label: "Recipe Knowledge Base", x: 49, y: 24, w: 155, h: 30, icon: "📚" },
-      { id: "planner", label: "Action Planner", x: 49, y: 34, w: 115, h: 30, icon: "📋", hidden: true },
-      { id: "lights", label: "Smart Lights", x: 81, y: 14, w: 100, h: 28, icon: "💡" },
-      { id: "kettle", label: "Smart Kettle", x: 81, y: 24, w: 100, h: 28, icon: "☕", hidden: true },
-      { id: "speaker", label: "Voice Response", x: 81, y: 34, w: 115, h: 28, icon: "🔊" },
+      { id: "user", label: "Employee Query", x: 17, y: 18, w: 125, h: 30, icon: "💬" },
+      { id: "embed", label: "Query Embedder", x: 17, y: 30, w: 120, h: 30, icon: "🔢", hidden: true },
+      { id: "search", label: "Vector Search", x: 48, y: 14, w: 110, h: 30, icon: "🔍", hidden: true },
+      { id: "docs", label: "Knowledge Docs", x: 48, y: 24, w: 125, h: 30, icon: "📄" },
+      { id: "rerank", label: "Reranker Model", x: 48, y: 34, w: 120, h: 30, icon: "📊", hidden: true },
+      { id: "llm", label: "LLM Generator", x: 81, y: 18, w: 115, h: 30, icon: "🧠" },
+      { id: "response", label: "Cited Response", x: 81, y: 30, w: 115, h: 30, icon: "💬", hidden: true },
     ],
     edges: [
-      { from: "mic", to: "stt", label: "Audio Stream" },
-      { from: "stt", to: "nlu", label: "Text" },
-      { from: "nlu", to: "rag", label: "Query" },
-      { from: "nlu", to: "planner", label: "Intent" },
-      { from: "planner", to: "lights", label: "dim(50%)" },
-      { from: "planner", to: "kettle", label: "brew(earl grey)" },
-      { from: "planner", to: "speaker", label: "respond()" },
+      { from: "user", to: "embed", label: "Encode" },
+      { from: "embed", to: "search", label: "Query" },
+      { from: "search", to: "docs", label: "Retrieve" },
+      { from: "docs", to: "rerank", label: "Score" },
+      { from: "rerank", to: "llm", label: "Context" },
+      { from: "llm", to: "response", label: "Generate" },
     ],
-    hiddenNodeIds: ["stt", "nlu", "planner", "kettle"],
-    wordBank: [
-      "Speech-to-Text",
-      "Intent Classifier (NLU)",
-      "Action Planner",
-      "Smart Kettle",
-      "Blockchain Node",
-      "GPS Tracker",
-    ],
+    hiddenNodeIds: ["embed", "search", "rerank", "response"],
+    wordBank: ["Query Embedder", "Vector Search", "Reranker Model", "Cited Response", "Blockchain", "GPS"],
   },
-  techStack: ["NLU", "RAG", "IoT", "Voice AI"],
-  services: ["Speech-to-Text", "Knowledge Base", "Smart Home Hub"],
-  layers: ["Voice Input Layer", "Archie's Brain", "Smart Home Actions"],
+  techStack: ["Embeddings", "Vector DB", "Reranking", "LLM"],
+  services: ["Query Encoder", "Retrieval", "Generation"],
+  layers: ["User Query", "RAG Pipeline", "Response"],
 };
 
-/* Role 1: BMO Principal — Serverless & Containers */
+export const funPuzzleAI2: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "☁️ AI Architecture Challenge",
+  projectName: "Multi-Modal Document Intelligence 📄",
+  difficulty: "Medium",
+  description:
+    "Insurance claims arrive as PDFs with photos, handwritten notes, and typed forms. Build the multi-modal AI pipeline that extracts, classifies, and routes each claim automatically.",
+  color: "#0078D4",
+  successMessage: "🎉 Claims are being auto-processed! The backlog is shrinking by the hour. 📄✨",
+  diagram: {
+    groups: [
+      { id: "input", label: "Document Intake", x: 8, y: 8, w: 20, h: 30, color: "#2196F3" },
+      { id: "process", label: "Multi-Modal AI", x: 30, y: 8, w: 38, h: 30, color: "#9C27B0" },
+      { id: "output", label: "Routing", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "upload", label: "Claim Upload", x: 18, y: 16, w: 110, h: 28, icon: "📤" },
+      { id: "ocr", label: "OCR Engine", x: 18, y: 28, w: 95, h: 28, icon: "👁️", hidden: true },
+      { id: "vision", label: "Vision Encoder", x: 49, y: 14, w: 120, h: 28, icon: "🖼️", hidden: true },
+      { id: "textenc", label: "Text Encoder", x: 49, y: 24, w: 110, h: 28, icon: "📖" },
+      { id: "classifier", label: "Claim Classifier", x: 49, y: 34, w: 125, h: 28, icon: "🏷️", hidden: true },
+      { id: "router", label: "Routing Engine", x: 81, y: 20, w: 120, h: 28, icon: "🔀" },
+      { id: "queue", label: "Priority Queue", x: 81, y: 32, w: 115, h: 28, icon: "📋", hidden: true },
+    ],
+    edges: [
+      { from: "upload", to: "ocr" },
+      { from: "ocr", to: "vision" },
+      { from: "ocr", to: "textenc" },
+      { from: "vision", to: "classifier" },
+      { from: "textenc", to: "classifier" },
+      { from: "classifier", to: "router" },
+      { from: "router", to: "queue" },
+    ],
+    hiddenNodeIds: ["ocr", "vision", "classifier", "queue"],
+    wordBank: ["OCR Engine", "Vision Encoder", "Claim Classifier", "Priority Queue", "Blockchain", "Satellite"],
+  },
+  techStack: ["OCR", "Vision AI", "NLP", "Classification"],
+  services: ["Document Processing", "Multi-Modal Fusion", "Routing"],
+  layers: ["Document Intake", "Multi-Modal AI", "Routing"],
+};
+
+export const funPuzzleAI3: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "☁️ AI Architecture Challenge",
+  projectName: "Real-Time Fraud Detection Engine 🚨",
+  difficulty: "Medium",
+  description:
+    "Financial transactions are flying through at 10K TPS but the fraud detection model is offline. Wire up the streaming ML inference pipeline before fraudsters drain accounts.",
+  color: "#0078D4",
+  successMessage: "🎉 Fraud is being caught in real-time! Accounts are safe. 🚨💳",
+  diagram: {
+    groups: [
+      { id: "ingest", label: "Transaction Stream", x: 8, y: 8, w: 20, h: 30, color: "#E53E3E" },
+      { id: "ml", label: "ML Inference", x: 30, y: 8, w: 38, h: 30, color: "#9C27B0" },
+      { id: "action", label: "Decision & Action", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "txn", label: "Transaction Event", x: 18, y: 18, w: 135, h: 28, icon: "💳" },
+      { id: "stream", label: "Kafka Stream", x: 18, y: 30, w: 110, h: 28, icon: "🌊", hidden: true },
+      { id: "feature", label: "Feature Extractor", x: 49, y: 14, w: 135, h: 28, icon: "⚙️", hidden: true },
+      { id: "model", label: "Fraud Scoring Model", x: 49, y: 24, w: 150, h: 28, icon: "🧠" },
+      { id: "rules", label: "Business Rules Engine", x: 49, y: 34, w: 160, h: 28, icon: "📋", hidden: true },
+      { id: "block", label: "Transaction Blocker", x: 81, y: 18, w: 150, h: 28, icon: "🚫" },
+      { id: "alert", label: "Analyst Alert", x: 81, y: 30, w: 110, h: 28, icon: "🔔", hidden: true },
+    ],
+    edges: [
+      { from: "txn", to: "stream" },
+      { from: "stream", to: "feature" },
+      { from: "feature", to: "model" },
+      { from: "model", to: "rules" },
+      { from: "rules", to: "block" },
+      { from: "rules", to: "alert" },
+    ],
+    hiddenNodeIds: ["stream", "feature", "rules", "alert"],
+    wordBank: ["Kafka Stream", "Feature Extractor", "Business Rules Engine", "Analyst Alert", "Time Machine", "Crystal Ball"],
+  },
+  techStack: ["Kafka", "Feature Store", "ML Inference", "Rules Engine"],
+  services: ["Streaming", "Feature Engineering", "Decision"],
+  layers: ["Transaction Stream", "ML Inference", "Decision & Action"],
+};
+
+export const funPuzzleAI4: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "☁️ AI Architecture Challenge",
+  projectName: "Enterprise LLMOps Platform 🏭",
+  difficulty: "Hard",
+  description:
+    "Your organization needs to manage LLM deployments at scale — model versioning, A/B testing, prompt management, cost tracking, and safety guardrails. Build the full LLMOps control plane.",
+  color: "#0078D4",
+  successMessage: "🎉 The LLMOps platform is operational! Models are versioned, monitored, and governed. 🏭🧠",
+  diagram: {
+    groups: [
+      { id: "dev", label: "Development", x: 8, y: 8, w: 18, h: 35, color: "#4CAF50" },
+      { id: "platform", label: "LLMOps Platform", x: 28, y: 8, w: 42, h: 35, color: "#9C27B0" },
+      { id: "serve", label: "Production Serving", x: 72, y: 8, w: 20, h: 35, color: "#FF9900" },
+    ],
+    nodes: [
+      { id: "prompt", label: "Prompt Registry", x: 17, y: 16, w: 120, h: 26, icon: "📝" },
+      { id: "finetune", label: "Fine-Tune Pipeline", x: 17, y: 26, w: 135, h: 26, icon: "🔧", hidden: true },
+      { id: "eval", label: "Eval Framework", x: 17, y: 36, w: 120, h: 26, icon: "📊", hidden: true },
+      { id: "registry", label: "Model Registry", x: 49, y: 14, w: 115, h: 26, icon: "📦", hidden: true },
+      { id: "safety", label: "Safety Guardrails", x: 49, y: 23, w: 135, h: 26, icon: "🛡️" },
+      { id: "router", label: "Model Router (A/B)", x: 49, y: 32, w: 145, h: 26, icon: "🔀", hidden: true },
+      { id: "cost", label: "Cost & Token Tracker", x: 49, y: 41, w: 155, h: 26, icon: "💰", hidden: true },
+      { id: "gateway", label: "AI Gateway", x: 82, y: 18, w: 100, h: 28, icon: "🚪" },
+      { id: "monitor", label: "Drift Monitor", x: 82, y: 30, w: 110, h: 28, icon: "📈", hidden: true },
+    ],
+    edges: [
+      { from: "prompt", to: "finetune" },
+      { from: "finetune", to: "eval" },
+      { from: "eval", to: "registry" },
+      { from: "registry", to: "safety" },
+      { from: "safety", to: "router" },
+      { from: "router", to: "gateway" },
+      { from: "gateway", to: "monitor" },
+      { from: "router", to: "cost" },
+    ],
+    hiddenNodeIds: ["finetune", "eval", "registry", "router", "cost", "monitor"],
+    wordBank: ["Fine-Tune Pipeline", "Eval Framework", "Model Registry", "Model Router (A/B)", "Cost & Token Tracker", "Drift Monitor", "Quantum Compiler"],
+  },
+  techStack: ["LLM Gateway", "MLflow", "Prompt Engineering", "A/B Testing"],
+  services: ["Model Registry", "Safety Layer", "Cost Management"],
+  layers: ["Development", "LLMOps Platform", "Production Serving"],
+};
+
+export const funPuzzleAI5: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "☁️ AI Architecture Challenge",
+  projectName: "Enterprise GraphRAG Knowledge Platform 🕸️",
+  difficulty: "Expert",
+  description:
+    "Build a production GraphRAG system that combines vector retrieval with knowledge graph traversal. Handle entity extraction, relationship mapping, hybrid search orchestration, and multi-hop reasoning — all within a zero-trust private network with CMK encryption. This is enterprise AI at its most complex.",
+  color: "#0078D4",
+  successMessage: "🎉 You've built the most sophisticated retrieval architecture — GraphRAG with hybrid search, entity resolution, and zero-trust networking. True enterprise AI mastery! 🕸️🏆",
+  diagram: {
+    groups: [
+      { id: "ingest", label: "Data Ingestion", x: 5, y: 8, w: 18, h: 40, color: "#2196F3" },
+      { id: "graph", label: "Knowledge Graph", x: 25, y: 8, w: 25, h: 40, color: "#9C27B0" },
+      { id: "search", label: "Hybrid Search", x: 52, y: 8, w: 22, h: 40, color: "#FF5722" },
+      { id: "reason", label: "Reasoning Layer", x: 76, y: 8, w: 20, h: 40, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "docs", label: "Enterprise Documents", x: 14, y: 15, w: 150, h: 26, icon: "📄" },
+      { id: "chunk", label: "Semantic Chunker", x: 14, y: 24, w: 135, h: 26, icon: "✂️", hidden: true },
+      { id: "ner", label: "Entity Extractor (NER)", x: 14, y: 33, w: 155, h: 26, icon: "🏷️", hidden: true },
+      { id: "embed", label: "Embedding Pipeline", x: 14, y: 42, w: 140, h: 26, icon: "🔢", hidden: true },
+      { id: "neo4j", label: "Graph Database", x: 37, y: 15, w: 120, h: 26, icon: "🕸️" },
+      { id: "resolve", label: "Entity Resolution", x: 37, y: 25, w: 135, h: 26, icon: "🔗", hidden: true },
+      { id: "community", label: "Community Detection", x: 37, y: 35, w: 155, h: 26, icon: "🏘️", hidden: true },
+      { id: "vector", label: "Vector Index", x: 63, y: 15, w: 100, h: 26, icon: "🔍" },
+      { id: "hybrid", label: "Hybrid Orchestrator", x: 63, y: 25, w: 155, h: 26, icon: "⚡", hidden: true },
+      { id: "traverse", label: "Graph Traversal", x: 63, y: 35, w: 125, h: 26, icon: "🧭", hidden: true },
+      { id: "multihop", label: "Multi-Hop Reasoner", x: 86, y: 18, w: 150, h: 26, icon: "🧠", hidden: true },
+      { id: "synth", label: "Answer Synthesizer", x: 86, y: 30, w: 145, h: 26, icon: "📝" },
+      { id: "cite", label: "Citation Engine", x: 86, y: 42, w: 120, h: 26, icon: "📚", hidden: true },
+    ],
+    edges: [
+      { from: "docs", to: "chunk" },
+      { from: "chunk", to: "ner" },
+      { from: "chunk", to: "embed" },
+      { from: "ner", to: "neo4j" },
+      { from: "neo4j", to: "resolve" },
+      { from: "resolve", to: "community" },
+      { from: "embed", to: "vector" },
+      { from: "vector", to: "hybrid" },
+      { from: "community", to: "traverse" },
+      { from: "hybrid", to: "multihop" },
+      { from: "traverse", to: "multihop" },
+      { from: "multihop", to: "synth" },
+      { from: "synth", to: "cite" },
+    ],
+    hiddenNodeIds: ["chunk", "ner", "embed", "resolve", "community", "hybrid", "traverse", "multihop", "cite"],
+    wordBank: [
+      "Semantic Chunker", "Entity Extractor (NER)", "Embedding Pipeline",
+      "Entity Resolution", "Community Detection", "Hybrid Orchestrator",
+      "Graph Traversal", "Multi-Hop Reasoner", "Citation Engine",
+      "Blockchain Validator", "Quantum Entangler",
+    ],
+  },
+  techStack: ["Neo4j", "Vector DB", "NER", "Graph Algorithms", "LLM"],
+  services: ["Entity Resolution", "Community Detection", "Hybrid Search"],
+  layers: ["Data Ingestion", "Knowledge Graph", "Hybrid Search", "Reasoning Layer"],
+};
+
+/* ─── Serverless Role Puzzles ────────────────────────────── */
+
 export const funPuzzleServerless: DiagramPuzzleData = {
   title: "Fun Puzzle",
-  roleTitle: "🐾 Serverless Challenge",
-  projectName: "Pixel Paws: Pet Social Network 🐕",
+  roleTitle: "⚡ Serverless Challenge",
+  projectName: "Event-Driven Order Processing 📦",
+  difficulty: "Easy",
   description:
-    "Pixel Paws is the hottest new social network for pets — but the backend is a mess! Photos aren't uploading, the feed is broken, and notifications are stuck. Wire up the serverless architecture so cats and dogs can share selfies again.",
+    "E-commerce orders are getting lost! The event-driven order processing pipeline needs to handle spikes during flash sales. Wire up the serverless architecture before customers leave.",
   color: "#FF9900",
-  successMessage:
-    "🎉 Pixel Paws is live! Pets everywhere are posting selfies and getting treats. You're the serverless hero of the animal kingdom! 🐾",
+  successMessage: "🎉 Orders are flowing smoothly! Flash sale handled without a hiccup! 📦🎉",
   diagram: {
     groups: [
-      { id: "client", label: "Mobile App", x: 8, y: 8, w: 15, h: 30, color: "#2196F3" },
-      { id: "api", label: "API Layer", x: 25, y: 8, w: 20, h: 30, color: "#FF9900" },
-      { id: "backend", label: "Backend Services", x: 47, y: 8, w: 30, h: 30, color: "#4CAF50" },
-      { id: "storage", label: "Data & Storage", x: 79, y: 8, w: 18, h: 30, color: "#9C27B0" },
+      { id: "order", label: "Order Intake", x: 8, y: 8, w: 20, h: 30, color: "#E53E3E" },
+      { id: "process", label: "Order Processing", x: 30, y: 8, w: 38, h: 30, color: "#FF9900" },
+      { id: "fulfil", label: "Fulfillment", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
     ],
     nodes: [
-      { id: "app", label: "Pixel Paws App", x: 15, y: 18, w: 120, h: 30, icon: "📱" },
-      { id: "cdn", label: "Photo CDN", x: 15, y: 30, w: 90, h: 28, icon: "⚡", hidden: true },
-      { id: "apigw", label: "API Gateway", x: 35, y: 18, w: 100, h: 30, icon: "🚪" },
-      { id: "auth", label: "Pet Auth (OAuth)", x: 35, y: 30, w: 120, h: 28, icon: "🔐", hidden: true },
-      { id: "upload", label: "Photo Upload Lambda", x: 62, y: 14, w: 145, h: 28, icon: "📸", hidden: true },
-      { id: "feed", label: "Feed Generator", x: 62, y: 24, w: 120, h: 28, icon: "📰" },
-      { id: "notify", label: "Treat Notification SNS", x: 62, y: 34, w: 155, h: 28, icon: "🔔", hidden: true },
-      { id: "s3", label: "Photo Bucket (S3)", x: 88, y: 18, w: 130, h: 28, icon: "🪣" },
-      { id: "db", label: "Pet Profiles (DynamoDB)", x: 88, y: 30, w: 155, h: 28, icon: "🗄️" },
+      { id: "app", label: "Web Store", x: 18, y: 18, w: 90, h: 28, icon: "🛒" },
+      { id: "api", label: "API Gateway", x: 18, y: 30, w: 100, h: 28, icon: "🚪", hidden: true },
+      { id: "queue", label: "Order Queue (SQS)", x: 49, y: 14, w: 140, h: 28, icon: "📬", hidden: true },
+      { id: "processor", label: "Order Processor", x: 49, y: 24, w: 130, h: 28, icon: "⚡" },
+      { id: "db", label: "Orders DB", x: 49, y: 34, w: 95, h: 28, icon: "🗄️", hidden: true },
+      { id: "warehouse", label: "Warehouse System", x: 81, y: 20, w: 135, h: 28, icon: "🏭" },
+      { id: "notify", label: "Email Notification", x: 81, y: 32, w: 140, h: 28, icon: "📧", hidden: true },
     ],
     edges: [
-      { from: "app", to: "apigw", label: "HTTPS" },
-      { from: "app", to: "cdn", label: "Fetch Photos" },
-      { from: "apigw", to: "auth", label: "Verify Token" },
-      { from: "apigw", to: "upload", label: "POST /photo" },
-      { from: "apigw", to: "feed", label: "GET /feed" },
-      { from: "upload", to: "s3", label: "Store" },
-      { from: "upload", to: "notify", label: "New Photo Event" },
-      { from: "feed", to: "db", label: "Query" },
+      { from: "app", to: "api" },
+      { from: "api", to: "queue" },
+      { from: "queue", to: "processor" },
+      { from: "processor", to: "db" },
+      { from: "processor", to: "warehouse" },
+      { from: "warehouse", to: "notify" },
     ],
-    hiddenNodeIds: ["cdn", "auth", "upload", "notify"],
-    wordBank: [
-      "Photo CDN",
-      "Pet Auth (OAuth)",
-      "Photo Upload Lambda",
-      "Treat Notification SNS",
-      "Blockchain Ledger",
-      "GPS Tracker",
-    ],
+    hiddenNodeIds: ["api", "queue", "db", "notify"],
+    wordBank: ["API Gateway", "Order Queue (SQS)", "Orders DB", "Email Notification", "Smoke Signal", "Owl Post"],
   },
-  techStack: ["Lambda", "API Gateway", "DynamoDB", "S3", "SNS"],
-  services: ["CDN", "OAuth", "Event Notifications"],
-  layers: ["Mobile App", "API Layer", "Backend Services", "Data & Storage"],
+  techStack: ["API Gateway", "SQS", "Lambda", "DynamoDB"],
+  services: ["Queueing", "Processing", "Notifications"],
+  layers: ["Order Intake", "Order Processing", "Fulfillment"],
 };
 
-/* Role 2: BMO DevOps Engineer */
+export const funPuzzleServerless2: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "⚡ Serverless Challenge",
+  projectName: "Real-Time IoT Data Pipeline 📡",
+  difficulty: "Medium",
+  description:
+    "Factory IoT sensors are sending telemetry but the data pipeline can't keep up. Build the real-time ingestion architecture to process 100K events/sec from the factory floor.",
+  color: "#FF9900",
+  successMessage: "🎉 IoT data is flowing! Predictive maintenance is catching failures before they happen! 📡",
+  diagram: {
+    groups: [
+      { id: "sensors", label: "IoT Sensors", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
+      { id: "stream", label: "Stream Processing", x: 28, y: 8, w: 42, h: 30, color: "#FF9900" },
+      { id: "consume", label: "Consumers", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "sensor", label: "Factory Sensors", x: 17, y: 18, w: 120, h: 28, icon: "🌡️" },
+      { id: "iot", label: "IoT Core", x: 17, y: 30, w: 85, h: 28, icon: "📡", hidden: true },
+      { id: "kinesis", label: "Kinesis Data Stream", x: 49, y: 14, w: 155, h: 28, icon: "🌊", hidden: true },
+      { id: "lambda", label: "Transform Lambda", x: 49, y: 24, w: 135, h: 28, icon: "⚡" },
+      { id: "firehose", label: "Kinesis Firehose", x: 49, y: 34, w: 130, h: 28, icon: "🔥", hidden: true },
+      { id: "s3", label: "Data Lake (S3)", x: 82, y: 20, w: 115, h: 28, icon: "🪣" },
+      { id: "dashboard", label: "Real-Time Dashboard", x: 82, y: 32, w: 155, h: 28, icon: "📊", hidden: true },
+    ],
+    edges: [
+      { from: "sensor", to: "iot" },
+      { from: "iot", to: "kinesis" },
+      { from: "kinesis", to: "lambda" },
+      { from: "lambda", to: "firehose" },
+      { from: "firehose", to: "s3" },
+      { from: "lambda", to: "dashboard" },
+    ],
+    hiddenNodeIds: ["iot", "kinesis", "firehose", "dashboard"],
+    wordBank: ["IoT Core", "Kinesis Data Stream", "Kinesis Firehose", "Real-Time Dashboard", "Telegraph", "Carrier Pigeon"],
+  },
+  techStack: ["IoT Core", "Kinesis", "Lambda", "S3"],
+  services: ["Data Streaming", "Transform", "Data Lake"],
+  layers: ["IoT Sensors", "Stream Processing", "Consumers"],
+};
+
+export const funPuzzleServerless3: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "⚡ Serverless Challenge",
+  projectName: "Serverless Image Processing CDN 🖼️",
+  difficulty: "Medium",
+  description:
+    "User-uploaded images need to be resized, watermarked, and served via CDN — all without servers. Build the event-driven image pipeline that auto-scales to millions of uploads.",
+  color: "#FF9900",
+  successMessage: "🎉 Images are being processed and served globally in milliseconds! 🖼️⚡",
+  diagram: {
+    groups: [
+      { id: "upload", label: "Upload", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
+      { id: "process", label: "Image Pipeline", x: 28, y: 8, w: 42, h: 30, color: "#FF9900" },
+      { id: "serve", label: "CDN", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "user", label: "Image Upload", x: 17, y: 20, w: 110, h: 28, icon: "📤" },
+      { id: "s3raw", label: "Raw Bucket (S3)", x: 17, y: 32, w: 120, h: 28, icon: "🪣", hidden: true },
+      { id: "trigger", label: "S3 Event Trigger", x: 49, y: 14, w: 125, h: 28, icon: "⚡", hidden: true },
+      { id: "resize", label: "Resize Lambda", x: 49, y: 24, w: 115, h: 28, icon: "📐" },
+      { id: "watermark", label: "Watermark Lambda", x: 49, y: 34, w: 135, h: 28, icon: "💧", hidden: true },
+      { id: "s3out", label: "Processed Bucket", x: 82, y: 20, w: 130, h: 28, icon: "🎭" },
+      { id: "cdn", label: "CloudFront CDN", x: 82, y: 32, w: 125, h: 28, icon: "🌐", hidden: true },
+    ],
+    edges: [
+      { from: "user", to: "s3raw" },
+      { from: "s3raw", to: "trigger" },
+      { from: "trigger", to: "resize" },
+      { from: "resize", to: "watermark" },
+      { from: "watermark", to: "s3out" },
+      { from: "s3out", to: "cdn" },
+    ],
+    hiddenNodeIds: ["s3raw", "trigger", "watermark", "cdn"],
+    wordBank: ["Raw Bucket (S3)", "S3 Event Trigger", "Watermark Lambda", "CloudFront CDN", "Fax Machine", "Film Camera"],
+  },
+  techStack: ["S3", "Lambda", "CloudFront", "Step Functions"],
+  services: ["Image Processing", "CDN", "Event Triggers"],
+  layers: ["Upload", "Image Pipeline", "CDN"],
+};
+
+export const funPuzzleServerless4: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "⚡ Serverless Challenge",
+  projectName: "Enterprise Zero-ETL Analytics Pipeline 📊",
+  difficulty: "Hard",
+  description:
+    "Data teams are tired of complex ETL jobs that break nightly. Build a zero-ETL architecture that streams data from operational databases directly to an analytics engine — no batch jobs, no data staleness, real-time insights.",
+  color: "#FF9900",
+  successMessage: "🎉 Zero-ETL is live! Real-time analytics without a single ETL job. The data team is celebrating! 📊🚀",
+  diagram: {
+    groups: [
+      { id: "source", label: "Operational DBs", x: 5, y: 8, w: 18, h: 35, color: "#2196F3" },
+      { id: "stream", label: "Change Data Capture", x: 25, y: 8, w: 25, h: 35, color: "#FF9900" },
+      { id: "transform", label: "Stream Transform", x: 52, y: 8, w: 22, h: 35, color: "#9C27B0" },
+      { id: "analytics", label: "Analytics Layer", x: 76, y: 8, w: 20, h: 35, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "rds", label: "Aurora PostgreSQL", x: 14, y: 16, w: 140, h: 26, icon: "🗄️" },
+      { id: "dynamo", label: "DynamoDB", x: 14, y: 26, w: 100, h: 26, icon: "📦" },
+      { id: "cdc", label: "CDC Connector", x: 14, y: 36, w: 115, h: 26, icon: "🔄", hidden: true },
+      { id: "msk", label: "Amazon MSK (Kafka)", x: 37, y: 16, w: 155, h: 26, icon: "🌊", hidden: true },
+      { id: "schema", label: "Schema Registry", x: 37, y: 26, w: 125, h: 26, icon: "📋" },
+      { id: "flink", label: "Apache Flink", x: 37, y: 36, w: 110, h: 26, icon: "⚡", hidden: true },
+      { id: "enrich", label: "Stream Enrichment", x: 63, y: 18, w: 140, h: 26, icon: "✨", hidden: true },
+      { id: "dedupe", label: "Deduplication", x: 63, y: 30, w: 115, h: 26, icon: "🔍" },
+      { id: "redshift", label: "Redshift Serverless", x: 86, y: 18, w: 150, h: 26, icon: "📊", hidden: true },
+      { id: "quicksight", label: "QuickSight Dashboard", x: 86, y: 30, w: 160, h: 26, icon: "📈" },
+    ],
+    edges: [
+      { from: "rds", to: "cdc" },
+      { from: "dynamo", to: "cdc" },
+      { from: "cdc", to: "msk" },
+      { from: "msk", to: "schema" },
+      { from: "msk", to: "flink" },
+      { from: "flink", to: "enrich" },
+      { from: "enrich", to: "dedupe" },
+      { from: "dedupe", to: "redshift" },
+      { from: "redshift", to: "quicksight" },
+    ],
+    hiddenNodeIds: ["cdc", "msk", "flink", "enrich", "redshift"],
+    wordBank: ["CDC Connector", "Amazon MSK (Kafka)", "Apache Flink", "Stream Enrichment", "Redshift Serverless", "Magic Mirror", "Crystal Ball"],
+  },
+  techStack: ["CDC", "Kafka", "Flink", "Redshift", "QuickSight"],
+  services: ["Change Data Capture", "Stream Processing", "Analytics"],
+  layers: ["Operational DBs", "Change Data Capture", "Stream Transform", "Analytics Layer"],
+};
+
+export const funPuzzleServerless5: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "⚡ Serverless Challenge",
+  projectName: "Container Service Mesh Communication 🕸️",
+  difficulty: "Expert",
+  description:
+    "Your microservices architecture has grown to 50+ services and inter-service communication is a mess. Build an enterprise service mesh with mTLS, circuit breakers, traffic splitting, distributed tracing, and centralized observability — all on Fargate with zero-trust networking.",
+  color: "#FF9900",
+  successMessage: "🎉 The service mesh is operational! 50+ services communicating securely with full observability. Enterprise-grade S2S communication achieved! 🕸️🏆",
+  diagram: {
+    groups: [
+      { id: "ingress", label: "Ingress Layer", x: 5, y: 8, w: 15, h: 40, color: "#2196F3" },
+      { id: "mesh", label: "Service Mesh Control Plane", x: 22, y: 8, w: 28, h: 40, color: "#FF9900" },
+      { id: "services", label: "Data Plane (Services)", x: 52, y: 8, w: 22, h: 40, color: "#4CAF50" },
+      { id: "observe", label: "Observability", x: 76, y: 8, w: 20, h: 40, color: "#9C27B0" },
+    ],
+    nodes: [
+      { id: "gateway", label: "API Gateway (Ingress)", x: 12, y: 16, w: 155, h: 26, icon: "🚪" },
+      { id: "nlb", label: "Network LB (mTLS)", x: 12, y: 28, w: 145, h: 26, icon: "⚖️", hidden: true },
+      { id: "consul", label: "Service Discovery", x: 36, y: 14, w: 135, h: 26, icon: "🗺️", hidden: true },
+      { id: "envoy", label: "Envoy Sidecar Proxy", x: 36, y: 23, w: 155, h: 26, icon: "🛡️" },
+      { id: "circuit", label: "Circuit Breaker", x: 36, y: 32, w: 120, h: 26, icon: "⚡", hidden: true },
+      { id: "split", label: "Traffic Splitter", x: 36, y: 41, w: 125, h: 26, icon: "🔀", hidden: true },
+      { id: "svcA", label: "Service A (Fargate)", x: 63, y: 16, w: 145, h: 26, icon: "📦" },
+      { id: "svcB", label: "Service B (Fargate)", x: 63, y: 28, w: 145, h: 26, icon: "📦", hidden: true },
+      { id: "svcC", label: "Service C (Fargate)", x: 63, y: 40, w: 145, h: 26, icon: "📦" },
+      { id: "xray", label: "X-Ray Distributed Tracing", x: 86, y: 16, w: 175, h: 26, icon: "🔭", hidden: true },
+      { id: "prometheus", label: "Prometheus Metrics", x: 86, y: 28, w: 150, h: 26, icon: "📊" },
+      { id: "grafana", label: "Grafana Dashboard", x: 86, y: 40, w: 140, h: 26, icon: "📈", hidden: true },
+    ],
+    edges: [
+      { from: "gateway", to: "nlb" },
+      { from: "nlb", to: "envoy" },
+      { from: "envoy", to: "consul" },
+      { from: "envoy", to: "circuit" },
+      { from: "circuit", to: "split" },
+      { from: "split", to: "svcA" },
+      { from: "split", to: "svcB" },
+      { from: "svcA", to: "svcC", label: "mTLS" },
+      { from: "svcB", to: "svcC", label: "mTLS" },
+      { from: "envoy", to: "xray" },
+      { from: "svcA", to: "prometheus" },
+      { from: "prometheus", to: "grafana" },
+    ],
+    hiddenNodeIds: ["nlb", "consul", "circuit", "split", "svcB", "xray", "grafana"],
+    wordBank: [
+      "Network LB (mTLS)", "Service Discovery", "Circuit Breaker", "Traffic Splitter",
+      "Service B (Fargate)", "X-Ray Distributed Tracing", "Grafana Dashboard",
+      "Quantum Router", "Wormhole Proxy",
+    ],
+  },
+  techStack: ["App Mesh", "Envoy", "ECS Fargate", "X-Ray", "Prometheus"],
+  services: ["Service Discovery", "Circuit Breaking", "Traffic Management", "Distributed Tracing"],
+  layers: ["Ingress Layer", "Service Mesh Control Plane", "Data Plane", "Observability"],
+};
+
+/* ─── DevOps Role Puzzles ────────────────────────────────── */
+
 export const funPuzzleDevOps: DiagramPuzzleData = {
   title: "Fun Puzzle",
   roleTitle: "🚀 DevOps Challenge",
-  projectName: "Mission: Deploy to Mars 🪐",
+  projectName: "GitOps Continuous Deployment 🌌",
+  difficulty: "Easy",
   description:
-    "Houston, we have a problem! The Mars colony deployment pipeline is offline. Satellites are down, the rover can't get updates, and mission control is panicking. Rebuild the interplanetary CI/CD pipeline before the oxygen generators run out of patches!",
+    "The GitOps deployment pipeline is broken! Kubernetes clusters aren't syncing with Git. Fix the continuous deployment flow before the fleet drifts into chaos.",
   color: "#24292e",
-  successMessage:
-    "🎉 Mission accomplished! The Mars colony is back online and the rover just deployed v2.0 of the oxygen generator firmware. You're an interplanetary DevOps hero! 🪐🚀",
+  successMessage: "🎉 Clusters are in sync! GitOps is keeping everything declarative and auditable! 🌌✨",
   diagram: {
     groups: [
-      { id: "earth", label: "Earth (Mission Control)", x: 8, y: 8, w: 25, h: 30, color: "#2196F3" },
-      { id: "relay", label: "Space Relay Network", x: 35, y: 8, w: 28, h: 30, color: "#FF5722" },
-      { id: "mars", label: "Mars Colony", x: 65, y: 8, w: 28, h: 30, color: "#E53E3E" },
+      { id: "git", label: "Git Repository", x: 8, y: 8, w: 20, h: 30, color: "#24292e" },
+      { id: "cd", label: "CD Pipeline", x: 30, y: 8, w: 38, h: 30, color: "#FF9900" },
+      { id: "k8s", label: "Kubernetes", x: 70, y: 8, w: 22, h: 30, color: "#326CE5" },
     ],
     nodes: [
-      { id: "dev", label: "Developer Workstation", x: 20, y: 14, w: 145, h: 28, icon: "💻" },
-      { id: "git", label: "Git Repository", x: 20, y: 24, w: 110, h: 28, icon: "📁", hidden: true },
-      { id: "ci", label: "CI Build Server", x: 20, y: 34, w: 110, h: 28, icon: "🔨" },
-      { id: "sat1", label: "Deep Space Satellite", x: 49, y: 14, w: 140, h: 28, icon: "🛰️", hidden: true },
-      { id: "encrypt", label: "Encryption Relay", x: 49, y: 24, w: 125, h: 28, icon: "🔐" },
-      { id: "buffer", label: "Signal Buffer Station", x: 49, y: 34, w: 140, h: 28, icon: "📡", hidden: true },
-      { id: "receiver", label: "Colony Receiver", x: 79, y: 14, w: 120, h: 28, icon: "📡" },
-      { id: "deploy", label: "Rover Deployment Agent", x: 79, y: 24, w: 155, h: 28, icon: "🤖", hidden: true },
-      { id: "rover", label: "Mars Rover (Runtime)", x: 79, y: 34, w: 140, h: 28, icon: "🔴" },
+      { id: "push", label: "Git Push", x: 18, y: 18, w: 85, h: 28, icon: "📤" },
+      { id: "manifest", label: "K8s Manifests", x: 18, y: 30, w: 115, h: 28, icon: "📄", hidden: true },
+      { id: "webhook", label: "Webhook Trigger", x: 49, y: 14, w: 130, h: 28, icon: "🔔", hidden: true },
+      { id: "argocd", label: "ArgoCD Sync", x: 49, y: 24, w: 115, h: 28, icon: "🔄" },
+      { id: "validate", label: "Config Validator", x: 49, y: 34, w: 130, h: 28, icon: "✅", hidden: true },
+      { id: "deploy", label: "Pod Deployment", x: 81, y: 20, w: 125, h: 28, icon: "☸️" },
+      { id: "monitor", label: "Health Monitor", x: 81, y: 32, w: 120, h: 28, icon: "📊", hidden: true },
     ],
     edges: [
-      { from: "dev", to: "git", label: "git push" },
-      { from: "git", to: "ci", label: "Webhook" },
-      { from: "ci", to: "sat1", label: "Beam Artifact" },
-      { from: "sat1", to: "encrypt", label: "Encrypt" },
-      { from: "encrypt", to: "buffer", label: "Relay" },
-      { from: "buffer", to: "receiver", label: "Transmit" },
-      { from: "receiver", to: "deploy", label: "Verify" },
-      { from: "deploy", to: "rover", label: "Flash Firmware" },
+      { from: "push", to: "manifest" },
+      { from: "manifest", to: "webhook" },
+      { from: "webhook", to: "argocd" },
+      { from: "argocd", to: "validate" },
+      { from: "validate", to: "deploy" },
+      { from: "deploy", to: "monitor" },
     ],
-    hiddenNodeIds: ["git", "sat1", "buffer", "deploy"],
-    wordBank: [
-      "Git Repository",
-      "Deep Space Satellite",
-      "Signal Buffer Station",
-      "Rover Deployment Agent",
-      "Wormhole Router",
-      "Alien Firewall",
-    ],
+    hiddenNodeIds: ["manifest", "webhook", "validate", "monitor"],
+    wordBank: ["K8s Manifests", "Webhook Trigger", "Config Validator", "Health Monitor", "Magic Wand", "Fortune Teller"],
   },
-  techStack: ["Git", "CI/CD", "Encryption", "Satellite Relay"],
-  services: ["Deep Space Network", "Signal Buffer", "Deployment Agent"],
-  layers: ["Earth (Mission Control)", "Space Relay Network", "Mars Colony"],
+  techStack: ["Git", "ArgoCD", "Kubernetes", "Helm"],
+  services: ["GitOps", "Validation", "Monitoring"],
+  layers: ["Git Repository", "CD Pipeline", "Kubernetes"],
 };
 
-/* Role 3: RBC DevOps Engineer — Cybersecurity */
+export const funPuzzleDevOps2: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🚀 DevOps Challenge",
+  projectName: "Centralized Logging Platform (ELK) 🔎",
+  difficulty: "Medium",
+  description:
+    "Logs from 200+ microservices are vanishing into the void. Build a centralized logging platform that collects, indexes, and visualizes logs with alerting — before the next production incident goes undiagnosed.",
+  color: "#24292e",
+  successMessage: "🎉 Logs are centralized! Engineers can debug production issues in seconds! 🔎🕵️",
+  diagram: {
+    groups: [
+      { id: "apps", label: "Microservices", x: 8, y: 8, w: 18, h: 30, color: "#4CAF50" },
+      { id: "collect", label: "Collection Layer", x: 28, y: 8, w: 42, h: 30, color: "#FF9900" },
+      { id: "analyze", label: "Analysis", x: 72, y: 8, w: 20, h: 30, color: "#9C27B0" },
+    ],
+    nodes: [
+      { id: "app1", label: "Service Fleet", x: 17, y: 16, w: 105, h: 26, icon: "📦" },
+      { id: "agent", label: "Fluentd Agent", x: 17, y: 30, w: 110, h: 26, icon: "📡", hidden: true },
+      { id: "kafka", label: "Kafka Buffer", x: 49, y: 14, w: 105, h: 28, icon: "🌊", hidden: true },
+      { id: "logstash", label: "Logstash Parser", x: 49, y: 24, w: 125, h: 28, icon: "⚙️" },
+      { id: "elastic", label: "Elasticsearch", x: 49, y: 34, w: 115, h: 28, icon: "🔍", hidden: true },
+      { id: "kibana", label: "Kibana Dashboard", x: 82, y: 20, w: 140, h: 28, icon: "📊" },
+      { id: "alert", label: "PagerDuty Alert", x: 82, y: 32, w: 125, h: 28, icon: "🚨", hidden: true },
+    ],
+    edges: [
+      { from: "app1", to: "agent" },
+      { from: "agent", to: "kafka" },
+      { from: "kafka", to: "logstash" },
+      { from: "logstash", to: "elastic" },
+      { from: "elastic", to: "kibana" },
+      { from: "elastic", to: "alert" },
+    ],
+    hiddenNodeIds: ["agent", "kafka", "elastic", "alert"],
+    wordBank: ["Fluentd Agent", "Kafka Buffer", "Elasticsearch", "PagerDuty Alert", "Telepathy", "Smoke Signals"],
+  },
+  techStack: ["Fluentd", "Kafka", "Elasticsearch", "Kibana"],
+  services: ["Log Collection", "Streaming", "Visualization"],
+  layers: ["Microservices", "Collection Layer", "Analysis"],
+};
+
+export const funPuzzleDevOps3: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🚀 DevOps Challenge",
+  projectName: "Chaos Engineering Platform 🐒",
+  difficulty: "Medium",
+  description:
+    "Production went down last month and nobody knew why. Build a chaos engineering platform that proactively tests system resilience with controlled failure injection, blast radius limiting, and automated rollback.",
+  color: "#24292e",
+  successMessage: "🎉 Systems are battle-tested! Chaos is controlled and resilience is proven! 🐒💪",
+  diagram: {
+    groups: [
+      { id: "control", label: "Control Plane", x: 8, y: 8, w: 20, h: 30, color: "#E53E3E" },
+      { id: "inject", label: "Chaos Injection", x: 30, y: 8, w: 38, h: 30, color: "#FF9900" },
+      { id: "observe", label: "Observability", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "schedule", label: "Chaos Scheduler", x: 18, y: 18, w: 130, h: 28, icon: "📅" },
+      { id: "config", label: "Experiment Config", x: 18, y: 30, w: 140, h: 28, icon: "⚙️", hidden: true },
+      { id: "inject", label: "Chaos Injector", x: 49, y: 14, w: 120, h: 28, icon: "💉", hidden: true },
+      { id: "target", label: "Target Services", x: 49, y: 24, w: 125, h: 28, icon: "🎯" },
+      { id: "blast", label: "Blast Radius Limiter", x: 49, y: 34, w: 155, h: 28, icon: "🛡️", hidden: true },
+      { id: "metrics", label: "Metrics Collector", x: 81, y: 20, w: 135, h: 28, icon: "📊" },
+      { id: "report", label: "Resilience Report", x: 81, y: 32, w: 135, h: 28, icon: "📋", hidden: true },
+    ],
+    edges: [
+      { from: "schedule", to: "config" },
+      { from: "config", to: "inject" },
+      { from: "inject", to: "target" },
+      { from: "inject", to: "blast" },
+      { from: "target", to: "metrics" },
+      { from: "metrics", to: "report" },
+    ],
+    hiddenNodeIds: ["config", "inject", "blast", "report"],
+    wordBank: ["Experiment Config", "Chaos Injector", "Blast Radius Limiter", "Resilience Report", "Banana", "Coconut"],
+  },
+  techStack: ["LitmusChaos", "Prometheus", "Grafana", "PagerDuty"],
+  services: ["Scheduling", "Injection", "Reporting"],
+  layers: ["Control Plane", "Chaos Injection", "Observability"],
+};
+
+export const funPuzzleDevOps4: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🚀 DevOps Challenge",
+  projectName: "Infrastructure as Code Multi-Env Pipeline 🏗️",
+  difficulty: "Hard",
+  description:
+    "Your team manages 4 environments but infrastructure changes keep breaking prod. Build a proper IaC pipeline with plan/apply stages, drift detection, cost estimation, and policy-as-code guardrails across all environments.",
+  color: "#24292e",
+  successMessage: "🎉 Infrastructure changes are safe! Every environment is consistent, auditable, and policy-compliant! 🏗️✨",
+  diagram: {
+    groups: [
+      { id: "source", label: "Source Control", x: 5, y: 8, w: 15, h: 35, color: "#24292e" },
+      { id: "pipeline", label: "IaC Pipeline", x: 22, y: 8, w: 30, h: 35, color: "#FF9900" },
+      { id: "guardrails", label: "Policy & Cost", x: 54, y: 8, w: 20, h: 35, color: "#9C27B0" },
+      { id: "envs", label: "Environments", x: 76, y: 8, w: 20, h: 35, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "pr", label: "Pull Request", x: 12, y: 16, w: 105, h: 26, icon: "📝" },
+      { id: "lint", label: "Terraform Lint", x: 12, y: 28, w: 115, h: 26, icon: "🔍", hidden: true },
+      { id: "plan", label: "Terraform Plan", x: 37, y: 14, w: 120, h: 26, icon: "📋", hidden: true },
+      { id: "apply", label: "Terraform Apply", x: 37, y: 24, w: 125, h: 26, icon: "🚀" },
+      { id: "drift", label: "Drift Detector", x: 37, y: 34, w: 115, h: 26, icon: "🔄", hidden: true },
+      { id: "opa", label: "OPA Policy Check", x: 64, y: 16, w: 130, h: 26, icon: "🛡️", hidden: true },
+      { id: "infracost", label: "Infracost Estimate", x: 64, y: 28, w: 150, h: 26, icon: "💰" },
+      { id: "dev", label: "Dev Environment", x: 86, y: 14, w: 125, h: 24, icon: "🔧", hidden: true },
+      { id: "staging", label: "Staging Environment", x: 86, y: 26, w: 150, h: 24, icon: "🧪" },
+      { id: "prod", label: "Production", x: 86, y: 38, w: 100, h: 24, icon: "🏭" },
+    ],
+    edges: [
+      { from: "pr", to: "lint" },
+      { from: "lint", to: "plan" },
+      { from: "plan", to: "opa" },
+      { from: "plan", to: "infracost" },
+      { from: "plan", to: "apply" },
+      { from: "apply", to: "dev" },
+      { from: "dev", to: "staging" },
+      { from: "staging", to: "prod" },
+      { from: "prod", to: "drift" },
+    ],
+    hiddenNodeIds: ["lint", "plan", "drift", "opa", "dev"],
+    wordBank: ["Terraform Lint", "Terraform Plan", "Drift Detector", "OPA Policy Check", "Dev Environment", "Magic Deploy", "Wish Button"],
+  },
+  techStack: ["Terraform", "OPA", "Infracost", "GitHub Actions"],
+  services: ["IaC", "Policy-as-Code", "Cost Estimation", "Drift Detection"],
+  layers: ["Source Control", "IaC Pipeline", "Policy & Cost", "Environments"],
+};
+
+export const funPuzzleDevOps5: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🚀 DevOps Challenge",
+  projectName: "Enterprise Platform Engineering Control Plane 🎛️",
+  difficulty: "Expert",
+  description:
+    "Build a complete Internal Developer Platform (IDP) that provides golden paths for 500+ developers. Wire up the self-service portal, service catalog, environment provisioning, secrets management, cost attribution, and compliance scanning — all integrated with your existing CI/CD and cloud infrastructure.",
+  color: "#24292e",
+  successMessage: "🎉 The IDP is live! 500+ developers have self-service golden paths with full governance. Platform engineering at its finest! 🎛️🏆",
+  diagram: {
+    groups: [
+      { id: "portal", label: "Developer Portal", x: 5, y: 8, w: 15, h: 42, color: "#2196F3" },
+      { id: "catalog", label: "Service Catalog", x: 22, y: 8, w: 22, h: 42, color: "#FF9900" },
+      { id: "provision", label: "Provisioning Engine", x: 46, y: 8, w: 22, h: 42, color: "#4CAF50" },
+      { id: "govern", label: "Governance Layer", x: 70, y: 8, w: 26, h: 42, color: "#9C27B0" },
+    ],
+    nodes: [
+      { id: "backstage", label: "Backstage Portal", x: 12, y: 15, w: 125, h: 24, icon: "🏠" },
+      { id: "template", label: "Golden Path Templates", x: 12, y: 25, w: 160, h: 24, icon: "📐", hidden: true },
+      { id: "scorecard", label: "Service Scorecard", x: 12, y: 35, w: 140, h: 24, icon: "📊", hidden: true },
+      { id: "catalog", label: "API Catalog", x: 33, y: 15, w: 100, h: 24, icon: "📚" },
+      { id: "deps", label: "Dependency Graph", x: 33, y: 25, w: 135, h: 24, icon: "🕸️", hidden: true },
+      { id: "docs", label: "Auto-Generated Docs", x: 33, y: 35, w: 155, h: 24, icon: "📄", hidden: true },
+      { id: "crossplane", label: "Crossplane CRDs", x: 57, y: 15, w: 130, h: 24, icon: "☸️", hidden: true },
+      { id: "vault", label: "Vault Secrets", x: 57, y: 25, w: 110, h: 24, icon: "🔐" },
+      { id: "env", label: "Env Provisioner", x: 57, y: 35, w: 125, h: 24, icon: "🏗️" },
+      { id: "cost", label: "Cost Attribution", x: 83, y: 15, w: 130, h: 24, icon: "💰", hidden: true },
+      { id: "compliance", label: "Compliance Scanner", x: 83, y: 25, w: 145, h: 24, icon: "🛡️" },
+      { id: "sla", label: "SLA Tracker", x: 83, y: 35, w: 100, h: 24, icon: "📈", hidden: true },
+      { id: "alert", label: "Budget Alerts", x: 83, y: 45, w: 110, h: 24, icon: "🚨", hidden: true },
+    ],
+    edges: [
+      { from: "backstage", to: "template" },
+      { from: "backstage", to: "catalog" },
+      { from: "template", to: "crossplane" },
+      { from: "catalog", to: "deps" },
+      { from: "catalog", to: "docs" },
+      { from: "crossplane", to: "vault" },
+      { from: "crossplane", to: "env" },
+      { from: "env", to: "cost" },
+      { from: "env", to: "compliance" },
+      { from: "compliance", to: "sla" },
+      { from: "cost", to: "alert" },
+      { from: "backstage", to: "scorecard" },
+    ],
+    hiddenNodeIds: ["template", "scorecard", "deps", "docs", "crossplane", "cost", "sla", "alert"],
+    wordBank: [
+      "Golden Path Templates", "Service Scorecard", "Dependency Graph",
+      "Auto-Generated Docs", "Crossplane CRDs", "Cost Attribution",
+      "SLA Tracker", "Budget Alerts", "Magic Portal",
+    ],
+  },
+  techStack: ["Backstage", "Crossplane", "Vault", "OPA", "ArgoCD"],
+  services: ["Service Catalog", "Self-Service Provisioning", "Cost Management", "Compliance"],
+  layers: ["Developer Portal", "Service Catalog", "Provisioning Engine", "Governance Layer"],
+};
+
+/* ─── Security Role Puzzles ────────────────────────────────── */
+
 export const funPuzzleSecurity: DiagramPuzzleData = {
   title: "Fun Puzzle",
   roleTitle: "🛡️ Security Challenge",
-  projectName: "Bank Heist Defense: Operation Firewall 🏦",
+  projectName: "Zero-Trust Network Access (ZTNA) 🔐",
+  difficulty: "Easy",
   description:
-    "Alert! Cyber criminals are attempting to breach the Royal Vault. The security systems have been scrambled and the defense layers are offline. Rebuild the multi-layered security architecture before the hackers steal the digital gold!",
+    "Remote employees can't securely access corporate resources. Build a Zero-Trust Network Access architecture that verifies every request — no implicit trust, no VPN required.",
   color: "#003168",
-  successMessage:
-    "🎉 The vault is secure! All defense layers are operational and the hackers have been repelled. You're a certified cybersecurity hero! 🛡️🏦",
+  successMessage: "🎉 Zero-Trust is live! Every access request is verified. The perimeter is everywhere! 🔐✨",
   diagram: {
     groups: [
-      { id: "perimeter", label: "Perimeter Defense", x: 8, y: 8, w: 20, h: 30, color: "#E53E3E" },
-      { id: "network", label: "Network Layer", x: 30, y: 8, w: 22, h: 30, color: "#FF9900" },
-      { id: "app", label: "Application Layer", x: 54, y: 8, w: 22, h: 30, color: "#4CAF50" },
-      { id: "vault", label: "The Royal Vault", x: 78, y: 8, w: 18, h: 30, color: "#9C27B0" },
+      { id: "user", label: "User Access", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
+      { id: "auth", label: "Authentication", x: 28, y: 8, w: 42, h: 30, color: "#9C27B0" },
+      { id: "access", label: "Authorization", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
     ],
     nodes: [
-      { id: "hacker", label: "Cyber Criminals", x: 5, y: 5, w: 115, h: 28, icon: "🦹" },
-      { id: "waf", label: "Web Application Firewall", x: 18, y: 18, w: 160, h: 28, icon: "🔥", hidden: true },
-      { id: "ddos", label: "DDoS Shield", x: 18, y: 30, w: 100, h: 28, icon: "🛡️" },
-      { id: "ids", label: "Intrusion Detection (IDS)", x: 41, y: 18, w: 160, h: 28, icon: "👁️", hidden: true },
-      { id: "vpn", label: "Encrypted VPN Tunnel", x: 41, y: 30, w: 155, h: 28, icon: "🔒" },
-      { id: "mfa", label: "Multi-Factor Auth (MFA)", x: 65, y: 18, w: 160, h: 28, icon: "🔐", hidden: true },
-      { id: "audit", label: "Audit Logger (SIEM)", x: 65, y: 30, w: 145, h: 28, icon: "📋" },
-      { id: "vault_door", label: "Vault Access Control", x: 87, y: 18, w: 140, h: 28, icon: "🚪", hidden: true },
-      { id: "gold", label: "Digital Gold Reserves", x: 87, y: 30, w: 145, h: 28, icon: "🪙" },
+      { id: "login", label: "Login Request", x: 17, y: 18, w: 115, h: 28, icon: "🔑" },
+      { id: "sso", label: "SSO Provider", x: 17, y: 30, w: 105, h: 28, icon: "🌐", hidden: true },
+      { id: "mfa", label: "MFA Challenge", x: 49, y: 14, w: 115, h: 28, icon: "📱", hidden: true },
+      { id: "risk", label: "Risk Analyzer", x: 49, y: 24, w: 115, h: 28, icon: "⚠️" },
+      { id: "token", label: "Token Service", x: 49, y: 34, w: 115, h: 28, icon: "🎟️", hidden: true },
+      { id: "rbac", label: "RBAC Engine", x: 82, y: 20, w: 105, h: 28, icon: "👥" },
+      { id: "grant", label: "Access Grant", x: 82, y: 32, w: 105, h: 28, icon: "✅", hidden: true },
     ],
     edges: [
-      { from: "hacker", to: "waf", label: "Attack!" },
-      { from: "waf", to: "ddos", label: "Filter" },
-      { from: "ddos", to: "ids", label: "Inspect" },
-      { from: "ids", to: "vpn", label: "Validate" },
-      { from: "vpn", to: "mfa", label: "Authenticate" },
-      { from: "mfa", to: "audit", label: "Log Access" },
-      { from: "mfa", to: "vault_door", label: "Authorize" },
-      { from: "vault_door", to: "gold", label: "Grant Access" },
+      { from: "login", to: "sso" },
+      { from: "sso", to: "mfa" },
+      { from: "mfa", to: "risk" },
+      { from: "risk", to: "token" },
+      { from: "token", to: "rbac" },
+      { from: "rbac", to: "grant" },
     ],
-    hiddenNodeIds: ["waf", "ids", "mfa", "vault_door"],
+    hiddenNodeIds: ["sso", "mfa", "token", "grant"],
+    wordBank: ["SSO Provider", "MFA Challenge", "Token Service", "Access Grant", "Magic Password", "Secret Handshake"],
+  },
+  techStack: ["OAuth 2.0", "SAML", "MFA", "JWT"],
+  services: ["SSO", "Risk Analysis", "RBAC"],
+  layers: ["User Access", "Authentication", "Authorization"],
+};
+
+export const funPuzzleSecurity2: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🛡️ Security Challenge",
+  projectName: "SIEM Threat Detection Pipeline 🎯",
+  difficulty: "Medium",
+  description:
+    "Security events from firewalls, endpoints, and cloud logs are piling up. Build the SIEM pipeline that correlates events, detects threats using ML, and auto-creates incident tickets.",
+  color: "#003168",
+  successMessage: "🎉 Threats are being detected and incidents are auto-created! SOC team is operating at peak efficiency! 🎯🛡️",
+  diagram: {
+    groups: [
+      { id: "sources", label: "Log Sources", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
+      { id: "detect", label: "Detection Engine", x: 28, y: 8, w: 42, h: 30, color: "#E53E3E" },
+      { id: "respond", label: "Response", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "firewall", label: "Firewall Logs", x: 17, y: 16, w: 110, h: 26, icon: "🔥" },
+      { id: "endpoint", label: "Endpoint EDR", x: 17, y: 30, w: 110, h: 26, icon: "💻", hidden: true },
+      { id: "siem", label: "SIEM Correlator", x: 49, y: 14, w: 125, h: 28, icon: "🔍", hidden: true },
+      { id: "rules", label: "Sigma Rules", x: 49, y: 24, w: 100, h: 28, icon: "📋" },
+      { id: "ml", label: "ML Anomaly Detector", x: 49, y: 34, w: 155, h: 28, icon: "🤖", hidden: true },
+      { id: "alert", label: "Security Alert", x: 82, y: 20, w: 115, h: 28, icon: "🚨" },
+      { id: "ticket", label: "Incident Ticket", x: 82, y: 32, w: 120, h: 28, icon: "🎫", hidden: true },
+    ],
+    edges: [
+      { from: "firewall", to: "siem" },
+      { from: "endpoint", to: "siem" },
+      { from: "siem", to: "rules" },
+      { from: "siem", to: "ml" },
+      { from: "rules", to: "alert" },
+      { from: "ml", to: "alert" },
+      { from: "alert", to: "ticket" },
+    ],
+    hiddenNodeIds: ["endpoint", "siem", "ml", "ticket"],
+    wordBank: ["Endpoint EDR", "SIEM Correlator", "ML Anomaly Detector", "Incident Ticket", "Crystal Ball", "Radar"],
+  },
+  techStack: ["Splunk", "SIEM", "Machine Learning", "SOAR"],
+  services: ["Log Collection", "Correlation", "Alerting"],
+  layers: ["Log Sources", "Detection Engine", "Response"],
+};
+
+export const funPuzzleSecurity3: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🛡️ Security Challenge",
+  projectName: "DevSecOps Vulnerability Pipeline 🔬",
+  difficulty: "Medium",
+  description:
+    "Security vulnerabilities are being found in production instead of during development. Build a shift-left DevSecOps pipeline with SAST, SCA, container scanning, and automated fix PRs.",
+  color: "#003168",
+  successMessage: "🎉 Vulnerabilities caught before they reach production! Shift-left security is working! 🔬💪",
+  diagram: {
+    groups: [
+      { id: "code", label: "Code Phase", x: 8, y: 8, w: 18, h: 30, color: "#24292e" },
+      { id: "scan", label: "Security Scanning", x: 28, y: 8, w: 42, h: 30, color: "#E53E3E" },
+      { id: "fix", label: "Remediation", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "commit", label: "Code Commit", x: 17, y: 18, w: 105, h: 28, icon: "📝" },
+      { id: "trigger", label: "CI Trigger", x: 17, y: 30, w: 90, h: 28, icon: "⚡", hidden: true },
+      { id: "sast", label: "SAST Scanner", x: 49, y: 14, w: 115, h: 28, icon: "🔍", hidden: true },
+      { id: "sca", label: "Dependency Check (SCA)", x: 49, y: 24, w: 165, h: 28, icon: "📦" },
+      { id: "container", label: "Container Scan (Trivy)", x: 49, y: 34, w: 165, h: 28, icon: "🐳", hidden: true },
+      { id: "report", label: "Security Report", x: 82, y: 20, w: 125, h: 28, icon: "📋" },
+      { id: "pr", label: "Auto-Fix PR", x: 82, y: 32, w: 100, h: 28, icon: "🔧", hidden: true },
+    ],
+    edges: [
+      { from: "commit", to: "trigger" },
+      { from: "trigger", to: "sast" },
+      { from: "trigger", to: "sca" },
+      { from: "trigger", to: "container" },
+      { from: "sast", to: "report" },
+      { from: "sca", to: "report" },
+      { from: "container", to: "report" },
+      { from: "report", to: "pr" },
+    ],
+    hiddenNodeIds: ["trigger", "sast", "container", "pr"],
+    wordBank: ["CI Trigger", "SAST Scanner", "Container Scan (Trivy)", "Auto-Fix PR", "Wishful Thinking", "Ignore Button"],
+  },
+  techStack: ["SonarQube", "Snyk", "Trivy", "GitHub Actions"],
+  services: ["SAST", "SCA", "Container Scanning"],
+  layers: ["Code Phase", "Security Scanning", "Remediation"],
+};
+
+export const funPuzzleSecurity4: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🛡️ Security Challenge",
+  projectName: "Enterprise Data Loss Prevention (DLP) 🛡️",
+  difficulty: "Hard",
+  description:
+    "Sensitive PII data is leaking through APIs, emails, and file shares. Build an enterprise DLP architecture with real-time content inspection, data classification, policy enforcement, and automated remediation across all egress channels.",
+  color: "#003168",
+  successMessage: "🎉 Data leaks are being caught in real-time! PII is protected across every channel! 🛡️🔒",
+  diagram: {
+    groups: [
+      { id: "egress", label: "Egress Channels", x: 5, y: 8, w: 18, h: 35, color: "#E53E3E" },
+      { id: "inspect", label: "Inspection Engine", x: 25, y: 8, w: 25, h: 35, color: "#FF9900" },
+      { id: "classify", label: "Classification", x: 52, y: 8, w: 22, h: 35, color: "#9C27B0" },
+      { id: "action", label: "Enforcement", x: 76, y: 8, w: 20, h: 35, color: "#4CAF50" },
+    ],
+    nodes: [
+      { id: "api", label: "API Traffic", x: 14, y: 16, w: 95, h: 24, icon: "🔌" },
+      { id: "email", label: "Email Gateway", x: 14, y: 26, w: 115, h: 24, icon: "📧" },
+      { id: "files", label: "File Shares", x: 14, y: 36, w: 100, h: 24, icon: "📁", hidden: true },
+      { id: "proxy", label: "Inspection Proxy", x: 37, y: 16, w: 130, h: 26, icon: "🔍", hidden: true },
+      { id: "regex", label: "Pattern Matcher", x: 37, y: 26, w: 125, h: 26, icon: "🎯" },
+      { id: "ml", label: "ML Content Analyzer", x: 37, y: 36, w: 155, h: 26, icon: "🤖", hidden: true },
+      { id: "pii", label: "PII Classifier", x: 63, y: 18, w: 110, h: 26, icon: "🏷️", hidden: true },
+      { id: "policy", label: "DLP Policy Engine", x: 63, y: 30, w: 140, h: 26, icon: "📜" },
+      { id: "block", label: "Block & Quarantine", x: 86, y: 16, w: 140, h: 26, icon: "🚫", hidden: true },
+      { id: "mask", label: "Auto-Mask (Redact)", x: 86, y: 28, w: 145, h: 26, icon: "🎭" },
+      { id: "audit", label: "Compliance Audit Log", x: 86, y: 40, w: 155, h: 26, icon: "📋", hidden: true },
+    ],
+    edges: [
+      { from: "api", to: "proxy" },
+      { from: "email", to: "proxy" },
+      { from: "files", to: "proxy" },
+      { from: "proxy", to: "regex" },
+      { from: "proxy", to: "ml" },
+      { from: "regex", to: "pii" },
+      { from: "ml", to: "pii" },
+      { from: "pii", to: "policy" },
+      { from: "policy", to: "block" },
+      { from: "policy", to: "mask" },
+      { from: "policy", to: "audit" },
+    ],
+    hiddenNodeIds: ["files", "proxy", "ml", "pii", "block", "audit"],
+    wordBank: ["File Shares", "Inspection Proxy", "ML Content Analyzer", "PII Classifier", "Block & Quarantine", "Compliance Audit Log", "Paper Shredder"],
+  },
+  techStack: ["DLP", "ML Classification", "Content Inspection", "Policy Engine"],
+  services: ["Content Inspection", "Data Classification", "Policy Enforcement"],
+  layers: ["Egress Channels", "Inspection Engine", "Classification", "Enforcement"],
+};
+
+export const funPuzzleSecurity5: DiagramPuzzleData = {
+  title: "Fun Puzzle",
+  roleTitle: "🛡️ Security Challenge",
+  projectName: "Enterprise SOAR & Automated Incident Response 🚨",
+  difficulty: "Expert",
+  description:
+    "Your SOC team is drowning in 10,000+ alerts daily. Build an enterprise SOAR platform with automated triage, threat intelligence enrichment, playbook orchestration, containment automation, forensic evidence collection, and executive reporting — all integrated with your SIEM, EDR, and cloud infrastructure.",
+  color: "#003168",
+  successMessage: "🎉 SOAR is operational! Alert fatigue is eliminated, incidents are auto-contained, and MTTR dropped by 90%. Enterprise security automation at its finest! 🚨🏆",
+  diagram: {
+    groups: [
+      { id: "ingest", label: "Alert Ingestion", x: 5, y: 5, w: 15, h: 45, color: "#E53E3E" },
+      { id: "enrich", label: "Enrichment & Triage", x: 22, y: 5, w: 22, h: 45, color: "#FF9900" },
+      { id: "respond", label: "Response Orchestration", x: 46, y: 5, w: 26, h: 45, color: "#4CAF50" },
+      { id: "report", label: "Reporting & Forensics", x: 74, y: 5, w: 22, h: 45, color: "#9C27B0" },
+    ],
+    nodes: [
+      { id: "siem", label: "SIEM Alerts", x: 12, y: 12, w: 100, h: 24, icon: "🔔" },
+      { id: "edr", label: "EDR Alerts", x: 12, y: 22, w: 95, h: 24, icon: "💻" },
+      { id: "cloud", label: "Cloud Alerts", x: 12, y: 32, w: 105, h: 24, icon: "☁️", hidden: true },
+      { id: "dedup", label: "Alert Deduplicator", x: 33, y: 10, w: 140, h: 24, icon: "🔄", hidden: true },
+      { id: "threat", label: "Threat Intel Enrichment", x: 33, y: 20, w: 170, h: 24, icon: "🌐" },
+      { id: "triage", label: "Auto-Triage (ML)", x: 33, y: 30, w: 130, h: 24, icon: "🤖", hidden: true },
+      { id: "priority", label: "Priority Scorer", x: 33, y: 40, w: 125, h: 24, icon: "📊", hidden: true },
+      { id: "playbook", label: "Playbook Orchestrator", x: 59, y: 10, w: 160, h: 24, icon: "📋", hidden: true },
+      { id: "contain", label: "Auto-Containment", x: 59, y: 20, w: 135, h: 24, icon: "🛡️" },
+      { id: "isolate", label: "Host Isolator", x: 59, y: 30, w: 115, h: 24, icon: "🔒", hidden: true },
+      { id: "notify", label: "Stakeholder Notifier", x: 59, y: 40, w: 150, h: 24, icon: "📲", hidden: true },
+      { id: "forensic", label: "Forensic Collector", x: 85, y: 12, w: 140, h: 24, icon: "🔬", hidden: true },
+      { id: "timeline", label: "Attack Timeline", x: 85, y: 22, w: 125, h: 24, icon: "📈" },
+      { id: "exec", label: "Executive Dashboard", x: 85, y: 32, w: 150, h: 24, icon: "📊", hidden: true },
+      { id: "metrics", label: "MTTR/MTTD Metrics", x: 85, y: 42, w: 145, h: 24, icon: "⏱️" },
+    ],
+    edges: [
+      { from: "siem", to: "dedup" },
+      { from: "edr", to: "dedup" },
+      { from: "cloud", to: "dedup" },
+      { from: "dedup", to: "threat" },
+      { from: "threat", to: "triage" },
+      { from: "triage", to: "priority" },
+      { from: "priority", to: "playbook" },
+      { from: "playbook", to: "contain" },
+      { from: "playbook", to: "isolate" },
+      { from: "contain", to: "notify" },
+      { from: "isolate", to: "forensic" },
+      { from: "forensic", to: "timeline" },
+      { from: "timeline", to: "exec" },
+      { from: "exec", to: "metrics" },
+    ],
+    hiddenNodeIds: ["cloud", "dedup", "triage", "priority", "playbook", "isolate", "notify", "forensic", "exec"],
     wordBank: [
-      "Web Application Firewall",
-      "Intrusion Detection (IDS)",
-      "Multi-Factor Auth (MFA)",
-      "Vault Access Control",
-      "Quantum Decryptor",
-      "Alien Scanner",
+      "Cloud Alerts", "Alert Deduplicator", "Auto-Triage (ML)", "Priority Scorer",
+      "Playbook Orchestrator", "Host Isolator", "Stakeholder Notifier",
+      "Forensic Collector", "Executive Dashboard", "Ouija Board",
     ],
   },
-  techStack: ["WAF", "IDS/IPS", "MFA", "SIEM", "VPN"],
-  services: ["DDoS Shield", "Audit Logging", "Access Control"],
-  layers: ["Perimeter Defense", "Network Layer", "Application Layer", "The Royal Vault"],
+  techStack: ["SOAR", "SIEM", "EDR", "Threat Intel", "MITRE ATT&CK"],
+  services: ["Alert Triage", "Containment", "Forensics", "Reporting"],
+  layers: ["Alert Ingestion", "Enrichment & Triage", "Response Orchestration", "Reporting & Forensics"],
 };
 
 /* ═══════════════════════════════════════════════════════════
    CAREER ARCHITECTURE DIAGRAMS
    ═══════════════════════════════════════════════════════════ */
-
-/* ───────────────────────────────────────────────────────────
-   DIAGRAM 1: Enterprise AI & GraphRAG Platform (Azure)
-   ─────────────────────────────────────────────────────────── */
 
 export const aiRagDiagram: DiagramPuzzleData = {
   title: "Solution Architecture",
@@ -285,10 +987,6 @@ export const aiRagDiagram: DiagramPuzzleData = {
   },
 };
 
-/* ───────────────────────────────────────────────────────────
-   DIAGRAM 2: Ephemeral CI/CD GitHub Runners (AWS)
-   ─────────────────────────────────────────────────────────── */
-
 export const cicdRunnersDiagram: DiagramPuzzleData = {
   title: "Solution Architecture",
   roleTitle: "Principal Engineer — Serverless & Containers",
@@ -342,10 +1040,6 @@ export const cicdRunnersDiagram: DiagramPuzzleData = {
     ],
   },
 };
-
-/* ───────────────────────────────────────────────────────────
-   DIAGRAM 3: Private API Gateway & Auth Pattern
-   ─────────────────────────────────────────────────────────── */
 
 export const apiGatewayDiagram: DiagramPuzzleData = {
   title: "Solution Architecture",
@@ -405,10 +1099,6 @@ export const apiGatewayDiagram: DiagramPuzzleData = {
     ],
   },
 };
-
-/* ───────────────────────────────────────────────────────────
-   DIAGRAM 4: Automated AWS MLOps Pipeline
-   ─────────────────────────────────────────────────────────── */
 
 export const mlOpsPipelineDiagram: DiagramPuzzleData = {
   title: "Solution Architecture",
@@ -470,10 +1160,6 @@ export const mlOpsPipelineDiagram: DiagramPuzzleData = {
   },
 };
 
-/* ───────────────────────────────────────────────────────────
-   DIAGRAM 5: Highly Available Container Architecture
-   ─────────────────────────────────────────────────────────── */
-
 export const haContainerDiagram: DiagramPuzzleData = {
   title: "Solution Architecture",
   roleTitle: "Team Lead",
@@ -527,10 +1213,6 @@ export const haContainerDiagram: DiagramPuzzleData = {
     ],
   },
 };
-
-/* ───────────────────────────────────────────────────────────
-   DIAGRAM 6: Enterprise Multi-Account AI/MLOps Platform
-   ─────────────────────────────────────────────────────────── */
 
 export const multiAccountMlOpsDiagram: DiagramPuzzleData = {
   title: "Solution Architecture",
@@ -591,645 +1273,6 @@ export const multiAccountMlOpsDiagram: DiagramPuzzleData = {
       "Strict AssumeRoles",
     ],
   },
-};
-
-/* ═══════════════════════════════════════════════════════════
-   ADDITIONAL FUN PUZZLES — 5 puzzles per role
-   ═══════════════════════════════════════════════════════════ */
-
-/* ─── AI Role Puzzles (2-5) ─────────────────────────────── */
-
-export const funPuzzleAI2: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "☁️ AI Architecture Challenge",
-  projectName: "The Chatbot Factory 🏭",
-  description:
-    "The Chatbot Factory is in chaos! Customer service bots are giving wrong answers because the knowledge retrieval is broken. Fix the RAG pipeline before angry customers flood the support lines!",
-  color: "#0078D4",
-  successMessage: "🎉 The bots are back online and customers are happy again! You're a RAG master! 🤖",
-  diagram: {
-    groups: [
-      { id: "input", label: "Customer Query", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
-      { id: "rag", label: "RAG Pipeline", x: 28, y: 8, w: 40, h: 30, color: "#9C27B0" },
-      { id: "output", label: "Response", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "user", label: "Customer Message", x: 17, y: 18, w: 130, h: 30, icon: "💬" },
-      { id: "embed", label: "Query Embedder", x: 17, y: 30, w: 115, h: 30, icon: "🔢", hidden: true },
-      { id: "search", label: "Vector Search", x: 48, y: 14, w: 110, h: 30, icon: "🔍", hidden: true },
-      { id: "docs", label: "Knowledge Docs", x: 48, y: 24, w: 120, h: 30, icon: "📄" },
-      { id: "rerank", label: "Reranker Model", x: 48, y: 34, w: 115, h: 30, icon: "📊", hidden: true },
-      { id: "llm", label: "LLM Generator", x: 81, y: 18, w: 110, h: 30, icon: "🧠" },
-      { id: "response", label: "Bot Response", x: 81, y: 30, w: 105, h: 30, icon: "💬", hidden: true },
-    ],
-    edges: [
-      { from: "user", to: "embed", label: "Encode" },
-      { from: "embed", to: "search", label: "Query" },
-      { from: "search", to: "docs", label: "Retrieve" },
-      { from: "docs", to: "rerank", label: "Score" },
-      { from: "rerank", to: "llm", label: "Context" },
-      { from: "llm", to: "response", label: "Generate" },
-    ],
-    hiddenNodeIds: ["embed", "search", "rerank", "response"],
-    wordBank: ["Query Embedder", "Vector Search", "Reranker Model", "Bot Response", "Blockchain", "GPS"],
-  },
-  techStack: ["Embeddings", "Vector DB", "Reranking", "LLM"],
-  services: ["Query Encoder", "Retrieval", "Generation"],
-  layers: ["Customer Query", "RAG Pipeline", "Response"],
-};
-
-export const funPuzzleAI3: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "☁️ AI Architecture Challenge",
-  projectName: "Dream Analyzer 3000 💭",
-  description:
-    "People are uploading their dream descriptions but the AI can't analyze them! The multi-modal pipeline is disconnected. Wire it up so the Dream Analyzer can interpret text AND images!",
-  color: "#0078D4",
-  successMessage: "🎉 Dream Analyzer is interpreting dreams beautifully! Sweet dreams are made of good architecture! 💭",
-  diagram: {
-    groups: [
-      { id: "input", label: "Dream Input", x: 8, y: 8, w: 20, h: 30, color: "#2196F3" },
-      { id: "process", label: "Multi-Modal AI", x: 30, y: 8, w: 38, h: 30, color: "#9C27B0" },
-      { id: "output", label: "Interpretation", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "text", label: "Dream Text", x: 18, y: 16, w: 95, h: 28, icon: "📝" },
-      { id: "image", label: "Dream Sketch", x: 18, y: 28, w: 105, h: 28, icon: "🎨", hidden: true },
-      { id: "textenc", label: "Text Encoder", x: 49, y: 14, w: 105, h: 28, icon: "📖", hidden: true },
-      { id: "imgenc", label: "Image Encoder", x: 49, y: 24, w: 115, h: 28, icon: "🖼️" },
-      { id: "fusion", label: "Cross-Modal Fusion", x: 49, y: 34, w: 140, h: 28, icon: "🔗", hidden: true },
-      { id: "analysis", label: "Dream Analyzer LLM", x: 81, y: 20, w: 140, h: 28, icon: "🔮" },
-      { id: "output", label: "Dream Report", x: 81, y: 32, w: 105, h: 28, icon: "📋", hidden: true },
-    ],
-    edges: [
-      { from: "text", to: "textenc" },
-      { from: "image", to: "imgenc" },
-      { from: "textenc", to: "fusion" },
-      { from: "imgenc", to: "fusion" },
-      { from: "fusion", to: "analysis" },
-      { from: "analysis", to: "output" },
-    ],
-    hiddenNodeIds: ["image", "textenc", "fusion", "output"],
-    wordBank: ["Dream Sketch", "Text Encoder", "Cross-Modal Fusion", "Dream Report", "Quantum Bit", "Satellite"],
-  },
-  techStack: ["Multi-Modal", "Vision AI", "NLP", "Fusion Models"],
-  services: ["Encoders", "Fusion Layer", "Analysis"],
-  layers: ["Dream Input", "Multi-Modal AI", "Interpretation"],
-};
-
-export const funPuzzleAI4: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "☁️ AI Architecture Challenge",
-  projectName: "Code Wizard Assistant 🧙‍♂️",
-  description:
-    "Developers need an AI coding assistant but it keeps generating buggy code! Fix the code generation pipeline with proper context retrieval and validation!",
-  color: "#0078D4",
-  successMessage: "🎉 Code Wizard is writing clean code! Developers are shipping faster than ever! 🧙‍♂️✨",
-  diagram: {
-    groups: [
-      { id: "ide", label: "Developer IDE", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
-      { id: "ai", label: "AI Engine", x: 28, y: 8, w: 42, h: 30, color: "#9C27B0" },
-      { id: "validate", label: "Validation", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "prompt", label: "Code Prompt", x: 17, y: 18, w: 105, h: 28, icon: "⌨️" },
-      { id: "context", label: "Context Fetcher", x: 17, y: 30, w: 120, h: 28, icon: "📂", hidden: true },
-      { id: "repo", label: "Code Repository", x: 49, y: 14, w: 120, h: 28, icon: "📁" },
-      { id: "codegen", label: "Code Generator LLM", x: 49, y: 24, w: 140, h: 28, icon: "🧠", hidden: true },
-      { id: "review", label: "Auto-Reviewer AI", x: 49, y: 34, w: 130, h: 28, icon: "👀", hidden: true },
-      { id: "lint", label: "Linter & Tests", x: 82, y: 20, w: 105, h: 28, icon: "✅" },
-      { id: "output", label: "Clean Code", x: 82, y: 32, w: 95, h: 28, icon: "💎", hidden: true },
-    ],
-    edges: [
-      { from: "prompt", to: "context" },
-      { from: "context", to: "repo" },
-      { from: "repo", to: "codegen" },
-      { from: "codegen", to: "review" },
-      { from: "review", to: "lint" },
-      { from: "lint", to: "output" },
-    ],
-    hiddenNodeIds: ["context", "codegen", "review", "output"],
-    wordBank: ["Context Fetcher", "Code Generator LLM", "Auto-Reviewer AI", "Clean Code", "Time Machine", "Teleporter"],
-  },
-  techStack: ["Code LLM", "RAG", "Static Analysis"],
-  services: ["Context Retrieval", "Generation", "Validation"],
-  layers: ["Developer IDE", "AI Engine", "Validation"],
-};
-
-export const funPuzzleAI5: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "☁️ AI Architecture Challenge",
-  projectName: "Emotion DJ 🎧",
-  description:
-    "The AI DJ reads the crowd's mood but the emotion detection pipeline is broken! Wire it up so the DJ can play songs that match the vibe!",
-  color: "#0078D4",
-  successMessage: "🎉 Emotion DJ is reading the room perfectly! The party is absolutely vibing! 🎉🎧",
-  diagram: {
-    groups: [
-      { id: "capture", label: "Crowd Capture", x: 8, y: 8, w: 20, h: 30, color: "#2196F3" },
-      { id: "ai", label: "Emotion AI", x: 30, y: 8, w: 38, h: 30, color: "#9C27B0" },
-      { id: "music", label: "Music Control", x: 70, y: 8, w: 22, h: 30, color: "#FF9900" },
-    ],
-    nodes: [
-      { id: "camera", label: "Crowd Camera", x: 18, y: 18, w: 115, h: 28, icon: "📹" },
-      { id: "audio", label: "Ambient Audio", x: 18, y: 30, w: 110, h: 28, icon: "🎤", hidden: true },
-      { id: "face", label: "Face Emotion AI", x: 49, y: 14, w: 125, h: 28, icon: "😊", hidden: true },
-      { id: "energy", label: "Energy Analyzer", x: 49, y: 24, w: 125, h: 28, icon: "⚡" },
-      { id: "mood", label: "Mood Classifier", x: 49, y: 34, w: 120, h: 28, icon: "🎭", hidden: true },
-      { id: "recommend", label: "Song Recommender", x: 81, y: 20, w: 135, h: 28, icon: "🎵" },
-      { id: "dj", label: "Auto DJ Mixer", x: 81, y: 32, w: 110, h: 28, icon: "🎧", hidden: true },
-    ],
-    edges: [
-      { from: "camera", to: "face" },
-      { from: "audio", to: "energy" },
-      { from: "face", to: "mood" },
-      { from: "energy", to: "mood" },
-      { from: "mood", to: "recommend" },
-      { from: "recommend", to: "dj" },
-    ],
-    hiddenNodeIds: ["audio", "face", "mood", "dj"],
-    wordBank: ["Ambient Audio", "Face Emotion AI", "Mood Classifier", "Auto DJ Mixer", "Weather Sensor", "Radar"],
-  },
-  techStack: ["Computer Vision", "Audio Analysis", "Emotion AI"],
-  services: ["Face Detection", "Mood Analysis", "Recommendations"],
-  layers: ["Crowd Capture", "Emotion AI", "Music Control"],
-};
-
-/* ─── Serverless Role Puzzles (2-5) ─────────────────────── */
-
-export const funPuzzleServerless2: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🐾 Serverless Challenge",
-  projectName: "FoodTruck Finder 🚚🌮",
-  description:
-    "Hungry people can't find food trucks! The real-time location service is down. Wire up the serverless location tracking so tacos can find their way to hungry mouths!",
-  color: "#FF9900",
-  successMessage: "🎉 Food trucks are being found! Hungry people are eating delicious tacos! 🌮",
-  diagram: {
-    groups: [
-      { id: "trucks", label: "Food Trucks", x: 8, y: 8, w: 18, h: 30, color: "#FF5722" },
-      { id: "backend", label: "Real-Time Backend", x: 28, y: 8, w: 42, h: 30, color: "#FF9900" },
-      { id: "users", label: "Hungry Users", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "gps", label: "Truck GPS", x: 17, y: 18, w: 90, h: 28, icon: "📍" },
-      { id: "iot", label: "IoT Hub", x: 17, y: 30, w: 80, h: 28, icon: "📡", hidden: true },
-      { id: "stream", label: "Kinesis Stream", x: 49, y: 14, w: 115, h: 28, icon: "🌊", hidden: true },
-      { id: "lambda", label: "Location Lambda", x: 49, y: 24, w: 125, h: 28, icon: "⚡" },
-      { id: "geo", label: "Geo Database", x: 49, y: 34, w: 110, h: 28, icon: "🗺️", hidden: true },
-      { id: "api", label: "Location API", x: 82, y: 20, w: 100, h: 28, icon: "🔌" },
-      { id: "app", label: "Mobile App", x: 82, y: 32, w: 95, h: 28, icon: "📱", hidden: true },
-    ],
-    edges: [
-      { from: "gps", to: "iot" },
-      { from: "iot", to: "stream" },
-      { from: "stream", to: "lambda" },
-      { from: "lambda", to: "geo" },
-      { from: "geo", to: "api" },
-      { from: "api", to: "app" },
-    ],
-    hiddenNodeIds: ["iot", "stream", "geo", "app"],
-    wordBank: ["IoT Hub", "Kinesis Stream", "Geo Database", "Mobile App", "Satellite Phone", "Telegraph"],
-  },
-  techStack: ["IoT Core", "Kinesis", "Lambda", "DynamoDB"],
-  services: ["GPS Tracking", "Streaming", "Geo-queries"],
-  layers: ["Food Trucks", "Real-Time Backend", "Hungry Users"],
-};
-
-export const funPuzzleServerless3: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🐾 Serverless Challenge",
-  projectName: "Meme Generator 9000 😂",
-  description:
-    "The viral meme generator is broken! Images aren't being processed and captions aren't being added. Fix the serverless image pipeline before the internet runs out of fresh memes!",
-  color: "#FF9900",
-  successMessage: "🎉 Memes are flowing again! The internet is safe for another day! 😂🔥",
-  diagram: {
-    groups: [
-      { id: "upload", label: "Upload", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
-      { id: "process", label: "Image Pipeline", x: 28, y: 8, w: 42, h: 30, color: "#FF9900" },
-      { id: "serve", label: "CDN", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "user", label: "Meme Upload", x: 17, y: 20, w: 105, h: 28, icon: "📤" },
-      { id: "s3raw", label: "Raw Bucket", x: 17, y: 32, w: 100, h: 28, icon: "🪣", hidden: true },
-      { id: "trigger", label: "S3 Trigger", x: 49, y: 14, w: 90, h: 28, icon: "⚡", hidden: true },
-      { id: "resize", label: "Resize Lambda", x: 49, y: 24, w: 115, h: 28, icon: "📐" },
-      { id: "caption", label: "Caption Lambda", x: 49, y: 34, w: 120, h: 28, icon: "✍️", hidden: true },
-      { id: "s3out", label: "Meme Bucket", x: 82, y: 20, w: 105, h: 28, icon: "🎭" },
-      { id: "cdn", label: "CloudFront", x: 82, y: 32, w: 100, h: 28, icon: "🌐", hidden: true },
-    ],
-    edges: [
-      { from: "user", to: "s3raw" },
-      { from: "s3raw", to: "trigger" },
-      { from: "trigger", to: "resize" },
-      { from: "resize", to: "caption" },
-      { from: "caption", to: "s3out" },
-      { from: "s3out", to: "cdn" },
-    ],
-    hiddenNodeIds: ["s3raw", "trigger", "caption", "cdn"],
-    wordBank: ["Raw Bucket", "S3 Trigger", "Caption Lambda", "CloudFront", "Fax Machine", "Carrier Pigeon"],
-  },
-  techStack: ["S3", "Lambda", "CloudFront", "Sharp.js"],
-  services: ["Image Processing", "CDN", "Triggers"],
-  layers: ["Upload", "Image Pipeline", "CDN"],
-};
-
-export const funPuzzleServerless4: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🐾 Serverless Challenge",
-  projectName: "Pizza Ordering Express 🍕",
-  description:
-    "Pizza orders are getting lost! The ordering system needs to handle thousands of hungry customers. Fix the event-driven architecture before pizzas go cold!",
-  color: "#FF9900",
-  successMessage: "🎉 Pizzas are being delivered hot and fresh! You're a pizza-saving hero! 🍕🦸",
-  diagram: {
-    groups: [
-      { id: "order", label: "Order Intake", x: 8, y: 8, w: 20, h: 30, color: "#E53E3E" },
-      { id: "process", label: "Order Processing", x: 30, y: 8, w: 38, h: 30, color: "#FF9900" },
-      { id: "fulfil", label: "Fulfillment", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "app", label: "Pizza App", x: 18, y: 18, w: 90, h: 28, icon: "📱" },
-      { id: "api", label: "Order API", x: 18, y: 30, w: 85, h: 28, icon: "🚪", hidden: true },
-      { id: "queue", label: "Order Queue (SQS)", x: 49, y: 14, w: 135, h: 28, icon: "📬", hidden: true },
-      { id: "processor", label: "Order Processor", x: 49, y: 24, w: 125, h: 28, icon: "⚡" },
-      { id: "db", label: "Orders DB", x: 49, y: 34, w: 95, h: 28, icon: "🗄️", hidden: true },
-      { id: "kitchen", label: "Kitchen Display", x: 81, y: 20, w: 120, h: 28, icon: "👨‍🍳" },
-      { id: "notify", label: "SMS Notification", x: 81, y: 32, w: 125, h: 28, icon: "📲", hidden: true },
-    ],
-    edges: [
-      { from: "app", to: "api" },
-      { from: "api", to: "queue" },
-      { from: "queue", to: "processor" },
-      { from: "processor", to: "db" },
-      { from: "processor", to: "kitchen" },
-      { from: "kitchen", to: "notify" },
-    ],
-    hiddenNodeIds: ["api", "queue", "db", "notify"],
-    wordBank: ["Order API", "Order Queue (SQS)", "Orders DB", "SMS Notification", "Smoke Signal", "Owl Post"],
-  },
-  techStack: ["API Gateway", "SQS", "Lambda", "DynamoDB"],
-  services: ["Queueing", "Processing", "Notifications"],
-  layers: ["Order Intake", "Order Processing", "Fulfillment"],
-};
-
-export const funPuzzleServerless5: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🐾 Serverless Challenge",
-  projectName: "Weather Alert System 🌪️",
-  description:
-    "Storm warnings aren't reaching people! The real-time alert system is down. Wire up the event-driven notification pipeline before the next storm hits!",
-  color: "#FF9900",
-  successMessage: "🎉 Alerts are going out! People are staying safe from storms! 🌈☀️",
-  diagram: {
-    groups: [
-      { id: "sensors", label: "Weather Sensors", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
-      { id: "process", label: "Alert Engine", x: 28, y: 8, w: 42, h: 30, color: "#FF9900" },
-      { id: "notify", label: "Notifications", x: 72, y: 8, w: 20, h: 30, color: "#E53E3E" },
-    ],
-    nodes: [
-      { id: "sensor", label: "IoT Sensors", x: 17, y: 18, w: 100, h: 28, icon: "🌡️" },
-      { id: "ingest", label: "Data Ingest", x: 17, y: 30, w: 95, h: 28, icon: "📊", hidden: true },
-      { id: "analyze", label: "Storm Analyzer", x: 49, y: 14, w: 120, h: 28, icon: "🔍", hidden: true },
-      { id: "rules", label: "Alert Rules Engine", x: 49, y: 24, w: 135, h: 28, icon: "⚡" },
-      { id: "severity", label: "Severity Classifier", x: 49, y: 34, w: 140, h: 28, icon: "⚠️", hidden: true },
-      { id: "push", label: "Push Notifications", x: 82, y: 20, w: 140, h: 28, icon: "📲" },
-      { id: "siren", label: "Emergency Sirens", x: 82, y: 32, w: 130, h: 28, icon: "🚨", hidden: true },
-    ],
-    edges: [
-      { from: "sensor", to: "ingest" },
-      { from: "ingest", to: "analyze" },
-      { from: "analyze", to: "rules" },
-      { from: "rules", to: "severity" },
-      { from: "severity", to: "push" },
-      { from: "severity", to: "siren" },
-    ],
-    hiddenNodeIds: ["ingest", "analyze", "severity", "siren"],
-    wordBank: ["Data Ingest", "Storm Analyzer", "Severity Classifier", "Emergency Sirens", "Crystal Ball", "Tin Can"],
-  },
-  techStack: ["IoT Core", "Lambda", "SNS", "EventBridge"],
-  services: ["Data Ingestion", "Analysis", "Multi-Channel Alerts"],
-  layers: ["Weather Sensors", "Alert Engine", "Notifications"],
-};
-
-/* ─── DevOps Role Puzzles (2-5) ─────────────────────────── */
-
-export const funPuzzleDevOps2: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🚀 DevOps Challenge",
-  projectName: "GitOps Galaxy 🌌",
-  description:
-    "The GitOps deployment pipeline is broken! Kubernetes clusters aren't syncing with Git. Fix the continuous deployment flow before the fleet drifts into chaos!",
-  color: "#24292e",
-  successMessage: "🎉 Clusters are in sync! The GitOps galaxy is harmonious again! 🌌✨",
-  diagram: {
-    groups: [
-      { id: "git", label: "Git Repository", x: 8, y: 8, w: 20, h: 30, color: "#24292e" },
-      { id: "cd", label: "CD Pipeline", x: 30, y: 8, w: 38, h: 30, color: "#FF9900" },
-      { id: "k8s", label: "Kubernetes", x: 70, y: 8, w: 22, h: 30, color: "#326CE5" },
-    ],
-    nodes: [
-      { id: "push", label: "Git Push", x: 18, y: 18, w: 85, h: 28, icon: "📤" },
-      { id: "manifest", label: "K8s Manifests", x: 18, y: 30, w: 110, h: 28, icon: "📄", hidden: true },
-      { id: "webhook", label: "Webhook Trigger", x: 49, y: 14, w: 125, h: 28, icon: "🔔", hidden: true },
-      { id: "argocd", label: "ArgoCD Sync", x: 49, y: 24, w: 110, h: 28, icon: "🔄" },
-      { id: "validate", label: "Config Validator", x: 49, y: 34, w: 125, h: 28, icon: "✅", hidden: true },
-      { id: "deploy", label: "Pod Deployment", x: 81, y: 20, w: 120, h: 28, icon: "☸️" },
-      { id: "monitor", label: "Health Monitor", x: 81, y: 32, w: 115, h: 28, icon: "📊", hidden: true },
-    ],
-    edges: [
-      { from: "push", to: "manifest" },
-      { from: "manifest", to: "webhook" },
-      { from: "webhook", to: "argocd" },
-      { from: "argocd", to: "validate" },
-      { from: "validate", to: "deploy" },
-      { from: "deploy", to: "monitor" },
-    ],
-    hiddenNodeIds: ["manifest", "webhook", "validate", "monitor"],
-    wordBank: ["K8s Manifests", "Webhook Trigger", "Config Validator", "Health Monitor", "Magic Wand", "Fortune Teller"],
-  },
-  techStack: ["Git", "ArgoCD", "Kubernetes", "Helm"],
-  services: ["GitOps", "Validation", "Monitoring"],
-  layers: ["Git Repository", "CD Pipeline", "Kubernetes"],
-};
-
-export const funPuzzleDevOps3: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🚀 DevOps Challenge",
-  projectName: "Log Detective Agency 🔎",
-  description:
-    "Logs are disappearing! The centralized logging pipeline is broken and engineers can't debug issues. Fix it before the mystery goes unsolved forever!",
-  color: "#24292e",
-  successMessage: "🎉 The case is solved! Logs are flowing and bugs are being caught! 🔎🕵️",
-  diagram: {
-    groups: [
-      { id: "apps", label: "Applications", x: 8, y: 8, w: 18, h: 30, color: "#4CAF50" },
-      { id: "collect", label: "Collection Layer", x: 28, y: 8, w: 42, h: 30, color: "#FF9900" },
-      { id: "analyze", label: "Analysis", x: 72, y: 8, w: 20, h: 30, color: "#9C27B0" },
-    ],
-    nodes: [
-      { id: "app1", label: "Microservice A", x: 17, y: 16, w: 115, h: 26, icon: "📦" },
-      { id: "app2", label: "Microservice B", x: 17, y: 30, w: 115, h: 26, icon: "📦", hidden: true },
-      { id: "agent", label: "Log Agent", x: 49, y: 14, w: 95, h: 28, icon: "📡", hidden: true },
-      { id: "kafka", label: "Kafka Stream", x: 49, y: 24, w: 110, h: 28, icon: "🌊" },
-      { id: "elastic", label: "Elasticsearch", x: 49, y: 34, w: 110, h: 28, icon: "🔍", hidden: true },
-      { id: "kibana", label: "Kibana Dashboard", x: 82, y: 20, w: 135, h: 28, icon: "📊" },
-      { id: "alert", label: "Alert Manager", x: 82, y: 32, w: 115, h: 28, icon: "🚨", hidden: true },
-    ],
-    edges: [
-      { from: "app1", to: "agent" },
-      { from: "app2", to: "agent" },
-      { from: "agent", to: "kafka" },
-      { from: "kafka", to: "elastic" },
-      { from: "elastic", to: "kibana" },
-      { from: "elastic", to: "alert" },
-    ],
-    hiddenNodeIds: ["app2", "agent", "elastic", "alert"],
-    wordBank: ["Microservice B", "Log Agent", "Elasticsearch", "Alert Manager", "Telepathy", "Smoke Signals"],
-  },
-  techStack: ["Fluentd", "Kafka", "Elasticsearch", "Kibana"],
-  services: ["Log Collection", "Streaming", "Visualization"],
-  layers: ["Applications", "Collection Layer", "Analysis"],
-};
-
-export const funPuzzleDevOps4: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🚀 DevOps Challenge",
-  projectName: "Chaos Monkey Training Camp 🐒",
-  description:
-    "The chaos engineering platform is offline! Engineers can't test system resilience. Wire up the chaos injection pipeline before production goes down unexpectedly!",
-  color: "#24292e",
-  successMessage: "🎉 Chaos is controlled! Systems are battle-tested and resilient! 🐒💪",
-  diagram: {
-    groups: [
-      { id: "control", label: "Control Plane", x: 8, y: 8, w: 20, h: 30, color: "#E53E3E" },
-      { id: "inject", label: "Chaos Injection", x: 30, y: 8, w: 38, h: 30, color: "#FF9900" },
-      { id: "observe", label: "Observability", x: 70, y: 8, w: 22, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "schedule", label: "Chaos Scheduler", x: 18, y: 18, w: 125, h: 28, icon: "📅" },
-      { id: "config", label: "Experiment Config", x: 18, y: 30, w: 135, h: 28, icon: "⚙️", hidden: true },
-      { id: "inject", label: "Chaos Injector", x: 49, y: 14, w: 115, h: 28, icon: "💉", hidden: true },
-      { id: "target", label: "Target Services", x: 49, y: 24, w: 120, h: 28, icon: "🎯" },
-      { id: "blast", label: "Blast Radius Limiter", x: 49, y: 34, w: 150, h: 28, icon: "🛡️", hidden: true },
-      { id: "metrics", label: "Metrics Collector", x: 81, y: 20, w: 130, h: 28, icon: "📊" },
-      { id: "report", label: "Resilience Report", x: 81, y: 32, w: 130, h: 28, icon: "📋", hidden: true },
-    ],
-    edges: [
-      { from: "schedule", to: "config" },
-      { from: "config", to: "inject" },
-      { from: "inject", to: "target" },
-      { from: "inject", to: "blast" },
-      { from: "target", to: "metrics" },
-      { from: "metrics", to: "report" },
-    ],
-    hiddenNodeIds: ["config", "inject", "blast", "report"],
-    wordBank: ["Experiment Config", "Chaos Injector", "Blast Radius Limiter", "Resilience Report", "Banana", "Coconut"],
-  },
-  techStack: ["Chaos Monkey", "LitmusChaos", "Prometheus", "Grafana"],
-  services: ["Scheduling", "Injection", "Reporting"],
-  layers: ["Control Plane", "Chaos Injection", "Observability"],
-};
-
-export const funPuzzleDevOps5: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🚀 DevOps Challenge",
-  projectName: "Secret Keeper Vault 🔐",
-  description:
-    "Secrets are leaking! The centralized secrets management pipeline is broken. Fix it before sensitive credentials end up in the wrong hands!",
-  color: "#24292e",
-  successMessage: "🎉 Secrets are secure! The vault is impenetrable! 🔐✨",
-  diagram: {
-    groups: [
-      { id: "apps", label: "Applications", x: 8, y: 8, w: 18, h: 30, color: "#4CAF50" },
-      { id: "vault", label: "Secrets Vault", x: 28, y: 8, w: 42, h: 30, color: "#24292e" },
-      { id: "audit", label: "Compliance", x: 72, y: 8, w: 20, h: 30, color: "#9C27B0" },
-    ],
-    nodes: [
-      { id: "app", label: "Application", x: 17, y: 20, w: 100, h: 28, icon: "📦" },
-      { id: "agent", label: "Vault Agent", x: 17, y: 32, w: 100, h: 28, icon: "🤖", hidden: true },
-      { id: "auth", label: "Auth Method", x: 49, y: 14, w: 105, h: 28, icon: "🔑", hidden: true },
-      { id: "policy", label: "ACL Policies", x: 49, y: 24, w: 100, h: 28, icon: "📜" },
-      { id: "secrets", label: "Secrets Engine", x: 49, y: 34, w: 120, h: 28, icon: "🔐", hidden: true },
-      { id: "rotate", label: "Auto-Rotation", x: 82, y: 20, w: 115, h: 28, icon: "🔄" },
-      { id: "audit", label: "Audit Log", x: 82, y: 32, w: 90, h: 28, icon: "📋", hidden: true },
-    ],
-    edges: [
-      { from: "app", to: "agent" },
-      { from: "agent", to: "auth" },
-      { from: "auth", to: "policy" },
-      { from: "policy", to: "secrets" },
-      { from: "secrets", to: "rotate" },
-      { from: "secrets", to: "audit" },
-    ],
-    hiddenNodeIds: ["agent", "auth", "secrets", "audit"],
-    wordBank: ["Vault Agent", "Auth Method", "Secrets Engine", "Audit Log", "Treasure Map", "Skeleton Key"],
-  },
-  techStack: ["HashiCorp Vault", "Kubernetes", "AWS KMS"],
-  services: ["Authentication", "Policies", "Rotation"],
-  layers: ["Applications", "Secrets Vault", "Compliance"],
-};
-
-/* ─── Security Role Puzzles (2-5) ─────────────────────────── */
-
-export const funPuzzleSecurity2: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🛡️ Security Challenge",
-  projectName: "Threat Hunter HQ 🎯",
-  description:
-    "Cyber threats are going undetected! The threat detection pipeline is broken. Wire up the security monitoring before hackers slip through!",
-  color: "#003168",
-  successMessage: "🎉 Threats are being detected! The hunters are on patrol! 🎯🛡️",
-  diagram: {
-    groups: [
-      { id: "sources", label: "Log Sources", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
-      { id: "detect", label: "Detection Engine", x: 28, y: 8, w: 42, h: 30, color: "#E53E3E" },
-      { id: "respond", label: "Response", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "firewall", label: "Firewall Logs", x: 17, y: 16, w: 110, h: 26, icon: "🔥" },
-      { id: "endpoint", label: "Endpoint Logs", x: 17, y: 30, w: 110, h: 26, icon: "💻", hidden: true },
-      { id: "siem", label: "SIEM Platform", x: 49, y: 14, w: 115, h: 28, icon: "🔍", hidden: true },
-      { id: "rules", label: "Detection Rules", x: 49, y: 24, w: 120, h: 28, icon: "📋" },
-      { id: "ml", label: "ML Anomaly Detector", x: 49, y: 34, w: 150, h: 28, icon: "🤖", hidden: true },
-      { id: "alert", label: "Security Alert", x: 82, y: 20, w: 110, h: 28, icon: "🚨" },
-      { id: "ticket", label: "Incident Ticket", x: 82, y: 32, w: 115, h: 28, icon: "🎫", hidden: true },
-    ],
-    edges: [
-      { from: "firewall", to: "siem" },
-      { from: "endpoint", to: "siem" },
-      { from: "siem", to: "rules" },
-      { from: "siem", to: "ml" },
-      { from: "rules", to: "alert" },
-      { from: "ml", to: "alert" },
-      { from: "alert", to: "ticket" },
-    ],
-    hiddenNodeIds: ["endpoint", "siem", "ml", "ticket"],
-    wordBank: ["Endpoint Logs", "SIEM Platform", "ML Anomaly Detector", "Incident Ticket", "Crystal Ball", "Radar"],
-  },
-  techStack: ["SIEM", "Machine Learning", "SOAR"],
-  services: ["Log Collection", "Detection", "Alerting"],
-  layers: ["Log Sources", "Detection Engine", "Response"],
-};
-
-export const funPuzzleSecurity3: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🛡️ Security Challenge",
-  projectName: "Identity Fortress 🏰",
-  description:
-    "User identities are being compromised! The zero-trust identity system is down. Fix the authentication pipeline before imposters take over!",
-  color: "#003168",
-  successMessage: "🎉 Identities are verified! The fortress stands strong! 🏰✨",
-  diagram: {
-    groups: [
-      { id: "user", label: "User Access", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
-      { id: "auth", label: "Authentication", x: 28, y: 8, w: 42, h: 30, color: "#9C27B0" },
-      { id: "access", label: "Authorization", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "login", label: "Login Request", x: 17, y: 18, w: 115, h: 28, icon: "🔑" },
-      { id: "sso", label: "SSO Provider", x: 17, y: 30, w: 105, h: 28, icon: "🌐", hidden: true },
-      { id: "mfa", label: "MFA Challenge", x: 49, y: 14, w: 115, h: 28, icon: "📱", hidden: true },
-      { id: "risk", label: "Risk Analyzer", x: 49, y: 24, w: 110, h: 28, icon: "⚠️" },
-      { id: "token", label: "Token Service", x: 49, y: 34, w: 110, h: 28, icon: "🎟️", hidden: true },
-      { id: "rbac", label: "RBAC Engine", x: 82, y: 20, w: 105, h: 28, icon: "👥" },
-      { id: "grant", label: "Access Grant", x: 82, y: 32, w: 105, h: 28, icon: "✅", hidden: true },
-    ],
-    edges: [
-      { from: "login", to: "sso" },
-      { from: "sso", to: "mfa" },
-      { from: "mfa", to: "risk" },
-      { from: "risk", to: "token" },
-      { from: "token", to: "rbac" },
-      { from: "rbac", to: "grant" },
-    ],
-    hiddenNodeIds: ["sso", "mfa", "token", "grant"],
-    wordBank: ["SSO Provider", "MFA Challenge", "Token Service", "Access Grant", "Magic Password", "Secret Handshake"],
-  },
-  techStack: ["OAuth 2.0", "SAML", "MFA", "JWT"],
-  services: ["SSO", "Risk Analysis", "RBAC"],
-  layers: ["User Access", "Authentication", "Authorization"],
-};
-
-export const funPuzzleSecurity4: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🛡️ Security Challenge",
-  projectName: "Vulnerability Scanner 5000 🔬",
-  description:
-    "Security vulnerabilities are piling up! The automated scanning pipeline is broken. Fix it before the bugs become exploits!",
-  color: "#003168",
-  successMessage: "🎉 Vulnerabilities are being found and fixed! The system is hardened! 🔬💪",
-  diagram: {
-    groups: [
-      { id: "code", label: "Code Repository", x: 8, y: 8, w: 18, h: 30, color: "#24292e" },
-      { id: "scan", label: "Scanning Pipeline", x: 28, y: 8, w: 42, h: 30, color: "#E53E3E" },
-      { id: "fix", label: "Remediation", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "commit", label: "Code Commit", x: 17, y: 18, w: 105, h: 28, icon: "📝" },
-      { id: "trigger", label: "CI Trigger", x: 17, y: 30, w: 90, h: 28, icon: "⚡", hidden: true },
-      { id: "sast", label: "SAST Scanner", x: 49, y: 14, w: 110, h: 28, icon: "🔍", hidden: true },
-      { id: "deps", label: "Dependency Check", x: 49, y: 24, w: 130, h: 28, icon: "📦" },
-      { id: "container", label: "Container Scan", x: 49, y: 34, w: 120, h: 28, icon: "🐳", hidden: true },
-      { id: "report", label: "Findings Report", x: 82, y: 20, w: 120, h: 28, icon: "📋" },
-      { id: "pr", label: "Fix PR Created", x: 82, y: 32, w: 115, h: 28, icon: "🔧", hidden: true },
-    ],
-    edges: [
-      { from: "commit", to: "trigger" },
-      { from: "trigger", to: "sast" },
-      { from: "trigger", to: "deps" },
-      { from: "trigger", to: "container" },
-      { from: "sast", to: "report" },
-      { from: "deps", to: "report" },
-      { from: "container", to: "report" },
-      { from: "report", to: "pr" },
-    ],
-    hiddenNodeIds: ["trigger", "sast", "container", "pr"],
-    wordBank: ["CI Trigger", "SAST Scanner", "Container Scan", "Fix PR Created", "Wishful Thinking", "Ignore Button"],
-  },
-  techStack: ["Snyk", "SonarQube", "Trivy", "GitHub Actions"],
-  services: ["SAST", "SCA", "Container Scanning"],
-  layers: ["Code Repository", "Scanning Pipeline", "Remediation"],
-};
-
-export const funPuzzleSecurity5: DiagramPuzzleData = {
-  title: "Fun Puzzle",
-  roleTitle: "🛡️ Security Challenge",
-  projectName: "Data Privacy Shield 🛡️",
-  description:
-    "Sensitive data is being exposed! The data classification and masking pipeline is broken. Fix it before privacy regulations catch up!",
-  color: "#003168",
-  successMessage: "🎉 Data is protected! Privacy is maintained! 🛡️🔒",
-  diagram: {
-    groups: [
-      { id: "data", label: "Data Sources", x: 8, y: 8, w: 18, h: 30, color: "#2196F3" },
-      { id: "classify", label: "Classification", x: 28, y: 8, w: 42, h: 30, color: "#9C27B0" },
-      { id: "protect", label: "Protection", x: 72, y: 8, w: 20, h: 30, color: "#4CAF50" },
-    ],
-    nodes: [
-      { id: "db", label: "Database", x: 17, y: 18, w: 90, h: 28, icon: "🗄️" },
-      { id: "files", label: "File Storage", x: 17, y: 30, w: 100, h: 28, icon: "📁", hidden: true },
-      { id: "scanner", label: "PII Scanner", x: 49, y: 14, w: 100, h: 28, icon: "🔍", hidden: true },
-      { id: "classify", label: "Data Classifier", x: 49, y: 24, w: 115, h: 28, icon: "🏷️" },
-      { id: "policy", label: "Privacy Policy", x: 49, y: 34, w: 110, h: 28, icon: "📜", hidden: true },
-      { id: "mask", label: "Data Masking", x: 82, y: 20, w: 110, h: 28, icon: "🎭" },
-      { id: "encrypt", label: "Encryption", x: 82, y: 32, w: 95, h: 28, icon: "🔐", hidden: true },
-    ],
-    edges: [
-      { from: "db", to: "scanner" },
-      { from: "files", to: "scanner" },
-      { from: "scanner", to: "classify" },
-      { from: "classify", to: "policy" },
-      { from: "policy", to: "mask" },
-      { from: "policy", to: "encrypt" },
-    ],
-    hiddenNodeIds: ["files", "scanner", "policy", "encrypt"],
-    wordBank: ["File Storage", "PII Scanner", "Privacy Policy", "Encryption", "Paper Shredder", "Invisible Ink"],
-  },
-  techStack: ["DLP", "Data Classification", "Encryption"],
-  services: ["PII Detection", "Policy Engine", "Masking"],
-  layers: ["Data Sources", "Classification", "Protection"],
 };
 
 /* ═══════════════════════════════════════════════════════════
