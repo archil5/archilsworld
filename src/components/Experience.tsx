@@ -55,23 +55,33 @@ const Experience = () => {
       scrollTimeout.current = setTimeout(() => setShowOverlay(true), 800);
     };
 
+    let touchStartX = 0;
     let touchStartY = 0;
-    const handleTouchStart = (e: TouchEvent) => { if (!isDiving) touchStartY = e.touches[0].clientY; };
-    const handleTouchMove = (e: TouchEvent) => {
+    let swiped = false;
+    const SWIPE_THRESHOLD = 50;
+
+    const handleTouchStart = (e: TouchEvent) => {
       if (isDiving) return;
-      e.preventDefault();
-      const delta = touchStartY - e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
-      targetScroll.current += delta * 0.001;
-      targetScroll.current = Math.max(0, Math.min(1, targetScroll.current));
-      const idx = Math.round(targetScroll.current * (CHAPTERS.length - 1));
-      if (idx !== activeIndex) {
-        setActiveIndex(idx);
-        setVisitedSet(prev => new Set(prev).add(idx));
-        setShowOverlay(false);
+      swiped = false;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDiving || swiped) return;
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+
+      // Only trigger if horizontal swipe is dominant
+      if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        e.preventDefault();
+        swiped = true;
+        if (dx < 0) {
+          goTo(activeIndex + 1); // swipe left → next
+        } else {
+          goTo(activeIndex - 1); // swipe right → prev
+        }
       }
-      clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => setShowOverlay(true), 800);
     };
 
     const handleKey = (e: KeyboardEvent) => {
