@@ -213,11 +213,11 @@ const Experience = () => {
       </AnimatePresence>
 
       {/* Title */}
-      <div className="absolute top-6 left-8 z-20 pointer-events-none">
-        <h1 className="font-display text-2xl md:text-3xl tracking-wide" style={{ color: "#2d2a26" }}>
+      <div className="absolute top-4 left-4 md:top-6 md:left-8 z-20 pointer-events-none">
+        <h1 className="font-display text-lg md:text-3xl tracking-wide" style={{ color: "#2d2a26" }}>
           Archil Patel
         </h1>
-        <p className="font-body text-sm italic mt-0.5" style={{ color: "#6b6560" }}>
+        <p className="font-body text-[10px] md:text-sm italic mt-0.5 hidden sm:block" style={{ color: "#6b6560" }}>
           Principal Cloud Engineer · A Journey in Tiles
         </p>
       </div>
