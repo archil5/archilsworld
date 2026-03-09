@@ -127,6 +127,16 @@ const HexTile = ({
         />
       </mesh>
 
+      {/* Larger invisible click target for easier clicking on distant tiles */}
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.01, 0]}
+        onClick={(e) => { e.stopPropagation(); onClick(); }}
+      >
+        <circleGeometry args={[1.2, 6]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
+
       <Html
         position={[0, isActive ? 0.6 : 0.22, 0]}
         center
@@ -163,7 +173,7 @@ const HexTile = ({
         </div>
       </Html>
 
-      {/* Explore bubble floating above the tile */}
+      {/* Techy explore popup floating above the tile */}
       {showExplore && onExplore && (
         <Html
           position={[0, 2.2, 0]}
@@ -175,30 +185,63 @@ const HexTile = ({
           <div
             onClick={(e) => { e.stopPropagation(); onExplore(); }}
             style={{
-              background: "rgba(254,252,249,0.96)",
-              border: `1.5px solid ${color}40`,
-              borderRadius: 12,
-              padding: "6px 14px",
+              background: "linear-gradient(135deg, rgba(15,15,20,0.92), rgba(25,25,35,0.95))",
+              border: `1px solid ${color}50`,
+              borderRadius: 8,
+              padding: "8px 16px",
               cursor: "pointer",
-              boxShadow: `0 4px 20px rgba(0,0,0,0.12), 0 0 0 1px ${color}10`,
+              boxShadow: `0 0 20px ${color}25, 0 0 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)`,
               display: "flex",
               alignItems: "center",
-              gap: 6,
+              gap: 8,
               whiteSpace: "nowrap" as const,
-              animation: "float-piece 2.5s ease-in-out infinite",
+              position: "relative" as const,
+              overflow: "hidden" as const,
             }}
           >
-            <span style={{ fontSize: 11, fontFamily: "'Cinzel', serif", fontWeight: 600, color: color, letterSpacing: 0.5 }}>
-              Explore
+            {/* Scan line effect */}
+            <div style={{
+              position: "absolute",
+              inset: 0,
+              background: `linear-gradient(180deg, transparent 0%, ${color}08 50%, transparent 100%)`,
+              animation: "float-piece 3s ease-in-out infinite",
+              pointerEvents: "none",
+            }} />
+            {/* Terminal bracket */}
+            <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color: `${color}90`, fontWeight: 500 }}>
+              {"["}
             </span>
-            <span style={{ fontSize: 12, color }}>→</span>
+            {/* Blinking cursor */}
+            <span style={{
+              width: 6, height: 6, borderRadius: 1,
+              background: color,
+              boxShadow: `0 0 8px ${color}80`,
+              animation: "pulse-glow 1.5s ease-in-out infinite",
+              flexShrink: 0,
+            }} />
+            <span style={{
+              fontSize: 10,
+              fontFamily: "'JetBrains Mono', monospace",
+              fontWeight: 600,
+              color: "#e0e0e0",
+              letterSpacing: 1.5,
+              textTransform: "uppercase" as const,
+            }}>
+              EXPLORE
+            </span>
+            <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color }}>
+              →
+            </span>
+            <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color: `${color}90`, fontWeight: 500 }}>
+              {"]"}
+            </span>
           </div>
-          {/* Small triangle pointer below bubble */}
+          {/* Pointer triangle */}
           <div style={{
             width: 0, height: 0,
-            borderLeft: "6px solid transparent",
-            borderRight: "6px solid transparent",
-            borderTop: `6px solid ${color}40`,
+            borderLeft: "5px solid transparent",
+            borderRight: "5px solid transparent",
+            borderTop: `5px solid rgba(25,25,35,0.95)`,
             margin: "0 auto",
           }} />
         </Html>
