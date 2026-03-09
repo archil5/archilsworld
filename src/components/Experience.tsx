@@ -24,6 +24,7 @@ const Experience = () => {
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const isDiving = diveChapter !== null;
+  const skipPopState = useRef(false);
 
   const goTo = useCallback((index: number) => {
     const clamped = Math.max(0, Math.min(CHAPTERS.length - 1, index));
@@ -32,6 +33,9 @@ const Experience = () => {
     setVisitedSet(prev => new Set(prev).add(clamped));
     setShowOverlay(false);
     setTimeout(() => setShowOverlay(true), 600);
+    // Push history so browser back button works
+    skipPopState.current = true;
+    window.history.pushState({ tile: clamped }, "");
   }, []);
 
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
