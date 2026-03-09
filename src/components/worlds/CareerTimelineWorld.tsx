@@ -818,7 +818,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 )}
               </div>
             ) : (
-              /* Puzzle Tab - Single Generic Fun Puzzle */
+              /* Puzzle Tab - Multiple Fun Puzzles */
               <div
                 className="p-6 overflow-y-auto"
                 style={{
@@ -826,56 +826,104 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   maxHeight: "70vh",
                 }}
               >
-                <motion.div
-                  className="rounded-xl overflow-hidden"
-                  style={{
-                    border: `1px solid ${stop.funPuzzle.color}25`,
-                    background: "#fff",
-                  }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <div
-                    className="px-5 py-3 flex items-center justify-between"
+                {/* Puzzle Progress Bar */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
+                      Puzzle {puzzleIdx + 1} of {stop.funPuzzles.length}
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full" style={{ background: `${stop.color}10`, color: stop.color }}>
+                      {totalSolvedForRole}/{stop.funPuzzles.length} solved
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {stop.funPuzzles.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentPuzzleIndex(prev => ({ ...prev, [activeStop]: i }))}
+                        className="w-2.5 h-2.5 rounded-full transition-all cursor-pointer"
+                        style={{
+                          background: solvedPuzzles.has(`${activeStop}-${i}`) ? "#2a7d4f" : i === puzzleIdx ? stop.color : "rgba(180,140,100,0.2)",
+                          transform: i === puzzleIdx ? "scale(1.3)" : "scale(1)",
+                          boxShadow: i === puzzleIdx ? `0 0 6px ${stop.color}40` : "none",
+                        }}
+                        title={`Puzzle ${i + 1}${solvedPuzzles.has(`${activeStop}-${i}`) ? " ✓" : ""}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={puzzleKey}
+                    className="rounded-xl overflow-hidden"
                     style={{
-                      background: `${stop.funPuzzle.color}08`,
-                      borderBottom: `1px solid ${stop.funPuzzle.color}12`,
+                      border: `1px solid ${currentPuzzle.color}25`,
+                      background: "#fff",
                     }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
-                        style={{ background: `${stop.funPuzzle.color}15` }}
-                      >
-                        🎮
+                    <div
+                      className="px-5 py-3 flex items-center justify-between"
+                      style={{
+                        background: `${currentPuzzle.color}08`,
+                        borderBottom: `1px solid ${currentPuzzle.color}12`,
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
+                          style={{ background: `${currentPuzzle.color}15` }}
+                        >
+                          🎮
+                        </div>
+                        <div>
+                          <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
+                            {currentPuzzle.projectName}
+                          </h4>
+                          <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
+                            Fun puzzle — test your cloud architecture skills!
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
-                          {stop.funPuzzle.projectName}
-                        </h4>
-                        <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
-                          Fun puzzle — test your cloud architecture skills!
-                        </p>
+                      <div className="flex items-center gap-2">
+                        {currentPuzzleSolved && (
+                          <span
+                            className="text-[10px] font-mono px-3 py-1 rounded-full"
+                            style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
+                          >
+                            ✓ Solved
+                          </span>
+                        )}
+                        {currentPuzzleSolved && puzzleIdx < stop.funPuzzles.length - 1 && (
+                          <motion.button
+                            onClick={() => setCurrentPuzzleIndex(prev => ({ ...prev, [activeStop]: puzzleIdx + 1 }))}
+                            className="flex items-center gap-1 text-[10px] font-mono px-3 py-1.5 rounded-lg cursor-pointer"
+                            style={{
+                              background: `${stop.color}10`,
+                              color: stop.color,
+                              border: `1px solid ${stop.color}20`,
+                            }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <RefreshCw size={10} /> Next Puzzle
+                          </motion.button>
+                        )}
                       </div>
                     </div>
-                    {currentPuzzleSolved && (
-                      <span
-                        className="text-[10px] font-mono px-3 py-1 rounded-full"
-                        style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
-                      >
-                        ✓ Solved
-                      </span>
-                    )}
-                  </div>
 
-                  <div className="p-5">
-                    <ArchDiagramPuzzle
-                      data={stop.funPuzzle}
-                      solved={currentPuzzleSolved}
-                      onSolve={() => setSolvedPuzzles(prev => new Set(prev).add(activeStop))}
-                    />
-                  </div>
-                </motion.div>
+                    <div className="p-5">
+                      <ArchDiagramPuzzle
+                        data={currentPuzzle}
+                        solved={currentPuzzleSolved}
+                        onSolve={() => setSolvedPuzzles(prev => new Set(prev).add(puzzleKey))}
+                      />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             )}
 
