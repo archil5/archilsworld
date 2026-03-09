@@ -102,8 +102,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
         <motion.div
           className="rounded-xl px-6 py-5 mb-8 max-w-md"
           style={{
-            background: "rgba(181,101,58,0.08)",
-            border: "1px solid rgba(181,101,58,0.2)",
+            background: "rgba(181,101,58,0.06)",
+            border: "1px solid rgba(181,101,58,0.15)",
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,7 +112,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           <p className="text-xs font-mono uppercase tracking-wider mb-3" style={{ color: "#b5653a" }}>
             How I Think
           </p>
-          <p className="font-body text-sm leading-relaxed" style={{ color: "rgba(245,240,232,0.7)" }}>
+          <p className="font-body text-sm leading-relaxed" style={{ color: "#6b6560" }}>
             I take things apart to understand how they work — then build them back better.
             Whether it's a board game, a cloud architecture, or a stubborn bug, I think three moves ahead
             and treat every problem like a puzzle waiting to be cracked. This portfolio is my game board —
