@@ -190,6 +190,7 @@ const stops: RoleStop[] = [
         "Python-based threat intelligence aggregation",
       ],
     },
+    funPuzzle: funPuzzleSecurity,
   },
 ];
 
