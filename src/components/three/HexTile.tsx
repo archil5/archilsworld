@@ -129,15 +129,6 @@ const HexTile = ({
         />
       </mesh>
 
-      {/* Larger invisible click target for easier clicking on distant tiles */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0.01, 0]}
-        onClick={(e) => { e.stopPropagation(); onClick(); }}
-      >
-        <circleGeometry args={[1.2, 6]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
 
       <Html
         position={[0, isActive ? 0.6 : 0.22, 0]}
