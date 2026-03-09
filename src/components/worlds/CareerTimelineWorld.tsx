@@ -294,10 +294,10 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
         animate={{ opacity: 1, y: 0 }}
       >
         <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: "rgba(80,70,60,0.5)" }}>
-          Think you know cloud architecture?
+          Interactive Cloud Architecture
         </p>
         <p className="text-sm font-display font-bold" style={{ color: "#2d2a26" }}>
-          Try solving these flows — {totalPuzzles} architecture puzzles, {stops.reduce((acc, s) => acc + (s.diagramPuzzles?.reduce((sum, d) => sum + d.diagram.hiddenNodeIds.length, 0) || 0), 0)} hidden nodes total
+          Real-world solutions from enterprise cloud engineering + 1 fun puzzle to test your skills
         </p>
       </motion.div>
 
