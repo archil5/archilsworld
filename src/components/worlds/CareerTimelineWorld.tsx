@@ -277,7 +277,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           Think you know cloud architecture?
         </p>
         <p className="text-sm font-display font-bold" style={{ color: "#2d2a26" }}>
-          Try solving these flows — {stops.filter(s => s.diagramPuzzle).length} architecture puzzles, {stops.reduce((acc, s) => acc + (s.diagramPuzzle?.diagram.hiddenNodeIds.length || 0), 0)} hidden nodes total
+          Try solving these flows — {totalPuzzles} architecture puzzles, {stops.reduce((acc, s) => acc + (s.diagramPuzzles?.reduce((sum, d) => sum + d.diagram.hiddenNodeIds.length, 0) || 0), 0)} hidden nodes total
         </p>
       </motion.div>
 
