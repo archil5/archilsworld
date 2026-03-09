@@ -256,6 +256,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
   useEffect(() => {
     setPanel("overview");
+    setActiveDiagram(0);
   }, [activeStop]);
 
   const stop = stops[activeStop];
