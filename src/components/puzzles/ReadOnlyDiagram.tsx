@@ -149,7 +149,7 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
 
         {/* Diagram */}
         <motion.div
-          className="overflow-hidden rounded-b-xl"
+          className="overflow-hidden rounded-b-xl overscroll-contain touch-none"
           style={{
             background: bgColor,
             border: `1px solid ${borderColor}`,
@@ -161,7 +161,7 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          onWheel={handleWheel}
+          onWheelCapture={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
