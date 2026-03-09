@@ -815,30 +815,49 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   maxHeight: "70vh",
                 }}
               >
-                {/* Puzzle Progress Bar */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
-                      Puzzle {puzzleIdx + 1} of {stop.funPuzzles.length}
-                    </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full" style={{ background: `${stop.color}10`, color: stop.color }}>
-                      {totalSolvedForRole}/{stop.funPuzzles.length} solved
-                    </span>
+                {/* Puzzle Navigation */}
+                <div className="mb-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
+                        Puzzle {puzzleIdx + 1} of {stop.funPuzzles.length}
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full" style={{ background: `${stop.color}10`, color: stop.color }}>
+                        {totalSolvedForRole}/{stop.funPuzzles.length} solved
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    {stop.funPuzzles.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentPuzzleIndex(prev => ({ ...prev, [activeStop]: i }))}
-                        className="w-2.5 h-2.5 rounded-full transition-all cursor-pointer"
-                        style={{
-                          background: solvedPuzzles.has(`${activeStop}-${i}`) ? "#2a7d4f" : i === puzzleIdx ? stop.color : "rgba(180,140,100,0.2)",
-                          transform: i === puzzleIdx ? "scale(1.3)" : "scale(1)",
-                          boxShadow: i === puzzleIdx ? `0 0 6px ${stop.color}40` : "none",
-                        }}
-                        title={`Puzzle ${i + 1}${solvedPuzzles.has(`${activeStop}-${i}`) ? " ✓" : ""}`}
-                      />
-                    ))}
+                  {/* Puzzle selector cards */}
+                  <div className="flex flex-wrap gap-2">
+                    {stop.funPuzzles.map((p, i) => {
+                      const isSolved = solvedPuzzles.has(`${activeStop}-${i}`);
+                      const isActive = i === puzzleIdx;
+                      const diffColor = p.difficulty === "Expert" ? "#dc2626" : p.difficulty === "Hard" ? "#ea580c" : p.difficulty === "Medium" ? "#ca8a04" : "#16a34a";
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => setCurrentPuzzleIndex(prev => ({ ...prev, [activeStop]: i }))}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all cursor-pointer text-left"
+                          style={{
+                            background: isActive ? `${stop.color}10` : isSolved ? "rgba(42,125,79,0.04)" : "rgba(180,140,100,0.03)",
+                            border: `1.5px solid ${isActive ? stop.color : isSolved ? "rgba(42,125,79,0.2)" : "rgba(180,140,100,0.12)"}`,
+                            boxShadow: isActive ? `0 0 8px ${stop.color}15` : "none",
+                          }}
+                        >
+                          <span className="text-[10px] font-mono font-bold" style={{ color: isActive ? stop.color : isSolved ? "#2a7d4f" : "rgba(80,70,60,0.5)" }}>
+                            {isSolved ? "✓" : `${i + 1}`}
+                          </span>
+                          <div className="flex flex-col">
+                            <span className="text-[9px] font-mono font-semibold leading-tight" style={{ color: isActive ? "#2d2a26" : "rgba(45,42,38,0.7)" }}>
+                              {p.projectName.replace(/\s*[🤖📦📡🔐🎯🔬🛡️🚨🕸️🏭🌌🔎🐒🏗️🎛️📄💳📊🔐🎧]/g, "").trim().substring(0, 28)}
+                            </span>
+                            <span className="text-[8px] font-mono font-bold" style={{ color: diffColor }}>
+                              {p.difficulty || "Medium"}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
