@@ -59,7 +59,7 @@ export const CHAPTERS: ChapterData[] = [
     subtitle: "Dalhousie University · Master's in Applied CS",
     narrative: "Dalhousie wasn't just a degree — it was where curiosity became craft. The Master's programme taught me to think three moves ahead.",
     tagline: "Where curiosity became craft and thinking sharpened",
-    exploreHint: "Walk the halls where curiosity got its edge",
+    exploreHint: "Explore this world →",
     skills: ["Systems Thinking", "Security", "Automation", "Ethical Hacking"],
     position: [2, 0, -3],
     color: "#8B6914",
