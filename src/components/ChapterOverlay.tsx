@@ -149,36 +149,6 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               <TypewriterText text={chapter.tagline} delay={0.6} />
             </motion.div>
 
-            {onDive && (
-              <motion.button
-                onClick={onDive}
-                className="flex items-center gap-3 px-6 py-3 rounded-xl cursor-pointer transition-all"
-                style={{
-                  background: `${chapter.color}12`,
-                  border: `1px solid ${chapter.color}35`,
-                  color: chapter.color,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = `${chapter.color}22`;
-                  e.currentTarget.style.boxShadow = `0 4px 20px ${chapter.color}18`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = `${chapter.color}12`;
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-              >
-                <span className="font-display text-sm tracking-wider">Enter this world</span>
-                <motion.span
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.2 }}
-                >
-                  →
-                </motion.span>
-              </motion.button>
-            )}
           </div>
         </motion.div>
       )}
