@@ -1,7 +1,12 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 
-const BoardSurface = () => {
+interface BoardSurfaceProps {
+  groundColor?: string;
+  hexColor?: string;
+}
+
+const BoardSurface = ({ groundColor = "#f0ebe3", hexColor = "#e8e0d4" }: BoardSurfaceProps) => {
   const hexPositions = useMemo(() => {
     const positions: [number, number, number][] = [];
     const size = 1.0;
@@ -32,18 +37,16 @@ const BoardSurface = () => {
 
   return (
     <group>
-      {/* Light warm ground plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3, -0.2, -1.5]} receiveShadow>
         <planeGeometry args={[40, 20]} />
-        <meshStandardMaterial color="#f0ebe3" roughness={0.95} metalness={0.0} />
+        <meshStandardMaterial color={groundColor} roughness={0.95} metalness={0.0} />
       </mesh>
 
-      {/* Subtle hex grid pattern */}
       {hexPositions.map((pos, i) => (
         <mesh key={i} position={pos} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
           <shapeGeometry args={[hexShape]} />
           <meshStandardMaterial
-            color="#e8e0d4"
+            color={hexColor}
             roughness={0.9}
             metalness={0.0}
             transparent
