@@ -148,14 +148,17 @@ export const aiRagDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const cicdRunnersDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Principal Engineer — Serverless & Containers",
+  title: "Solution Architecture",
+  roleTitle: "DevOps Engineer",
   projectName: "Ephemeral CI/CD GitHub Runners (AWS)",
   description:
     "A completely isolated, self-hosted GitHub Actions runner environment executing CI/CD securely within an AWS Operations account. The complexity lay in autoscaling orchestration and security constraints: Lambda dynamically spins up ephemeral ECS Fargate tasks in private subnets. Runners assume strict OIDC IAM roles, pull CMK-encrypted credentials from Secrets Manager via VPC Endpoints, and route all outbound GitHub API calls through an On-Prem Proxy.",
   color: "#24292e",
   successMessage:
     "You've mapped an enterprise-grade ephemeral runner architecture — zero persistent infrastructure, maximum security, fully automated scaling. This pattern processes thousands of CI/CD jobs daily. 🚀",
+  techStack: ["GitHub Actions", "ECS Fargate", "Lambda", "Terraform", "Docker"],
+  services: ["Secrets Manager", "ECR", "S3", "VPC Endpoints", "OIDC", "On-Prem Proxy"],
+  layers: ["BMO Operations Account", "Runner VPC", "Private Subnet", "VPC Endpoints", "BMO Target Account"]
   diagram: {
     groups: [
       { id: "ops", label: "BMO Operations Account", x: 10, y: 20, w: 88, h: 55, color: "#FF9900" },
