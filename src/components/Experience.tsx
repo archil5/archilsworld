@@ -132,6 +132,18 @@ const Experience = () => {
 
   return (
     <div className="w-screen h-screen relative overflow-hidden" style={{ background: "#f5f0e8" }}>
+      {/* Dive zoom animation wrapper */}
+      <motion.div
+        className="absolute inset-0"
+        animate={diveAnimating ? {
+          scale: [1, 2.5],
+          opacity: [1, 0],
+        } : {
+          scale: 1,
+          opacity: 1,
+        }}
+        transition={diveAnimating ? { duration: 0.7, ease: [0.45, 0, 0.15, 1] } : { duration: 0 }}
+      >
       <Canvas
         shadows
         camera={{ fov: 50, near: 0.1, far: 100, position: [0, 8, 8] }}
