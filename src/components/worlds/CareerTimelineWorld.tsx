@@ -11,7 +11,10 @@ import {
   mlOpsPipelineDiagram,
   haContainerDiagram,
   multiAccountMlOpsDiagram,
-  genericCloudPuzzle
+  funPuzzleAI,
+  funPuzzleServerless,
+  funPuzzleDevOps,
+  funPuzzleSecurity
 } from "@/data/careerDiagrams";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +50,7 @@ interface RoleStop {
   wins: string[];
   project?: ProjectShowcase;
   solutions?: SolutionArchitecture[];
+  funPuzzle: DiagramPuzzleData;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -90,6 +94,7 @@ const stops: RoleStop[] = [
       { name: "Enterprise AI Platform", description: "Dual RAG implementation with Azure OpenAI", diagram: aiRagDiagram },
       { name: "Multi-Account MLOps Platform", description: "Cross-account model deployment automation", diagram: multiAccountMlOpsDiagram }
     ],
+    funPuzzle: funPuzzleAI,
   },
   {
     company: "BMO",
@@ -124,6 +129,7 @@ const stops: RoleStop[] = [
       { name: "HA Container Platform", description: "Multi-AZ ECS Fargate with PostgreSQL failover", diagram: haContainerDiagram },
       { name: "Automated MLOps Pipeline", description: "End-to-end model training and deployment", diagram: mlOpsPipelineDiagram }
     ],
+    funPuzzle: funPuzzleServerless,
   },
   {
     company: "BMO",
@@ -155,6 +161,7 @@ const stops: RoleStop[] = [
     solutions: [
       { name: "Ephemeral CI/CD Runners", description: "Autoscaling GitHub runners on ECS Fargate", diagram: cicdRunnersDiagram }
     ],
+    funPuzzle: funPuzzleDevOps,
   },
   {
     company: "RBC",
@@ -183,6 +190,7 @@ const stops: RoleStop[] = [
         "Python-based threat intelligence aggregation",
       ],
     },
+    funPuzzle: funPuzzleSecurity,
   },
 ];
 
@@ -252,10 +260,10 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [revealed, setRevealed] = useState(0);
   const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
   const [activeDiagram, setActiveDiagram] = useState(0);
-  const [solvedPuzzle, setSolvedPuzzle] = useState(false);
+  const [solvedPuzzles, setSolvedPuzzles] = useState<Set<number>>(new Set());
   
-  // Generic puzzle state (not role-specific)
-  const genericPuzzleSolved = solvedPuzzle;
+  // Per-role puzzle state
+  const currentPuzzleSolved = solvedPuzzles.has(activeStop);
 
   useEffect(() => {
     const timers = stops.map((_, i) =>
@@ -481,14 +489,14 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       <Sparkles
                         size={10}
                         style={{
-                          color: genericPuzzleSolved
+                          color: currentPuzzleSolved
                             ? "#2a7d4f"
                             : stop.color,
                         }}
                       />
                     </motion.span>
                     Fun Puzzle
-                    {!genericPuzzleSolved && (
+                    {!currentPuzzleSolved && (
                       <motion.span
                         className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
                         style={{ background: stop.color }}
@@ -783,7 +791,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 <motion.div
                   className="rounded-xl overflow-hidden"
                   style={{
-                    border: `1px solid ${genericCloudPuzzle.color}25`,
+                    border: `1px solid ${stop.funPuzzle.color}25`,
                     background: "#fff",
                   }}
                   initial={{ opacity: 0, y: 20 }}
@@ -792,27 +800,27 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   <div
                     className="px-5 py-3 flex items-center justify-between"
                     style={{
-                      background: `${genericCloudPuzzle.color}08`,
-                      borderBottom: `1px solid ${genericCloudPuzzle.color}12`,
+                      background: `${stop.funPuzzle.color}08`,
+                      borderBottom: `1px solid ${stop.funPuzzle.color}12`,
                     }}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
-                        style={{ background: `${genericCloudPuzzle.color}15` }}
+                        style={{ background: `${stop.funPuzzle.color}15` }}
                       >
                         🎮
                       </div>
                       <div>
                         <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
-                          {genericCloudPuzzle.projectName}
+                          {stop.funPuzzle.projectName}
                         </h4>
                         <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
-                          Fun cloud services puzzle — not related to real projects!
+                          Fun puzzle — test your cloud architecture skills!
                         </p>
                       </div>
                     </div>
-                    {genericPuzzleSolved && (
+                    {currentPuzzleSolved && (
                       <span
                         className="text-[10px] font-mono px-3 py-1 rounded-full"
                         style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
@@ -824,9 +832,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
                   <div className="p-5">
                     <ArchDiagramPuzzle
-                      data={genericCloudPuzzle}
-                      solved={genericPuzzleSolved}
-                      onSolve={() => setSolvedPuzzle(true)}
+                      data={stop.funPuzzle}
+                      solved={currentPuzzleSolved}
+                      onSolve={() => setSolvedPuzzles(prev => new Set(prev).add(activeStop))}
                     />
                   </div>
                 </motion.div>
@@ -883,7 +891,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {genericPuzzleSolved && <AllSolvedTrophy />}
+        {solvedPuzzles.size === stops.length && <AllSolvedTrophy />}
       </AnimatePresence>
     </div>
   );

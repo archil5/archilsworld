@@ -365,19 +365,20 @@ const ArchDiagramPuzzle = ({
       <div
         className="relative rounded-xl overflow-hidden"
         style={{
-          background: "#0f1117",
-          border: `1px solid ${color}30`,
+          background: "#fefcf9",
+          border: `1px solid ${color}20`,
           paddingBottom: `${(containerH / containerW) * 100}%`,
+          boxShadow: "0 2px 12px rgba(180,140,100,0.08)",
         }}
       >
         <div className="absolute inset-0">
           {/* Subtle grid */}
           <div
-            className="absolute inset-0 opacity-[0.04]"
+            className="absolute inset-0 opacity-[0.06]"
             style={{
               backgroundImage: `
-                linear-gradient(${color}40 1px, transparent 1px),
-                linear-gradient(90deg, ${color}40 1px, transparent 1px)
+                linear-gradient(${color}30 1px, transparent 1px),
+                linear-gradient(90deg, ${color}30 1px, transparent 1px)
               `,
               backgroundSize: "40px 40px",
             }}
@@ -393,13 +394,13 @@ const ArchDiagramPuzzle = ({
                 top: `${group.y}%`,
                 width: `${group.w}%`,
                 height: `${group.h}%`,
-                background: `${group.color || color}08`,
-                border: `1px solid ${group.color || color}20`,
+                background: `${group.color || color}10`,
+                border: `1px solid ${group.color || color}25`,
               }}
             >
               <span
                 className="absolute top-1 left-2 text-[7px] font-mono uppercase tracking-wider"
-                style={{ color: `${group.color || color}60` }}
+                style={{ color: `${group.color || color}90` }}
               >
                 {group.label}
               </span>
@@ -513,21 +514,21 @@ const ArchDiagramPuzzle = ({
                   zIndex: 2,
                   background: isBlank
                     ? isOver
-                      ? `${color}20`
-                      : "rgba(255,255,255,0.03)"
+                      ? `${color}15`
+                      : "rgba(180,140,100,0.04)"
                     : placed
-                      ? `${color}20`
-                      : "rgba(255,255,255,0.08)",
+                      ? `${color}12`
+                      : "#fff",
                   border: isBlank
-                    ? `2px dashed ${isOver ? color : `${color}40`}`
+                    ? `2px dashed ${isOver ? color : `${color}50`}`
                     : placed
-                      ? `2px solid ${color}70`
-                      : `1px solid rgba(255,255,255,0.12)`,
+                      ? `2px solid ${color}60`
+                      : `1px solid rgba(180,140,100,0.2)`,
                   boxShadow: placed
-                    ? `0 0 12px ${color}25`
+                    ? `0 0 12px ${color}20`
                     : isOver
-                      ? `0 0 16px ${color}30`
-                      : "0 2px 8px rgba(0,0,0,0.3)",
+                      ? `0 0 16px ${color}25`
+                      : "0 2px 8px rgba(180,140,100,0.08)",
                   cursor: isBlank ? "pointer" : "default",
                 }}
                 animate={
@@ -564,8 +565,8 @@ const ArchDiagramPuzzle = ({
                       className="text-[9px] font-mono font-bold text-center leading-tight"
                       style={{
                         color: placed
-                          ? "#7ee8a8"
-                          : "rgba(255,255,255,0.85)",
+                          ? "#2a7d4f"
+                          : "#2d2a26",
                       }}
                     >
                       {placed || node.label}
