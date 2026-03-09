@@ -122,11 +122,37 @@ const Experience = () => {
   // Determine the theme index of the chapter being dived into
   const diveThemeIndex = diveChapter ? CHAPTERS.findIndex(c => c.id === diveChapter.id) : activeIndex;
 
+  // Lamp light intensity: bright at tile 0, fades to 0 by last tile
+  const lampIntensity = 1 - activeIndex / (CHAPTERS.length - 1);
+
   return (
     <div
       className="w-screen h-screen relative overflow-hidden transition-colors duration-700"
       style={{ background: theme.bg }}
     >
+      {/* Lamp light effect - warm radial glow from top-left */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none transition-opacity duration-1000"
+        style={{
+          opacity: lampIntensity,
+          background: `
+            radial-gradient(ellipse 80% 70% at 5% 0%, rgba(255,220,160,${0.35 * lampIntensity}) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 50% at 0% 10%, rgba(255,200,120,${0.2 * lampIntensity}) 0%, transparent 50%),
+            radial-gradient(ellipse 120% 100% at 10% -10%, rgba(255,240,200,${0.12 * lampIntensity}) 0%, transparent 70%)
+          `,
+        }}
+      />
+      {/* Subtle light rays */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none transition-opacity duration-1000"
+        style={{
+          opacity: lampIntensity * 0.5,
+          background: `
+            linear-gradient(135deg, rgba(255,220,160,${0.08 * lampIntensity}) 0%, transparent 40%),
+            linear-gradient(150deg, rgba(255,200,120,${0.05 * lampIntensity}) 0%, transparent 35%)
+          `,
+        }}
+      />
       <Canvas
         shadows
         camera={{ fov: 50, near: 0.1, far: 100, position: [0, 8, 8] }}
