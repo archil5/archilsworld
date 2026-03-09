@@ -161,6 +161,7 @@ const stops: RoleStop[] = [
     solutions: [
       { name: "Ephemeral CI/CD Runners", description: "Autoscaling GitHub runners on ECS Fargate", diagram: cicdRunnersDiagram }
     ],
+    funPuzzle: funPuzzleDevOps,
   },
   {
     company: "RBC",
