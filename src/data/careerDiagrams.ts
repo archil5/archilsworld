@@ -73,7 +73,7 @@ export const genericCloudPuzzle: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const aiRagDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
+  title: "Solution Architecture",
   roleTitle: "Principal Cloud Engineer — AI",
   projectName: "Enterprise AI & GraphRAG Platform (Azure)",
   description:
@@ -81,6 +81,9 @@ export const aiRagDiagram: DiagramPuzzleData = {
   color: "#0078D4",
   successMessage:
     "You just reconstructed a production-grade Azure RAG platform with strict financial sector compliance (zero public internet exposure, CMK encryption, Private Endpoints). 🏆",
+  techStack: ["Azure OpenAI", "FastAPI", "LangChain", "Python", "Cosmos DB", "Azure AI Search"],
+  services: ["Azure APIM", "Key Vault", "Blob Storage", "Private Endpoints", "Entra ID", "Content Safety"],
+  layers: ["Frontend Subnet", "API Management", "Data & Orchestration", "AI Model Pool"]
   diagram: {
     groups: [
       { id: "vpc", label: "Azure Virtual Network", x: 15, y: 5, w: 83, h: 88, color: "#0078D4" },
