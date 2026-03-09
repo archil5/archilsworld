@@ -5,11 +5,75 @@ import type { DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
    ═══════════════════════════════════════════════════════════ */
 
 /* ───────────────────────────────────────────────────────────
+   GENERIC CLOUD PUZZLE (Fun, not related to actual work)
+   ─────────────────────────────────────────────────────────── */
+
+export const genericCloudPuzzle: DiagramPuzzleData = {
+  title: "Cloud Services Puzzle",
+  roleTitle: "Fun Cloud Challenge",
+  projectName: "Build Your First Cloud App",
+  description:
+    "A simple cloud application puzzle! Build a serverless web application that stores user uploads in object storage, processes them with serverless functions, and serves the results via an API. This is a fun learning puzzle to understand basic cloud patterns.",
+  color: "#FF6B6B",
+  successMessage:
+    "You've built a complete serverless cloud application! This pattern forms the foundation for thousands of modern web apps. 🎉",
+  diagram: {
+    groups: [
+      { id: "users", label: "Users", x: 8, y: 15, w: 18, h: 30, color: "#4CAF50" },
+      { id: "api", label: "API Layer", x: 28, y: 15, w: 20, h: 30, color: "#2196F3" },
+      { id: "compute", label: "Compute", x: 50, y: 15, w: 22, h: 30, color: "#FF9800" },
+      { id: "storage", label: "Storage", x: 74, y: 15, w: 20, h: 30, color: "#9C27B0" },
+    ],
+    nodes: [
+      // Users
+      { id: "browser", label: "Web Browser", x: 17, y: 25, w: 110, h: 32, icon: "🌐" },
+      { id: "mobile", label: "Mobile App", x: 17, y: 35, w: 100, h: 32, icon: "📱" },
+      
+      // API Layer
+      { id: "cdn", label: "CDN", x: 38, y: 20, w: 70, h: 28, icon: "⚡", hidden: true },
+      { id: "gateway", label: "API Gateway", x: 38, y: 30, w: 110, h: 32, icon: "🚪", hidden: true },
+      { id: "auth", label: "Auth Service", x: 38, y: 40, w: 105, h: 32, icon: "🔐" },
+      
+      // Compute
+      { id: "lambda", label: "Lambda Functions", x: 61, y: 25, w: 135, h: 32, icon: "⚡", hidden: true },
+      { id: "queue", label: "Message Queue", x: 61, y: 35, w: 125, h: 32, icon: "📬", hidden: true },
+      
+      // Storage
+      { id: "s3", label: "Object Storage", x: 84, y: 25, w: 125, h: 32, icon: "🪣", hidden: true },
+      { id: "database", label: "NoSQL Database", x: 84, y: 35, w: 135, h: 32, icon: "🗄️" },
+    ],
+    edges: [
+      { from: "browser", to: "cdn", label: "HTTPS" },
+      { from: "mobile", to: "cdn", label: "HTTPS" },
+      { from: "cdn", to: "gateway", label: "Route" },
+      { from: "gateway", to: "auth", label: "Validate" },
+      { from: "gateway", to: "lambda", label: "Invoke" },
+      { from: "lambda", to: "s3", label: "Store Files" },
+      { from: "lambda", to: "database", label: "Save Data" },
+      { from: "lambda", to: "queue", label: "Async Tasks" },
+      { from: "queue", to: "lambda", label: "Process", bidirectional: true },
+    ],
+    hiddenNodeIds: ["cdn", "gateway", "lambda", "queue", "s3"],
+    wordBank: [
+      "CDN",
+      "API Gateway",
+      "Lambda Functions",
+      "Message Queue",
+      "Object Storage",
+      "Load Balancer",
+      "Container Registry",
+      "Cache Service",
+    ],
+  },
+  techStack: ["Serverless", "REST API", "Cloud Functions", "Object Storage", "NoSQL"],
+};
+
+/* ───────────────────────────────────────────────────────────
    DIAGRAM 1: Enterprise AI & GraphRAG Platform (Azure)
    ─────────────────────────────────────────────────────────── */
 
 export const aiRagDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
+  title: "Solution Architecture",
   roleTitle: "Principal Cloud Engineer — AI",
   projectName: "Enterprise AI & GraphRAG Platform (Azure)",
   description:
@@ -17,6 +81,9 @@ export const aiRagDiagram: DiagramPuzzleData = {
   color: "#0078D4",
   successMessage:
     "You just reconstructed a production-grade Azure RAG platform with strict financial sector compliance (zero public internet exposure, CMK encryption, Private Endpoints). 🏆",
+  techStack: ["Azure OpenAI", "FastAPI", "LangChain", "Python", "Cosmos DB", "Azure AI Search"],
+  services: ["Azure APIM", "Key Vault", "Blob Storage", "Private Endpoints", "Entra ID", "Content Safety"],
+  layers: ["Frontend Subnet", "API Management", "Data & Orchestration", "AI Model Pool"],
   diagram: {
     groups: [
       { id: "vpc", label: "Azure Virtual Network", x: 15, y: 5, w: 83, h: 88, color: "#0078D4" },
@@ -81,14 +148,17 @@ export const aiRagDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const cicdRunnersDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Principal Engineer — Serverless & Containers",
+  title: "Solution Architecture",
+  roleTitle: "DevOps Engineer",
   projectName: "Ephemeral CI/CD GitHub Runners (AWS)",
   description:
     "A completely isolated, self-hosted GitHub Actions runner environment executing CI/CD securely within an AWS Operations account. The complexity lay in autoscaling orchestration and security constraints: Lambda dynamically spins up ephemeral ECS Fargate tasks in private subnets. Runners assume strict OIDC IAM roles, pull CMK-encrypted credentials from Secrets Manager via VPC Endpoints, and route all outbound GitHub API calls through an On-Prem Proxy.",
   color: "#24292e",
   successMessage:
     "You've mapped an enterprise-grade ephemeral runner architecture — zero persistent infrastructure, maximum security, fully automated scaling. This pattern processes thousands of CI/CD jobs daily. 🚀",
+  techStack: ["GitHub Actions", "ECS Fargate", "Lambda", "Terraform", "Docker"],
+  services: ["Secrets Manager", "ECR", "S3", "VPC Endpoints", "OIDC", "On-Prem Proxy"],
+  layers: ["BMO Operations Account", "Runner VPC", "Private Subnet", "VPC Endpoints", "BMO Target Account"],
   diagram: {
     groups: [
       { id: "ops", label: "BMO Operations Account", x: 10, y: 20, w: 88, h: 55, color: "#FF9900" },
@@ -145,14 +215,17 @@ export const cicdRunnersDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const apiGatewayDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Team Lead",
+  title: "Solution Architecture",
+  roleTitle: "Principal — Serverless & Containers",
   projectName: "Private API Gateway & Auth Pattern",
   description:
     "A zero-trust API integration pattern for routing BMO's on-premise traffic to AWS workloads. This required a multi-layered network design: terminating TLS at a Network Load Balancer, forwarding through an AWS API Interface Endpoint, and hitting a Private API Gateway. Authentication complexity was handled via a custom Lambda Authorizer cross-referencing a Cognito User Pool through an internal SG Proxy, finally routing validated traffic to backend Fargate containers via a VPC Link and Elastic Network Interfaces (ENI).",
   color: "#FF9900",
   successMessage:
     "You've mapped the exact zero-trust API Gateway pattern used to secure enterprise traffic across on-prem and cloud — handling thousands of requests per second at scale. 🔒",
+  techStack: ["API Gateway", "Lambda", "ECS Fargate", "CDK", "Cognito"],
+  services: ["NLB", "VPC Endpoints", "VPC Link", "ENI", "Direct Connect"],
+  layers: ["Network Resource VPC", "API Gateway VPC", "Managed Lambda VPC", "Shared Workload VPC"],
   diagram: {
     groups: [
       { id: "net", label: "Network Resource VPC", x: 10, y: 10, w: 20, h: 28, color: "#0078D4" },
@@ -214,14 +287,17 @@ export const apiGatewayDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const mlOpsPipelineDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Principal Engineer — Serverless & Containers",
+  title: "Solution Architecture",
+  roleTitle: "Principal — Serverless & Containers",
   projectName: "Automated AWS MLOps Pipeline",
   description:
     "An end-to-end, serverless MLOps pipeline integrating native Kubernetes operators with AWS managed services. The complexity involved coordinating Apache Airflow (MWAA) and AWS Step Functions to manage containerized pre-processing and hyperparameter optimization (HPO). Model lineage was strictly tracked via SageMaker Feature Store, and endpoints were deployed with Elastic Autoscaling and Data Capture enabled, feeding directly into SageMaker Model Monitor and Clarify to trigger automated retraining pipelines.",
   color: "#FF9900",
   successMessage:
     "You've assembled a production MLOps pipeline that automatically trains, evaluates, registers, deploys, and monitors ML models — with full lineage tracking and bias detection. 🤖",
+  techStack: ["SageMaker", "Step Functions", "Lambda", "KubeFlow", "Docker"],
+  services: ["Feature Store", "Model Registry", "Model Monitor", "Clarify", "CodeCommit", "CodeBuild", "CloudFormation"],
+  layers: ["CI Pipeline (Build)", "AWS Step Functions Workflow", "Data & Quality", "CD Pipeline (Deploy)", "Inference"],
   diagram: {
     groups: [
       { id: "ci", label: "CI Pipeline (Build)", x: 8, y: 8, w: 22, h: 25, color: "#4CAF50" },
@@ -286,14 +362,17 @@ export const mlOpsPipelineDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const haContainerDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Team Lead",
+  title: "Solution Architecture",
+  roleTitle: "Principal — Serverless & Containers",
   projectName: "Highly Available Container Architecture",
   description:
     "A highly resilient, multi-AZ container platform utilizing ECS Fargate. To meet enterprise security mandates, I decoupled the network perimeter using an Application Load Balancer behind AWS WAF, routing traffic to private subnets. Every container utilizes distinct IAM Task Execution roles, pulls configurations via VPC Endpoints from ECR and Secrets Manager, and encrypts ephemeral data via AWS KMS. The database tier utilizes a PostgreSQL Master-Replica architecture across Availability Zones for immediate failover capabilities.",
   color: "#FF9900",
   successMessage:
     "You've mapped a production-grade, highly available container architecture with multi-AZ failover, WAF protection, and encrypted data at rest. 🏗️",
+  techStack: ["ECS Fargate", "PostgreSQL", "Docker", "Terraform", "CDK"],
+  services: ["ALB", "WAF", "Route 53", "KMS", "VPC Endpoints", "ECR", "Secrets Manager"],
+  layers: ["Edge", "BMO Production VPC", "Availability Zone A", "Availability Zone B"],
   diagram: {
     groups: [
       { id: "edge", label: "Edge", x: 8, y: 8, w: 12, h: 25, color: "#FF5722" },
@@ -348,7 +427,7 @@ export const haContainerDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const multiAccountMlOpsDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
+  title: "Solution Architecture",
   roleTitle: "Principal Cloud Engineer — AI",
   projectName: "Enterprise Multi-Account AI/MLOps Platform",
   description:
@@ -356,6 +435,9 @@ export const multiAccountMlOpsDiagram: DiagramPuzzleData = {
   color: "#0078D4",
   successMessage:
     "You've architected an enterprise multi-account MLOps platform with strict boundary isolation, cross-account IAM trusts, and automated deployment pipelines across Dev, Automation, and Production environments. 🏢",
+  techStack: ["SageMaker", "EventBridge", "Azure DevOps", "CloudFormation", "KMS"],
+  services: ["SageMaker Studio", "EMR", "Model Registry", "API Gateway", "IAM", "CloudTrail"],
+  layers: ["AWS Dev Account", "AWS Automation Account", "AWS Production Account", "Enterprise Governance"],
   diagram: {
     groups: [
       { id: "dev", label: "AWS Dev Account", x: 8, y: 20, w: 20, h: 25, color: "#4CAF50" },

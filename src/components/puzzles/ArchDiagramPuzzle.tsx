@@ -53,6 +53,8 @@ export interface DiagramPuzzleData {
   successMessage: string;
   color: string;
   techStack?: string[];
+  services?: string[];
+  layers?: string[];
 }
 
 /* ═══════════════════════════════════════════════════════════
