@@ -489,14 +489,14 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       <Sparkles
                         size={10}
                         style={{
-                          color: genericPuzzleSolved
+                          color: currentPuzzleSolved
                             ? "#2a7d4f"
                             : stop.color,
                         }}
                       />
                     </motion.span>
                     Fun Puzzle
-                    {!genericPuzzleSolved && (
+                    {!currentPuzzleSolved && (
                       <motion.span
                         className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
                         style={{ background: stop.color }}
