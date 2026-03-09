@@ -4,7 +4,14 @@ import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
 import ReadOnlyDiagram from "@/components/puzzles/ReadOnlyDiagram";
-import { aiRagDiagram, apiGatewayDiagram, cicdRunnersDiagram } from "@/data/careerDiagrams";
+import { 
+  aiRagDiagram, 
+  apiGatewayDiagram, 
+  cicdRunnersDiagram,
+  mlOpsPipelineDiagram,
+  haContainerDiagram,
+  multiAccountMlOpsDiagram
+} from "@/data/careerDiagrams";
 
 /* ═══════════════════════════════════════════════════════════
    TYPES & DATA
@@ -27,7 +34,7 @@ interface RoleStop {
   techStack: string[];
   wins: string[];
   project?: ProjectShowcase;
-  diagramPuzzle?: DiagramPuzzleData;
+  diagramPuzzles?: DiagramPuzzleData[]; // Changed to array
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -57,17 +64,17 @@ const stops: RoleStop[] = [
       "Full private networking — zero public exposure",
     ],
     project: {
-      name: "Enterprise AI & RAG Platform",
-      description: "A secure, internal generative AI system leveraging Azure AI Search, Graph RAG (Cosmos DB), and OpenAI models. It ingests documents, processes them through an orchestration pipeline, and serves context-aware answers through a secure FastAPI backend, fully isolated behind API Gateways and strict content safety filters.",
+      name: "Multiple AI & MLOps Solutions",
+      description: "Architected multiple enterprise-grade AI platforms including dual-RAG Azure systems and multi-account MLOps pipelines with strict governance.",
       highlights: [
         "Azure AI Search + Graph RAG (Cosmos DB) for hybrid retrieval",
         "OpenAI models (o1 & 4o) with content safety filters",
-        "Data Orchestrator ingestion pipeline with embedding generation",
-        "Full private networking — zero public exposure via APIM",
-        "RAIOps open-source evals for model quality monitoring",
+        "Multi-account MLOps platform with SageMaker Pipelines",
+        "Cross-account model deployment automation",
+        "Enterprise governance with IAM trusts and CMK encryption",
       ],
     },
-    diagramPuzzle: aiRagDiagram,
+    diagramPuzzles: [aiRagDiagram, multiAccountMlOpsDiagram],
   },
   {
     company: "BMO",
@@ -78,25 +85,26 @@ const stops: RoleStop[] = [
       "Owning the platform. Multi-region architectures serving 1000+ developers. Designed the standardized zero-trust API gateway pattern used bank-wide.",
     challenge: "Create a secure, standardized API gateway pattern for 1000+ developers",
     impact: "Zero-trust gateway pattern adopted bank-wide",
-    techStack: ["API Gateway", "Lambda", "ECS Fargate", "CDK", "NLB", "Cognito"],
+    techStack: ["API Gateway", "Lambda", "ECS Fargate", "CDK", "NLB", "Cognito", "SageMaker"],
     wins: [
       "Standardized API gateway pattern across enterprise",
       "Custom Lambda Authorizers with corp identity integration",
       "Private API Gateway — no public internet exposure",
       "Multi-region active-active serving 1000+ developers",
+      "End-to-end MLOps pipeline with automated retraining",
     ],
     project: {
-      name: "Secure API Gateway & Identity Verification Pattern",
-      description: "A standardized, zero-trust network doorway for internal on-premise applications communicating with cloud backends. Traffic flows through a private Direct Connect to an AWS Load Balancer, hitting a Private API Gateway. Identity is validated via Custom Lambda Authorizers securely querying an Enterprise Identity Provider through a corporate proxy, before routing to serverless Fargate/Lambda backends.",
+      name: "Multiple Serverless & Container Solutions",
+      description: "Architected multiple production-grade serverless solutions including zero-trust API gateways, highly-available container platforms, and automated MLOps pipelines.",
       highlights: [
-        "NLB with TLS termination over Direct Connect",
-        "Private API Gateway via VPC Interface Endpoints",
-        "Custom Lambda Authorizers for enterprise identity verification",
-        "Corporate proxy integration for secure identity provider queries",
-        "VPC Link to ECS Fargate + direct Lambda backend integrations",
+        "Private API Gateway with Custom Lambda Authorizers",
+        "Multi-AZ ECS Fargate with PostgreSQL Master-Replica",
+        "Serverless MLOps with SageMaker Pipelines & Step Functions",
+        "Real-time & async inference endpoints with auto-scaling",
+        "Model monitoring with automated retraining triggers",
       ],
     },
-    diagramPuzzle: apiGatewayDiagram,
+    diagramPuzzles: [apiGatewayDiagram, haContainerDiagram, mlOpsPipelineDiagram],
   },
   {
     company: "BMO",
@@ -125,7 +133,7 @@ const stops: RoleStop[] = [
         "Reusable compliance workflows across application repos",
       ],
     },
-    diagramPuzzle: cicdRunnersDiagram,
+    diagramPuzzles: [cicdRunnersDiagram],
   },
   {
     company: "RBC",
@@ -222,9 +230,12 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [activeStop, setActiveStop] = useState(0);
   const [revealed, setRevealed] = useState(0);
   const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
-  const [solvedStops, setSolvedStops] = useState<Set<number>>(new Set());
-  const puzzleStops = stops.filter(s => s.diagramPuzzle);
-  const allSolved = puzzleStops.length > 0 && solvedStops.size === puzzleStops.length;
+  const [activeDiagram, setActiveDiagram] = useState(0);
+  const [solvedStops, setSolvedStops] = useState<Set<string>>(new Set());
+  
+  // Count total puzzles across all roles
+  const totalPuzzles = stops.reduce((acc, s) => acc + (s.diagramPuzzles?.length || 0), 0);
+  const allSolved = totalPuzzles > 0 && solvedStops.size === totalPuzzles;
 
   useEffect(() => {
     const timers = stops.map((_, i) =>
@@ -245,6 +256,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
   useEffect(() => {
     setPanel("overview");
+    setActiveDiagram(0);
   }, [activeStop]);
 
   const stop = stops[activeStop];
@@ -265,7 +277,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
           Think you know cloud architecture?
         </p>
         <p className="text-sm font-display font-bold" style={{ color: "#2d2a26" }}>
-          Try solving these flows — {stops.filter(s => s.diagramPuzzle).length} architecture puzzles, {stops.reduce((acc, s) => acc + (s.diagramPuzzle?.diagram.hiddenNodeIds.length || 0), 0)} hidden nodes total
+          Try solving these flows — {totalPuzzles} architecture puzzles, {stops.reduce((acc, s) => acc + (s.diagramPuzzles?.reduce((sum, d) => sum + d.diagram.hiddenNodeIds.length, 0) || 0), 0)} hidden nodes total
         </p>
       </motion.div>
 
@@ -290,7 +302,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
             {stops.slice(0, revealed).map((s, i) => {
               const isActive = i === activeStop;
               const isPast = i < activeStop;
-              const isSolved = solvedStops.has(i);
+              // Check if all diagrams for this role are solved
+              const rolePuzzles = s.diagramPuzzles?.map((_, idx) => `${i}-${idx}`) || [];
+              const isSolved = rolePuzzles.length > 0 && rolePuzzles.every(id => solvedStops.has(id));
               return (
                 <motion.button
                   key={i}
@@ -429,7 +443,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 >
                   Overview
                 </button>
-                {stop.diagramPuzzle && (
+                {stop.diagramPuzzles && stop.diagramPuzzles.length > 0 && (
                 <button
                   onClick={() => setPanel("puzzle")}
                   className="relative text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
@@ -460,14 +474,14 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       <Sparkles
                         size={10}
                         style={{
-                          color: solvedStops.has(activeStop)
+                          color: stop.diagramPuzzles.every((_, idx) => solvedStops.has(`${activeStop}-${idx}`))
                             ? "#2a7d4f"
                             : stop.color,
                         }}
                       />
                     </motion.span>
-                    Solve Puzzle
-                    {!solvedStops.has(activeStop) && (
+                    Solve Puzzles ({stop.diagramPuzzles.length})
+                    {!stop.diagramPuzzles.every((_, idx) => solvedStops.has(`${activeStop}-${idx}`)) && (
                       <motion.span
                         className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
                         style={{ background: stop.color }}
@@ -667,20 +681,23 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       ))}
                     </div>
 
-                    {/* Read-only architecture diagram */}
-                    {stop.diagramPuzzle && (
-                      <div className="mt-4">
-                        <ReadOnlyDiagram
-                          diagram={stop.diagramPuzzle.diagram}
-                          color={stop.color}
-                          title={stop.diagramPuzzle.projectName}
-                        />
+                    {/* Read-only architecture diagrams */}
+                    {stop.diagramPuzzles && stop.diagramPuzzles.length > 0 && (
+                      <div className="mt-4 space-y-4">
+                        {stop.diagramPuzzles.map((puzzle, idx) => (
+                          <ReadOnlyDiagram
+                            key={idx}
+                            diagram={puzzle.diagram}
+                            color={stop.color}
+                            title={puzzle.projectName}
+                          />
+                        ))}
                       </div>
                     )}
                   </div>
                 </div>
               </div>
-            ) : stop.diagramPuzzle ? (
+            ) : stop.diagramPuzzles && stop.diagramPuzzles.length > 0 ? (
               <div
                 className="p-6 overflow-y-auto"
                 style={{
@@ -688,12 +705,38 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   maxHeight: "70vh",
                 }}
               >
+                {/* Diagram selector if multiple */}
+                {stop.diagramPuzzles.length > 1 && (
+                  <div className="flex items-center gap-2 mb-4 pb-4 border-b" style={{ borderColor: `${stop.color}15` }}>
+                    {stop.diagramPuzzles.map((puzzle, idx) => {
+                      const puzzleId = `${activeStop}-${idx}`;
+                      const isSolved = solvedStops.has(puzzleId);
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveDiagram(idx)}
+                          className="text-[10px] font-mono px-3 py-2 rounded cursor-pointer transition-all"
+                          style={{
+                            color: activeDiagram === idx ? stop.color : "rgba(80,70,60,0.55)",
+                            background: activeDiagram === idx ? `${stop.color}10` : "rgba(180,140,100,0.04)",
+                            border: `1px solid ${activeDiagram === idx ? `${stop.color}20` : "rgba(180,140,100,0.1)"}`,
+                          }}
+                        >
+                          {isSolved && <span className="mr-1.5">✓</span>}
+                          Puzzle {idx + 1}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                
                 <ArchDiagramPuzzle
-                  data={stop.diagramPuzzle}
-                  solved={solvedStops.has(activeStop)}
+                  key={`${activeStop}-${activeDiagram}`}
+                  data={stop.diagramPuzzles[activeDiagram]}
+                  solved={solvedStops.has(`${activeStop}-${activeDiagram}`)}
                   onSolve={() =>
                     setSolvedStops((prev) =>
-                      new Set(prev).add(activeStop)
+                      new Set(prev).add(`${activeStop}-${activeDiagram}`)
                     )
                   }
                 />
