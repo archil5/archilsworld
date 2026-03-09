@@ -292,10 +292,16 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [revealed, setRevealed] = useState(0);
   const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
   const [activeDiagram, setActiveDiagram] = useState(0);
-  const [solvedPuzzles, setSolvedPuzzles] = useState<Set<number>>(new Set());
+  const [solvedPuzzles, setSolvedPuzzles] = useState<Set<string>>(new Set());
+  const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState<Record<number, number>>({});
   
   // Per-role puzzle state
-  const currentPuzzleSolved = solvedPuzzles.has(activeStop);
+  const puzzleIdx = currentPuzzleIndex[activeStop] || 0;
+  const stop = stops[activeStop];
+  const currentPuzzle = stop.funPuzzles[puzzleIdx];
+  const puzzleKey = `${activeStop}-${puzzleIdx}`;
+  const currentPuzzleSolved = solvedPuzzles.has(puzzleKey);
+  const totalSolvedForRole = stop.funPuzzles.filter((_, i) => solvedPuzzles.has(`${activeStop}-${i}`)).length;
 
   useEffect(() => {
     const timers = stops.map((_, i) =>
