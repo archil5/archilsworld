@@ -1,128 +1,22 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CHAPTERS } from "@/data/chapters";
-import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
 import HexTile from "@/components/three/HexTile";
 import BoardPath from "@/components/three/BoardPath";
 import Particles from "@/components/three/Particles";
 import BoardSurface from "@/components/three/BoardSurface";
 import CameraController from "@/components/three/CameraController";
+import ChapterOverlay from "@/components/ChapterOverlay";
 import WorldDive from "@/components/WorldDive";
-
-/* ═══════════════════════════════════════════════════════════
-   TILE POPUP — small cloud/tooltip to explore a world
-   ═══════════════════════════════════════════════════════════ */
-
-const TilePopup = ({
-  chapter,
-  visible,
-  onDive,
-}: {
-  chapter: typeof CHAPTERS[0];
-  visible: boolean;
-  onDive: () => void;
-}) => (
-  <AnimatePresence>
-    {visible && (
-      <motion.div
-        key={chapter.id}
-        className="absolute z-40 pointer-events-auto"
-        style={{ bottom: 100, left: "50%", transform: "translateX(-50%)" }}
-        initial={{ opacity: 0, y: 16, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 350, damping: 25 }}
-      >
-        <div
-          className="relative rounded-2xl px-5 py-4 flex items-center gap-4 shadow-lg backdrop-blur-sm"
-          style={{
-            background: "rgba(254,252,249,0.96)",
-            border: `1.5px solid ${chapter.color}30`,
-            boxShadow: `0 8px 32px rgba(0,0,0,0.10), 0 0 0 1px ${chapter.color}10`,
-            minWidth: 280,
-          }}
-        >
-          {/* Tail / arrow pointing down */}
-          <div
-            className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 rotate-45"
-            style={{
-              background: "rgba(254,252,249,0.96)",
-              borderRight: `1.5px solid ${chapter.color}30`,
-              borderBottom: `1.5px solid ${chapter.color}30`,
-            }}
-          />
-
-          {/* Icon / image */}
-          <div className="flex-shrink-0">
-            {chapter.image && chapterImages[chapter.image] ? (
-              <img
-                src={chapterImages[chapter.image]}
-                alt={chapter.label}
-                className="w-10 h-10 rounded-full object-cover"
-                style={{ border: `2px solid ${chapter.color}35` }}
-              />
-            ) : chapter.brandLogo === "Career" ? (
-              <span className="inline-flex items-center gap-1 px-1.5 py-1 rounded" style={{ background: `${chapter.color}08` }}>
-                <img src={careerLogos.RBC} alt="RBC" className="h-4 object-contain" />
-                <img src={careerLogos.BMO} alt="BMO" className="h-4 object-contain" />
-              </span>
-            ) : chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
-              <span className="inline-flex items-center px-1.5 py-1 rounded" style={{ background: `${chapter.color}08` }}>
-                <img src={brandLogos[chapter.brandLogo]} alt={chapter.brandLogo} className="h-5 object-contain" />
-              </span>
-            ) : (
-              <span className="text-2xl">{chapter.icon}</span>
-            )}
-          </div>
-
-          {/* Text */}
-          <div className="flex-1 min-w-0">
-            <p className="font-display text-sm font-bold truncate" style={{ color: "#2d2a26" }}>
-              {chapter.title}
-            </p>
-            <p className="text-[10px] font-mono mt-0.5 truncate" style={{ color: "#6b6560" }}>
-              {chapter.subtitle}
-            </p>
-          </div>
-
-          {/* Explore button */}
-          <motion.button
-            onClick={onDive}
-            className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl cursor-pointer font-display text-xs tracking-wide"
-            style={{
-              background: `${chapter.color}15`,
-              border: `1px solid ${chapter.color}30`,
-              color: chapter.color,
-            }}
-            whileHover={{ scale: 1.06, background: `${chapter.color}25` }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Explore
-            <motion.span
-              animate={{ x: [0, 3, 0] }}
-              transition={{ repeat: Infinity, duration: 1.2 }}
-            >
-              →
-            </motion.span>
-          </motion.button>
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
-
-/* ═══════════════════════════════════════════════════════════
-   MAIN EXPERIENCE
-   ═══════════════════════════════════════════════════════════ */
 
 const Experience = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [visitedSet, setVisitedSet] = useState<Set<number>>(new Set([0]));
-  const [showPopup, setShowPopup] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const [diveChapter, setDiveChapter] = useState<typeof CHAPTERS[0] | null>(null);
   const scrollRef = useRef(0);
   const targetScroll = useRef(0);
@@ -135,8 +29,8 @@ const Experience = () => {
     targetScroll.current = clamped / (CHAPTERS.length - 1);
     setActiveIndex(clamped);
     setVisitedSet(prev => new Set(prev).add(clamped));
-    setShowPopup(false);
-    setTimeout(() => setShowPopup(true), 600);
+    setShowOverlay(false);
+    setTimeout(() => setShowOverlay(true), 600);
   }, []);
 
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
@@ -152,10 +46,10 @@ const Experience = () => {
       if (idx !== activeIndex) {
         setActiveIndex(idx);
         setVisitedSet(prev => new Set(prev).add(idx));
-        setShowPopup(false);
+        setShowOverlay(false);
       }
       clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => setShowPopup(true), 800);
+      scrollTimeout.current = setTimeout(() => setShowOverlay(true), 800);
     };
 
     let touchStartX = 0;
@@ -198,7 +92,7 @@ const Experience = () => {
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("keydown", handleKey);
-    const t = setTimeout(() => setShowPopup(true), 1500);
+    const t = setTimeout(() => setShowOverlay(true), 1500);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
@@ -275,6 +169,8 @@ const Experience = () => {
               label={ch.label}
               brandLogo={ch.brandLogo}
               image={ch.image}
+              showExplore={i === activeIndex && showOverlay && !isDiving}
+              onExplore={handleDive}
             />
           ))}
 
@@ -293,7 +189,7 @@ const Experience = () => {
         </p>
       </div>
 
-      {/* Single bottom navigation bar */}
+      {/* Single bottom navigation */}
       {!isDiving && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
           <motion.button
@@ -321,7 +217,7 @@ const Experience = () => {
               <button
                 key={ch.id}
                 onClick={() => goTo(i)}
-                className="relative group transition-all duration-300 cursor-pointer rounded-full flex items-center justify-center"
+                className="relative group transition-all duration-300 cursor-pointer rounded-full"
                 style={{
                   width: i === activeIndex ? 32 : 10,
                   height: 10,
@@ -330,7 +226,6 @@ const Experience = () => {
                 }}
                 title={ch.label}
               >
-                {/* Hover label */}
                 <span
                   className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-0.5 rounded"
                   style={{
@@ -346,7 +241,6 @@ const Experience = () => {
             ))}
           </div>
 
-          {/* Step counter */}
           <span className="text-[10px] font-mono px-2 py-1 rounded-full" style={{
             color: "#6b6560",
             background: "rgba(245,240,232,0.9)",
@@ -373,10 +267,10 @@ const Experience = () => {
         </div>
       )}
 
-      {/* Tile popup — small cloud near bottom center */}
-      <TilePopup chapter={chapter} visible={showPopup && !isDiving} onDive={handleDive} />
+      {/* Chapter overlay — original bottom text/tagline */}
+      <ChapterOverlay chapter={chapter} visible={showOverlay && !isDiving} onDive={handleDive} />
 
-      {activeIndex === 0 && !showPopup && (
+      {activeIndex === 0 && !showOverlay && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
           <p className="text-xs font-display tracking-[0.3em] uppercase" style={{ color: "#6b6560" }}>
             Scroll or use arrows
