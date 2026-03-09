@@ -66,7 +66,10 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   }, [handleClickOutside]);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
-    if (!isActive && !isFullscreen) return; // Only intercept scroll when active
+    if (!isActive && !isFullscreen) {
+      // Let the event propagate naturally — don't touch it
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
 
@@ -75,7 +78,6 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
       return;
     }
 
-    // Regular scroll/trackpad = pan (not zoom)
     setPan((p) => ({
       x: p.x - e.deltaX / zoom,
       y: p.y - e.deltaY / zoom,
