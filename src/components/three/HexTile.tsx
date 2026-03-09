@@ -15,6 +15,8 @@ const HexTile = ({
   label,
   brandLogo,
   image,
+  showExplore,
+  onExplore,
 }: {
   position: [number, number, number];
   color: string;
@@ -26,6 +28,8 @@ const HexTile = ({
   label: string;
   brandLogo?: string;
   image?: string;
+  showExplore?: boolean;
+  onExplore?: () => void;
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
@@ -158,6 +162,47 @@ const HexTile = ({
           )}
         </div>
       </Html>
+
+      {/* Explore bubble floating above the tile */}
+      {showExplore && onExplore && (
+        <Html
+          position={[0, 2.2, 0]}
+          center
+          distanceFactor={5.5}
+          style={{ pointerEvents: "auto", userSelect: "none" }}
+          sprite
+        >
+          <div
+            onClick={(e) => { e.stopPropagation(); onExplore(); }}
+            style={{
+              background: "rgba(254,252,249,0.96)",
+              border: `1.5px solid ${color}40`,
+              borderRadius: 12,
+              padding: "6px 14px",
+              cursor: "pointer",
+              boxShadow: `0 4px 20px rgba(0,0,0,0.12), 0 0 0 1px ${color}10`,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              whiteSpace: "nowrap" as const,
+              animation: "float-piece 2.5s ease-in-out infinite",
+            }}
+          >
+            <span style={{ fontSize: 11, fontFamily: "'Cinzel', serif", fontWeight: 600, color: color, letterSpacing: 0.5 }}>
+              Explore
+            </span>
+            <span style={{ fontSize: 12, color }}>→</span>
+          </div>
+          {/* Small triangle pointer below bubble */}
+          <div style={{
+            width: 0, height: 0,
+            borderLeft: "6px solid transparent",
+            borderRight: "6px solid transparent",
+            borderTop: `6px solid ${color}40`,
+            margin: "0 auto",
+          }} />
+        </Html>
+      )}
 
       {isActive && <pointLight color={color} intensity={3} distance={5} position={[0, 1.8, 0]} />}
     </group>
