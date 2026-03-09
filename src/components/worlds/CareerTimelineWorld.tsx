@@ -152,7 +152,9 @@ const stops: RoleStop[] = [
         "Reusable compliance workflows across application repos",
       ],
     },
-    diagramPuzzles: [cicdRunnersDiagram],
+    solutions: [
+      { name: "Ephemeral CI/CD Runners", description: "Autoscaling GitHub runners on ECS Fargate", diagram: cicdRunnersDiagram }
+    ],
   },
   {
     company: "RBC",
