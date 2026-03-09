@@ -211,22 +211,6 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
           onTouchMove={isActive ? handleTouchMoveZoom : undefined}
           onTouchEnd={isActive ? handleTouchEndZoom : undefined}
         >
-          {/* Click to interact hint */}
-          {!isActive && !isFullscreen && (
-            <div
-              className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
-              style={{ background: "rgba(254,252,249,0.3)" }}
-            >
-              <span className="text-[10px] font-mono px-3 py-1.5 rounded-lg" style={{
-                background: "rgba(245,240,232,0.95)",
-                border: "1px solid rgba(180,140,100,0.2)",
-                color: "#6b6560",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-              }}>
-                Click to interact with diagram
-              </span>
-            </div>
-          )}
           <div
             style={{
               transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
