@@ -52,15 +52,22 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   const handleReset = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
-    e.stopPropagation();
+    // Keep wheel interactions scoped to the diagram (no page scroll)
     e.preventDefault();
+    e.stopPropagation();
+
     if (e.ctrlKey || e.metaKey) {
-      setZoom(z => Math.max(0.5, Math.min(3, z - e.deltaY * 0.003)));
-    } else {
-      // Regular scroll = pan, allow zoom with pinch/ctrl
-      setZoom(z => Math.max(0.5, Math.min(3, z - e.deltaY * 0.005)));
+      // Ctrl/⌘ + scroll = zoom
+      setZoom((z) => Math.max(0.5, Math.min(3, z - e.deltaY * 0.003)));
+      return;
     }
-  }, []);
+
+    // Regular scroll/trackpad = pan
+    setPan((p) => ({
+      x: p.x - e.deltaX / zoom,
+      y: p.y - e.deltaY / zoom,
+    }));
+  }, [zoom]);
 
   const handleMouseDown = (e: React.MouseEvent) => { setIsPanning(true); lastMouse.current = { x: e.clientX, y: e.clientY }; };
   const handleMouseMove = (e: React.MouseEvent) => {
