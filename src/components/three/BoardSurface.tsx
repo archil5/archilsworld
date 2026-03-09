@@ -38,7 +38,7 @@ const BoardSurface = () => {
       </mesh>
 
       {hexPositions.map((pos, i) => (
-        <mesh key={i} position={pos} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <mesh key={i} position={pos} rotation={[-Math.PI / 2, 0, 0]} receiveShadow raycast={() => null}>
           <shapeGeometry args={[hexShape]} />
           <meshStandardMaterial
             color="#e8e0d4"
