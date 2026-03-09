@@ -215,14 +215,17 @@ export const cicdRunnersDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const apiGatewayDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Team Lead",
+  title: "Solution Architecture",
+  roleTitle: "Principal — Serverless & Containers",
   projectName: "Private API Gateway & Auth Pattern",
   description:
     "A zero-trust API integration pattern for routing BMO's on-premise traffic to AWS workloads. This required a multi-layered network design: terminating TLS at a Network Load Balancer, forwarding through an AWS API Interface Endpoint, and hitting a Private API Gateway. Authentication complexity was handled via a custom Lambda Authorizer cross-referencing a Cognito User Pool through an internal SG Proxy, finally routing validated traffic to backend Fargate containers via a VPC Link and Elastic Network Interfaces (ENI).",
   color: "#FF9900",
   successMessage:
     "You've mapped the exact zero-trust API Gateway pattern used to secure enterprise traffic across on-prem and cloud — handling thousands of requests per second at scale. 🔒",
+  techStack: ["API Gateway", "Lambda", "ECS Fargate", "CDK", "Cognito"],
+  services: ["NLB", "VPC Endpoints", "VPC Link", "ENI", "Direct Connect"],
+  layers: ["Network Resource VPC", "API Gateway VPC", "Managed Lambda VPC", "Shared Workload VPC"]
   diagram: {
     groups: [
       { id: "net", label: "Network Resource VPC", x: 10, y: 10, w: 20, h: 28, color: "#0078D4" },
