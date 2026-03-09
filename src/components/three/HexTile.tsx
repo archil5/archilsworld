@@ -116,7 +116,7 @@ const HexTile = ({
       <mesh
         ref={meshRef}
         rotation={[-Math.PI / 2, 0, 0]}
-        onClick={(e) => { e.stopPropagation(); onClick(); }}
+        onClick={(e) => { e.stopPropagation(); if (isActive && onExplore) { onExplore(); } else { onClick(); } }}
         castShadow receiveShadow
       >
         <extrudeGeometry args={[hexShape, extrudeSettings]} />
@@ -140,7 +140,7 @@ const HexTile = ({
         sprite={false}
       >
         <div
-          onClick={(e) => { e.stopPropagation(); onClick(); }}
+          onClick={(e) => { e.stopPropagation(); if (isActive && onExplore) { onExplore(); } else { onClick(); } }}
           style={{ ...containerStyle, clipPath: "polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)" }}
         >
           {isCareer ? (
@@ -184,13 +184,13 @@ const HexTile = ({
               background: "linear-gradient(135deg, rgba(15,15,20,0.92), rgba(25,25,35,0.95))",
               border: `1px solid ${color}50`,
               borderRadius: 8,
-              padding: "8px 16px",
+              padding: "10px 16px",
               cursor: "pointer",
               boxShadow: `0 0 20px ${color}25, 0 0 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)`,
               display: "flex",
               alignItems: "center",
               gap: 8,
-              whiteSpace: "nowrap" as const,
+              maxWidth: 280,
               position: "relative" as const,
               overflow: "hidden" as const,
             }}
