@@ -91,7 +91,7 @@ export const CHAPTERS: ChapterData[] = [
     subtitle: "The next chapter starts with a conversation",
     narrative: "I'm always open to connecting — whether it's about cloud architecture, AI, leadership, or the next big thing.",
     tagline: "The next move is yours — let's talk",
-    exploreHint: "Ready to build something together? Let's connect",
+    exploreHint: "Explore this world →",
     position: [9, 0, -3],
     color: "#b5653a",
     image: "archil",
