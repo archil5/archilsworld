@@ -169,70 +169,83 @@ const HexTile = ({
         </div>
       </Html>
 
-      {/* Techy explore popup floating above the tile */}
+      {/* Parchment-style explore popup */}
       {showExplore && onExplore && (
         <Html
-          position={[0, 2.2, 0]}
+          position={[0, 2.4, 0]}
           center
           distanceFactor={5.5}
           style={{ pointerEvents: "auto", userSelect: "none" }}
           sprite
         >
-          <div
-            onClick={(e) => { e.stopPropagation(); onExplore(); }}
-            style={{
-              background: "linear-gradient(135deg, rgba(15,15,20,0.92), rgba(25,25,35,0.95))",
-              border: `1px solid ${color}50`,
-              borderRadius: 6,
-              padding: "6px 10px",
-              cursor: "pointer",
-              boxShadow: `0 0 16px ${color}25, 0 0 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)`,
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              maxWidth: 220,
-              position: "relative" as const,
-              overflow: "hidden" as const,
-            }}
-          >
-            {/* Scan line effect */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div
+              onClick={(e) => { e.stopPropagation(); onExplore(); }}
+              style={{
+                background: "linear-gradient(160deg, #fdf8ef 0%, #f5edd8 60%, #ede0c4 100%)",
+                border: `1.5px solid ${color}60`,
+                borderRadius: 10,
+                padding: "10px 18px",
+                cursor: "pointer",
+                boxShadow: `0 4px 18px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.8) inset, 0 0 0 3px ${color}12`,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                position: "relative" as const,
+                whiteSpace: "nowrap" as const,
+                minWidth: 160,
+              }}
+            >
+              {/* Left color stripe */}
+              <div style={{
+                position: "absolute",
+                left: 0, top: 0, bottom: 0,
+                width: 4,
+                borderRadius: "10px 0 0 10px",
+                background: `linear-gradient(to bottom, ${color}, ${color}80)`,
+              }} />
+
+              {/* Icon dot */}
+              <span style={{
+                width: 8, height: 8, borderRadius: "50%",
+                background: color,
+                boxShadow: `0 0 6px ${color}90`,
+                animation: "pulse-glow 2s ease-in-out infinite",
+                flexShrink: 0,
+                marginLeft: 6,
+              }} />
+
+              {/* Text */}
+              <span style={{
+                fontSize: 11,
+                fontFamily: "'Cinzel', 'Palatino', serif",
+                fontWeight: 600,
+                color: "#2d2a26",
+                letterSpacing: 0.8,
+                textTransform: "uppercase" as const,
+              }}>
+                Explore this world
+              </span>
+
+              {/* Arrow */}
+              <span style={{
+                fontSize: 13,
+                color,
+                fontWeight: 700,
+                flexShrink: 0,
+                lineHeight: 1,
+              }}>›</span>
+            </div>
+
+            {/* Pointer triangle — parchment color */}
             <div style={{
-              position: "absolute",
-              inset: 0,
-              background: `linear-gradient(180deg, transparent 0%, ${color}08 50%, transparent 100%)`,
-              animation: "float-piece 3s ease-in-out infinite",
-              pointerEvents: "none",
+              width: 0, height: 0,
+              borderLeft: "6px solid transparent",
+              borderRight: "6px solid transparent",
+              borderTop: `6px solid #ede0c4`,
+              marginTop: -1,
             }} />
-            {/* Blinking cursor */}
-            <span style={{
-              width: 5, height: 5, borderRadius: 1,
-              background: color,
-              boxShadow: `0 0 6px ${color}80`,
-              animation: "pulse-glow 1.5s ease-in-out infinite",
-              flexShrink: 0,
-            }} />
-            <span style={{
-              fontSize: 9,
-              fontFamily: "'JetBrains Mono', monospace",
-              fontWeight: 600,
-              color: "#e0e0e0",
-              letterSpacing: 0.4,
-              lineHeight: 1.3,
-            }}>
-              {exploreHint || `Inside ${label}`}
-            </span>
-            <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color, flexShrink: 0 }}>
-              →
-            </span>
           </div>
-          {/* Pointer triangle */}
-          <div style={{
-            width: 0, height: 0,
-            borderLeft: "4px solid transparent",
-            borderRight: "4px solid transparent",
-            borderTop: `4px solid rgba(25,25,35,0.95)`,
-            margin: "0 auto",
-          }} />
         </Html>
       )}
 
