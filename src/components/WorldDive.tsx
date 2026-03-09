@@ -109,10 +109,10 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
               {worldMap[chapter.id]?.()}
             </motion.div>
 
-            <motion.div className="relative z-10 text-center py-3"
+            <motion.div className="relative z-10 text-center py-2 md:py-3"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-              <p className="text-[10px] font-mono" style={{ color: "#8a8078" }}>
-                Press ESC or click Back to return to the board
+              <p className="text-[9px] md:text-[10px] font-mono" style={{ color: "#8a8078" }}>
+                Tap Back to return to the board
               </p>
             </motion.div>
           </motion.div>

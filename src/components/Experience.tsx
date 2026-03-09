@@ -317,9 +317,9 @@ const Experience = () => {
         </div>
       )}
 
-      {/* Keyboard hint */}
+      {/* Keyboard hint - hidden on mobile */}
       {!isDiving && (
-        <div className="absolute top-6 right-8 z-20 pointer-events-none">
+        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-20 pointer-events-none hidden md:block">
           <div className="flex items-center gap-1.5 text-[9px] font-mono" style={{ color: "rgba(107,101,96,0.4)" }}>
             <span className="px-1.5 py-0.5 rounded" style={{ border: "1px solid rgba(107,101,96,0.2)" }}>←→</span>
             navigate

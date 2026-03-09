@@ -225,16 +225,12 @@ const HexTile = ({
               →
             </span>
           </div>
-            <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color: `${color}90`, fontWeight: 500 }}>
-              {"]"}
-            </span>
-          </div>
           {/* Pointer triangle */}
           <div style={{
             width: 0, height: 0,
-            borderLeft: "5px solid transparent",
-            borderRight: "5px solid transparent",
-            borderTop: `5px solid rgba(25,25,35,0.95)`,
+            borderLeft: "4px solid transparent",
+            borderRight: "4px solid transparent",
+            borderTop: `4px solid rgba(25,25,35,0.95)`,
             margin: "0 auto",
           }} />
         </Html>
