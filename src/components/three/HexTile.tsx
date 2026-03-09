@@ -17,6 +17,7 @@ const HexTile = ({
   image,
   showExplore,
   onExplore,
+  exploreHint,
 }: {
   position: [number, number, number];
   color: string;
@@ -30,6 +31,7 @@ const HexTile = ({
   image?: string;
   showExplore?: boolean;
   onExplore?: () => void;
+  exploreHint?: string;
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
@@ -127,26 +129,20 @@ const HexTile = ({
         />
       </mesh>
 
-      {/* Larger invisible click target for easier clicking on distant tiles */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0.01, 0]}
-        onClick={(e) => { e.stopPropagation(); onClick(); }}
-      >
-        <circleGeometry args={[1.2, 6]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
 
       <Html
         position={[0, isActive ? 0.6 : 0.22, 0]}
         center
         distanceFactor={5.5}
-        style={{ pointerEvents: "none", userSelect: "none" }}
+        style={{ pointerEvents: "auto", userSelect: "none", cursor: "pointer" }}
         transform
         occlude={false}
         sprite={false}
       >
-        <div style={{ ...containerStyle, clipPath: "polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)" }}>
+        <div
+          onClick={(e) => { e.stopPropagation(); onClick(); }}
+          style={{ ...containerStyle, clipPath: "polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)" }}
+        >
           {isCareer ? (
             <div style={{ width: tileSize, height: tileSize, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
               <div style={{ flex: 1, height: "100%", display: "flex", alignItems: "center", justifyContent: "center", borderRight: "1px solid rgba(160,130,100,0.2)" }}>
@@ -224,10 +220,13 @@ const HexTile = ({
               fontFamily: "'JetBrains Mono', monospace",
               fontWeight: 600,
               color: "#e0e0e0",
-              letterSpacing: 1.5,
-              textTransform: "uppercase" as const,
+              letterSpacing: 0.6,
+              textTransform: "none" as const,
+              maxWidth: 180,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}>
-              EXPLORE
+              {exploreHint || `Inside ${label}`}
             </span>
             <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color }}>
               →
