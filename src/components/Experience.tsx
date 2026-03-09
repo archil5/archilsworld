@@ -24,6 +24,7 @@ const Experience = () => {
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const isDiving = diveChapter !== null;
+  const skipPopState = useRef(false);
 
   const goTo = useCallback((index: number) => {
     const clamped = Math.max(0, Math.min(CHAPTERS.length - 1, index));
@@ -32,6 +33,9 @@ const Experience = () => {
     setVisitedSet(prev => new Set(prev).add(clamped));
     setShowOverlay(false);
     setTimeout(() => setShowOverlay(true), 600);
+    // Push history so browser back button works
+    skipPopState.current = true;
+    window.history.pushState({ tile: clamped }, "");
   }, []);
 
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
@@ -105,6 +109,46 @@ const Experience = () => {
     };
   }, [activeIndex, isDiving, goTo]);
 
+  // Browser back button support
+  useEffect(() => {
+    // Set initial history state
+    window.history.replaceState({ tile: 0 }, "");
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (skipPopState.current) {
+        skipPopState.current = false;
+        return;
+      }
+      // If currently in a world dive, close it
+      if (diveChapter !== null) {
+        setDiveChapter(null);
+        // Re-push so we stay at current tile
+        window.history.pushState({ tile: activeIndex }, "");
+        return;
+      }
+      // Otherwise go to previous tile
+      if (e.state && typeof e.state.tile === "number") {
+        const idx = e.state.tile;
+        targetScroll.current = idx / (CHAPTERS.length - 1);
+        setActiveIndex(idx);
+        setVisitedSet(prev => new Set(prev).add(idx));
+        setShowOverlay(false);
+        setTimeout(() => setShowOverlay(true), 600);
+      } else if (activeIndex > 0) {
+        // No state, go back one tile
+        const prev = activeIndex - 1;
+        targetScroll.current = prev / (CHAPTERS.length - 1);
+        setActiveIndex(prev);
+        setShowOverlay(false);
+        setTimeout(() => setShowOverlay(true), 600);
+        window.history.pushState({ tile: prev }, "");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [activeIndex, diveChapter]);
+
   useEffect(() => {
     let raf: number;
     const animate = () => {
@@ -122,6 +166,8 @@ const Experience = () => {
 
   const handleDive = useCallback(() => {
     setDiveAnimating(true);
+    // Push history for dive so back button can close it
+    window.history.pushState({ tile: activeIndex, dive: true }, "");
     setTimeout(() => {
       setDiveChapter(CHAPTERS[activeIndex]);
       setDiveAnimating(false);
