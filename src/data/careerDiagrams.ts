@@ -427,7 +427,7 @@ export const haContainerDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const multiAccountMlOpsDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
+  title: "Solution Architecture",
   roleTitle: "Principal Cloud Engineer — AI",
   projectName: "Enterprise Multi-Account AI/MLOps Platform",
   description:
@@ -435,6 +435,9 @@ export const multiAccountMlOpsDiagram: DiagramPuzzleData = {
   color: "#0078D4",
   successMessage:
     "You've architected an enterprise multi-account MLOps platform with strict boundary isolation, cross-account IAM trusts, and automated deployment pipelines across Dev, Automation, and Production environments. 🏢",
+  techStack: ["SageMaker", "EventBridge", "Azure DevOps", "CloudFormation", "KMS"],
+  services: ["SageMaker Studio", "EMR", "Model Registry", "API Gateway", "IAM", "CloudTrail"],
+  layers: ["AWS Dev Account", "AWS Automation Account", "AWS Production Account", "Enterprise Governance"]
   diagram: {
     groups: [
       { id: "dev", label: "AWS Dev Account", x: 8, y: 20, w: 20, h: 25, color: "#4CAF50" },
