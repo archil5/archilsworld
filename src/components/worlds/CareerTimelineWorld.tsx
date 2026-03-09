@@ -87,6 +87,12 @@ const stops: RoleStop[] = [
       "Content safety + model governance framework",
       "Full private networking — zero public exposure",
     ],
+    overview: {
+      philosophy: "Every AI system I build starts with a question: 'How do we make this enterprise-ready without sacrificing innovation?' I approach AI architecture through the lens of security-first design, ensuring models and data never cross trust boundaries.",
+      frameworks: ["Zero-Trust AI Networking", "Dual-RAG Pattern (Vector + Graph)", "Model Governance & Content Safety", "Private Endpoint Architecture", "Customer Managed Key (CMK) Encryption"],
+      deliverables: ["Production RAG platform on Azure", "GraphRAG with Cosmos DB", "Multi-account MLOps control plane", "AI governance framework"],
+      learnings: ["Graph-based retrieval outperforms vector-only for complex enterprise queries", "User Managed Identities eliminate credential sprawl entirely", "Content Safety filters are non-negotiable for enterprise GenAI"],
+    },
     project: {
       name: "Multiple AI & MLOps Solutions",
       description: "Architected multiple enterprise-grade AI platforms including dual-RAG Azure systems and multi-account MLOps pipelines with strict governance.",
@@ -102,7 +108,7 @@ const stops: RoleStop[] = [
       { name: "Enterprise AI Platform", description: "Dual RAG implementation with Azure OpenAI", diagram: aiRagDiagram },
       { name: "Multi-Account MLOps Platform", description: "Cross-account model deployment automation", diagram: multiAccountMlOpsDiagram }
     ],
-    funPuzzle: funPuzzleAI,
+    funPuzzles: aiPuzzles,
   },
   {
     company: "BMO",
@@ -121,6 +127,12 @@ const stops: RoleStop[] = [
       "Multi-region active-active serving 1000+ developers",
       "End-to-end MLOps pipeline with automated retraining",
     ],
+    overview: {
+      philosophy: "I believe great platform engineering means developers never have to think about infrastructure. Every pattern I designed was built to be self-service, secure by default, and invisible to the teams consuming it.",
+      frameworks: ["Zero-Trust API Integration", "Event-Driven Serverless Orchestration", "Multi-AZ High Availability", "Least-Privilege IAM Design", "Automated MLOps Lifecycle"],
+      deliverables: ["Bank-wide API Gateway standard", "HA container platform (multi-AZ)", "Self-service MLOps pipeline", "Custom Lambda Authorizer library"],
+      learnings: ["Private API Gateways + VPC Links are the gold standard for enterprise integration", "Automated model monitoring catches drift before humans notice", "PostgreSQL Master-Replica across AZs provides near-instant failover"],
+    },
     project: {
       name: "Multiple Serverless & Container Solutions",
       description: "Architected multiple production-grade serverless solutions including zero-trust API gateways, highly-available container platforms, and automated MLOps pipelines.",
@@ -137,7 +149,7 @@ const stops: RoleStop[] = [
       { name: "HA Container Platform", description: "Multi-AZ ECS Fargate with PostgreSQL failover", diagram: haContainerDiagram },
       { name: "Automated MLOps Pipeline", description: "End-to-end model training and deployment", diagram: mlOpsPipelineDiagram }
     ],
-    funPuzzle: funPuzzleServerless,
+    funPuzzles: serverlessPuzzles,
   },
   {
     company: "BMO",
@@ -155,9 +167,15 @@ const stops: RoleStop[] = [
       "Compliance-as-code via reusable workflows",
       "Corporate proxy integration for secure outbound",
     ],
+    overview: {
+      philosophy: "I treat CI/CD pipelines as production systems — they deserve the same rigor as the applications they deploy. Every runner is ephemeral, every secret is encrypted, and every outbound connection is controlled.",
+      frameworks: ["Ephemeral Infrastructure Pattern", "OIDC-Based Cross-Account Access", "Compliance-as-Code", "Zero-Trust Outbound Networking", "Event-Driven Runner Provisioning"],
+      deliverables: ["Ephemeral runner platform on ECS Fargate", "Reusable compliance workflow library", "Corporate proxy integration layer", "Autoscaling Lambda orchestrator"],
+      learnings: ["Ephemeral runners eliminate entire classes of security vulnerabilities", "OIDC roles are far superior to long-lived access keys", "Reusable workflows enforce consistency better than documentation ever could"],
+    },
     project: {
       name: "Ephemeral Autoscaling CI/CD Runners",
-      description: "A highly secure, automated pipeline using ephemeral ECS Fargate containers as self-hosted GitHub runners. Triggered by repository events via autoscaling Lambdas, these runners execute in an isolated operations account, pull secure credentials locally, route outbound traffic through a corporate proxy, and deploy to target environments before immediately terminating.",
+      description: "A highly secure, automated pipeline using ephemeral ECS Fargate containers as self-hosted GitHub runners.",
       highlights: [
         "Ephemeral ECS Fargate containers as self-hosted GitHub runners",
         "Autoscaling Lambda triggered by repository events",
@@ -169,7 +187,7 @@ const stops: RoleStop[] = [
     solutions: [
       { name: "Ephemeral CI/CD Runners", description: "Autoscaling GitHub runners on ECS Fargate", diagram: cicdRunnersDiagram }
     ],
-    funPuzzle: funPuzzleDevOps,
+    funPuzzles: devOpsPuzzles,
   },
   {
     company: "RBC",
@@ -187,9 +205,15 @@ const stops: RoleStop[] = [
       "CI/CD pipelines for security tooling deployment",
       "Infrastructure-as-code for security appliances",
     ],
+    overview: {
+      philosophy: "Cybersecurity isn't just about firewalls — it's about automating the boring parts so humans can focus on the threats that matter. I built systems that turned weeks of manual work into minutes of automated execution.",
+      frameworks: ["Security Automation at Scale", "SIEM-Driven Observability", "Infrastructure-as-Code for Security", "Automated Vulnerability Lifecycle", "Compliance Dashboard Design"],
+      deliverables: ["Automated scanning across 10,000+ endpoints", "Real-time Splunk security dashboards", "Ansible remediation playbooks", "Jenkins-based security CI/CD"],
+      learnings: ["Automation is the best security investment — it's faster, more consistent, and never forgets", "Visibility through dashboards changes how teams prioritize security", "Ansible playbooks for remediation scale infinitely better than manual runbooks"],
+    },
     project: {
       name: "Cybersecurity Automation Platform",
-      description: "An end-to-end automation platform for enterprise cybersecurity operations. Automated vulnerability scanning across thousands of endpoints, integrated findings into Splunk dashboards for real-time visibility, and built Ansible playbooks for automated remediation — reducing manual security operations by over 60%.",
+      description: "An end-to-end automation platform for enterprise cybersecurity operations.",
       highlights: [
         "Automated vulnerability scanning across 10,000+ endpoints",
         "Splunk dashboards for real-time security posture visibility",
@@ -198,7 +222,7 @@ const stops: RoleStop[] = [
         "Python-based threat intelligence aggregation",
       ],
     },
-    funPuzzle: funPuzzleSecurity,
+    funPuzzles: securityPuzzles,
   },
 ];
 
