@@ -203,10 +203,10 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
           transition={{ duration: 0.4 }}
           onClick={() => setIsActive(true)}
           onWheel={handleWheel}
-          onMouseDown={(e) => { if (isActive) handleMouseDown(e); else setIsActive(true); }}
-          onMouseMove={isActive ? handleMouseMove : undefined}
-          onMouseUp={isActive ? handleMouseUp : undefined}
-          onMouseLeave={isActive ? handleMouseUp : undefined}
+          onMouseDown={(e) => { setIsActive(true); handleMouseDown(e); }}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
           onTouchStart={isActive ? handleTouchStartZoom : undefined}
           onTouchMove={isActive ? handleTouchMoveZoom : undefined}
           onTouchEnd={isActive ? handleTouchEndZoom : undefined}
