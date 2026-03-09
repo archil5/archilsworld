@@ -443,7 +443,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 >
                   Overview
                 </button>
-                {stop.diagramPuzzle && (
+                {stop.diagramPuzzles && stop.diagramPuzzles.length > 0 && (
                 <button
                   onClick={() => setPanel("puzzle")}
                   className="relative text-[10px] font-mono px-2.5 py-1 rounded cursor-pointer"
@@ -474,14 +474,14 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       <Sparkles
                         size={10}
                         style={{
-                          color: solvedStops.has(activeStop)
+                          color: stop.diagramPuzzles.every((_, idx) => solvedStops.has(`${activeStop}-${idx}`))
                             ? "#2a7d4f"
                             : stop.color,
                         }}
                       />
                     </motion.span>
-                    Solve Puzzle
-                    {!solvedStops.has(activeStop) && (
+                    Solve Puzzles ({stop.diagramPuzzles.length})
+                    {!stop.diagramPuzzles.every((_, idx) => solvedStops.has(`${activeStop}-${idx}`)) && (
                       <motion.span
                         className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
                         style={{ background: stop.color }}
