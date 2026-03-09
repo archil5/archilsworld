@@ -108,16 +108,7 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   };
   const handleMouseUp = () => setIsPanning(false);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) { setIsPanning(true); lastMouse.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }
-  };
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPanning || e.touches.length !== 1) return;
-    e.stopPropagation();
-    setPan(p => ({ x: p.x + (e.touches[0].clientX - lastMouse.current.x), y: p.y + (e.touches[0].clientY - lastMouse.current.y) }));
-    lastMouse.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  };
-  const handleTouchEnd = () => setIsPanning(false);
+  // Touch handlers replaced by pinch-to-zoom aware versions above
 
   const wrapperClass = isFullscreen ? "fixed inset-0 z-[100] flex flex-col" : "relative";
 
