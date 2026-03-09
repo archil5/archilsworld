@@ -697,7 +697,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   </div>
                 </div>
               </div>
-            ) : stop.diagramPuzzle ? (
+            ) : stop.diagramPuzzles && stop.diagramPuzzles.length > 0 ? (
               <div
                 className="p-6 overflow-y-auto"
                 style={{
@@ -705,12 +705,38 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   maxHeight: "70vh",
                 }}
               >
+                {/* Diagram selector if multiple */}
+                {stop.diagramPuzzles.length > 1 && (
+                  <div className="flex items-center gap-2 mb-4 pb-4 border-b" style={{ borderColor: `${stop.color}15` }}>
+                    {stop.diagramPuzzles.map((puzzle, idx) => {
+                      const puzzleId = `${activeStop}-${idx}`;
+                      const isSolved = solvedStops.has(puzzleId);
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveDiagram(idx)}
+                          className="text-[10px] font-mono px-3 py-2 rounded cursor-pointer transition-all"
+                          style={{
+                            color: activeDiagram === idx ? stop.color : "rgba(80,70,60,0.55)",
+                            background: activeDiagram === idx ? `${stop.color}10` : "rgba(180,140,100,0.04)",
+                            border: `1px solid ${activeDiagram === idx ? `${stop.color}20` : "rgba(180,140,100,0.1)"}`,
+                          }}
+                        >
+                          {isSolved && <span className="mr-1.5">✓</span>}
+                          Puzzle {idx + 1}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                
                 <ArchDiagramPuzzle
-                  data={stop.diagramPuzzle}
-                  solved={solvedStops.has(activeStop)}
+                  key={`${activeStop}-${activeDiagram}`}
+                  data={stop.diagramPuzzles[activeDiagram]}
+                  solved={solvedStops.has(`${activeStop}-${activeDiagram}`)}
                   onSolve={() =>
                     setSolvedStops((prev) =>
-                      new Set(prev).add(activeStop)
+                      new Set(prev).add(`${activeStop}-${activeDiagram}`)
                     )
                   }
                 />
