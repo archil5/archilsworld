@@ -132,8 +132,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
               key={tag}
               className="text-[11px] font-mono px-3 py-1.5 rounded-full"
               style={{
-                color: "#d4a574",
-                border: "1px solid rgba(181,101,58,0.25)",
+                color: "#8b4a2a",
+                border: "1px solid rgba(181,101,58,0.2)",
                 background: "rgba(181,101,58,0.06)",
               }}
               initial={{ opacity: 0, scale: 0.8 }}
