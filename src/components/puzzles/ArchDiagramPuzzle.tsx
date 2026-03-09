@@ -52,6 +52,7 @@ export interface DiagramPuzzleData {
   diagram: ArchDiagram;
   successMessage: string;
   color: string;
+  difficulty?: "Easy" | "Medium" | "Hard" | "Expert";
   techStack?: string[];
   services?: string[];
   layers?: string[];

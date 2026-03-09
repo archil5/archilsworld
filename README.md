@@ -1,73 +1,91 @@
-# Welcome to your Lovable project
+# Binita Patel — Cloud Architecture Portfolio
 
-## Project info
+An interactive, gamified portfolio showcasing enterprise cloud architecture solutions built across AI/ML, serverless, containers, DevOps, and cybersecurity domains.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🎮 What This Portfolio Offers
 
-## How can I edit this code?
+- **Interactive Architecture Diagrams** — Real-world solution architectures (Azure RAG, AWS MLOps, Zero-Trust API Gateways) presented as explorable, zoomable diagrams
+- **Fun Architecture Puzzles** — 20 drag-and-drop puzzles across 4 career roles with difficulty levels (Easy → Expert), covering real-world scenarios like LLMOps, Service Mesh, GraphRAG, and SOAR platforms
+- **Storytelling Career Timeline** — Each role tells the story of challenges faced, architectures designed, and lessons learned
+- **Board Game Theme** — The entire portfolio is designed as a strategy board game, reflecting my problem-solving mindset
 
-There are several ways of editing your application.
+## 🏗️ Architecture & Code Structure
 
-**Use Lovable**
+```
+src/
+├── pages/
+│   └── Index.tsx              # Entry point with intro screen
+├── components/
+│   ├── Experience.tsx         # Main game board with chapter tiles
+│   ├── ChapterOverlay.tsx     # Full-screen chapter view
+│   ├── WorldDive.tsx          # World container
+│   ├── worlds/                # Each "world" is a chapter section
+│   │   ├── CareerTimelineWorld.tsx   # Career journey with puzzles
+│   │   ├── SkillTreeWorld.tsx        # Technical skills visualization
+│   │   ├── CodeBuilderWorld.tsx      # Code showcase
+│   │   ├── NetworkWorld.tsx          # Professional network
+│   │   ├── ContactWorld.tsx          # Contact information
+│   │   └── ...
+│   ├── puzzles/               # Interactive puzzle components
+│   │   ├── ArchDiagramPuzzle.tsx     # Drag-and-drop architecture puzzle
+│   │   └── ReadOnlyDiagram.tsx       # Zoomable read-only diagram viewer
+│   └── ui/                    # Reusable UI components (shadcn/ui)
+├── data/
+│   ├── careerDiagrams.ts      # All architecture diagrams + 20 puzzles
+│   ├── chapters.ts            # Chapter/tile definitions
+│   └── brandLogos.ts          # Company logo mappings
+└── assets/                    # Images and static assets
+```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🛠️ Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **React 18** + **TypeScript** — Type-safe component architecture
+- **Vite** — Fast build tooling
+- **Tailwind CSS** — Utility-first styling with custom design tokens
+- **Framer Motion** — Smooth animations and transitions
+- **shadcn/ui** — Accessible component primitives
+- **React Router** — Client-side routing
 
-**Use your preferred IDE**
+## 🚀 Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```bash
+# Clone the repository
+git clone <repo-url>
+cd <project-name>
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# Install dependencies
+npm install
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📦 Build & Deploy
 
-**Use GitHub Codespaces**
+```bash
+# Production build
+npm run build
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Preview production build
+npm run preview
+```
 
-## What technologies are used for this project?
+### GitHub Pages Deployment
 
-This project is built with:
+This project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) for automated deployment to GitHub Pages.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Update `vite.config.ts` — set the `base` to your repo name: `base: "/your-repo-name/"`
+2. Enable GitHub Pages in your repo settings (Settings → Pages → Source: GitHub Actions)
+3. Push to `main` — the workflow will build and deploy automatically
 
-## How can I deploy this project?
+## 👩‍💻 About Me
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+**Binita Patel** — Principal Cloud Engineer specializing in enterprise AI platforms, serverless architectures, and zero-trust security patterns. Currently building secure GenAI solutions at scale in Canada's financial sector.
 
-## Can I connect a custom domain to my Lovable project?
+**Domains**: Azure AI (RAG/GraphRAG), AWS Serverless & Containers, MLOps, DevSecOps, Cybersecurity Automation
 
-Yes, you can!
+## 📄 License
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is for portfolio/personal use.
