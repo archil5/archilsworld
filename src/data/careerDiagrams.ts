@@ -287,14 +287,17 @@ export const apiGatewayDiagram: DiagramPuzzleData = {
    ─────────────────────────────────────────────────────────── */
 
 export const mlOpsPipelineDiagram: DiagramPuzzleData = {
-  title: "Architecture Puzzle",
-  roleTitle: "Principal Engineer — Serverless & Containers",
+  title: "Solution Architecture",
+  roleTitle: "Principal — Serverless & Containers",
   projectName: "Automated AWS MLOps Pipeline",
   description:
     "An end-to-end, serverless MLOps pipeline integrating native Kubernetes operators with AWS managed services. The complexity involved coordinating Apache Airflow (MWAA) and AWS Step Functions to manage containerized pre-processing and hyperparameter optimization (HPO). Model lineage was strictly tracked via SageMaker Feature Store, and endpoints were deployed with Elastic Autoscaling and Data Capture enabled, feeding directly into SageMaker Model Monitor and Clarify to trigger automated retraining pipelines.",
   color: "#FF9900",
   successMessage:
     "You've assembled a production MLOps pipeline that automatically trains, evaluates, registers, deploys, and monitors ML models — with full lineage tracking and bias detection. 🤖",
+  techStack: ["SageMaker", "Step Functions", "Lambda", "KubeFlow", "Docker"],
+  services: ["Feature Store", "Model Registry", "Model Monitor", "Clarify", "CodeCommit", "CodeBuild", "CloudFormation"],
+  layers: ["CI Pipeline (Build)", "AWS Step Functions Workflow", "Data & Quality", "CD Pipeline (Deploy)", "Inference"]
   diagram: {
     groups: [
       { id: "ci", label: "CI Pipeline (Build)", x: 8, y: 8, w: 22, h: 25, color: "#4CAF50" },
