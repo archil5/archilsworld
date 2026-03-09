@@ -189,27 +189,27 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
         {/* Diagram */}
         <motion.div
           ref={containerRef}
-          className="overflow-hidden rounded-b-xl overscroll-contain touch-none relative"
+          className={`overflow-hidden rounded-b-xl relative ${isActive ? "overscroll-contain touch-none" : ""}`}
           style={{
             background: bgColor,
             border: `1px solid ${isActive ? color : borderColor}`,
             borderTop: "none",
             height: isFullscreen ? "100%" : 450,
-            cursor: isPanning ? "grabbing" : "grab",
+            cursor: isActive ? (isPanning ? "grabbing" : "grab") : "pointer",
             ...(isFullscreen ? { borderRadius: 0, flex: 1 } : {}),
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
           onClick={() => setIsActive(true)}
-          onWheelCapture={handleWheel}
-          onMouseDown={(e) => { setIsActive(true); handleMouseDown(e); }}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStartZoom}
-          onTouchMove={handleTouchMoveZoom}
-          onTouchEnd={handleTouchEndZoom}
+          onWheel={handleWheel}
+          onMouseDown={(e) => { if (isActive) handleMouseDown(e); else setIsActive(true); }}
+          onMouseMove={isActive ? handleMouseMove : undefined}
+          onMouseUp={isActive ? handleMouseUp : undefined}
+          onMouseLeave={isActive ? handleMouseUp : undefined}
+          onTouchStart={isActive ? handleTouchStartZoom : undefined}
+          onTouchMove={isActive ? handleTouchMoveZoom : undefined}
+          onTouchEnd={isActive ? handleTouchEndZoom : undefined}
         >
           {/* Click to interact hint */}
           {!isActive && !isFullscreen && (
