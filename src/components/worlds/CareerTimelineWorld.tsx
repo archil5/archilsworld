@@ -929,6 +929,11 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                         data={currentPuzzle}
                         solved={currentPuzzleSolved}
                         onSolve={() => setSolvedPuzzles(prev => new Set(prev).add(puzzleKey))}
+                        onReset={() => setSolvedPuzzles(prev => {
+                          const next = new Set(prev);
+                          next.delete(puzzleKey);
+                          return next;
+                        })}
                       />
                     </div>
                   </motion.div>

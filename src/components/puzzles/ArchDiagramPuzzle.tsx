@@ -232,6 +232,7 @@ const ArchDiagramPuzzle = ({
     setAutoReveal(false);
     setWrongFeedback(null);
     setSelectedTerm(null);
+    onReset?.();
   };
 
   return (
