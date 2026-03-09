@@ -188,9 +188,9 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          onTouchStart={handleTouchStartZoom}
+          onTouchMove={handleTouchMoveZoom}
+          onTouchEnd={handleTouchEndZoom}
         >
           <div
             style={{
