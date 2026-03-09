@@ -699,7 +699,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
               </div>
             ) : stop.diagramPuzzles && stop.diagramPuzzles.length > 0 ? (
               <div
-                className="p-6 overflow-y-auto space-y-4"
+                className="p-6 overflow-y-auto space-y-8"
                 style={{
                   background: "#fefcf9",
                   maxHeight: "70vh",
@@ -708,179 +708,164 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 {stop.diagramPuzzles.map((puzzle, idx) => {
                   const puzzleId = `${activeStop}-${idx}`;
                   const isSolved = solvedStops.has(puzzleId);
-                  const isExpanded = activeDiagram === idx;
-                  
+
                   return (
                     <motion.div
                       key={idx}
                       className="rounded-xl overflow-hidden"
                       style={{
-                        border: `1px solid ${stop.color}20`,
-                        background: isExpanded ? "#fff" : "rgba(255,255,255,0.5)",
+                        border: `1px solid ${stop.color}25`,
+                        background: "#fff",
                       }}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
+                      transition={{ delay: idx * 0.12 }}
                     >
                       {/* Card Header */}
-                      <button
-                        onClick={() => setActiveDiagram(isExpanded ? -1 : idx)}
-                        className="w-full px-5 py-4 flex items-center justify-between cursor-pointer transition-all"
+                      <div
+                        className="px-5 py-4 flex items-center justify-between"
                         style={{
-                          background: `${stop.color}${isExpanded ? '10' : '06'}`,
-                          borderBottom: isExpanded ? `1px solid ${stop.color}15` : 'none',
+                          background: `${stop.color}08`,
+                          borderBottom: `1px solid ${stop.color}12`,
                         }}
                       >
                         <div className="flex items-center gap-3">
-                          {isSolved && (
-                            <span
-                              className="text-xs px-2 py-1 rounded"
-                              style={{
-                                background: "#2a7d4f",
-                                color: "#fff",
-                              }}
-                            >
-                              ✓ Solved
-                            </span>
-                          )}
-                          <div className="text-left">
+                          <div
+                            className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-mono font-bold"
+                            style={{ background: `${stop.color}15`, color: stop.color }}
+                          >
+                            {idx + 1}
+                          </div>
+                          <div>
                             <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
                               {puzzle.projectName}
                             </h4>
-                            <p className="text-[10px] font-mono mt-0.5" style={{ color: stop.color }}>
-                              Solution Architecture #{idx + 1}
+                            <p className="text-[10px] font-mono mt-0.5" style={{ color: "rgba(80,70,60,0.55)" }}>
+                              Solution Architecture
                             </p>
                           </div>
                         </div>
-                        <motion.span
-                          animate={{ rotate: isExpanded ? 180 : 0 }}
-                          transition={{ duration: 0.2 }}
-                          style={{ color: stop.color }}
-                        >
-                          ▼
-                        </motion.span>
-                      </button>
-
-                      {/* Card Content */}
-                      <AnimatePresence>
-                        {isExpanded && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
+                        {isSolved && (
+                          <span
+                            className="text-[10px] font-mono px-3 py-1 rounded-full flex items-center gap-1"
+                            style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
                           >
-                            <div className="p-5 space-y-4">
-                              {/* Description */}
-                              <div>
-                                <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
-                                  Overview
-                                </p>
-                                <p className="text-sm font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.8)" }}>
-                                  {puzzle.description}
-                                </p>
-                              </div>
+                            ✓ Completed
+                          </span>
+                        )}
+                      </div>
 
-                              {/* Tech Stack & Services */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* Extract services from diagram nodes */}
-                                <div>
-                                  <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
-                                    Services Used
-                                  </p>
-                                  <div className="flex flex-wrap gap-1.5">
-                                    {puzzle.diagram.nodes.map((node) => (
-                                      <span
-                                        key={node.id}
-                                        className="text-[10px] font-mono px-2 py-1 rounded"
-                                        style={{
-                                          background: `${stop.color}08`,
-                                          border: `1px solid ${stop.color}15`,
-                                          color: stop.color,
-                                        }}
-                                      >
-                                        {node.icon} {node.label}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
+                      {/* Description */}
+                      <div className="px-5 pt-4 pb-3">
+                        <p className="text-xs font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.8)" }}>
+                          {puzzle.description}
+                        </p>
+                      </div>
 
-                                {/* Groups/Layers */}
-                                <div>
-                                  <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
-                                    Architecture Layers
-                                  </p>
-                                  <div className="space-y-1">
-                                    {puzzle.diagram.groups.map((group) => (
-                                      <div
-                                        key={group.id}
-                                        className="text-[10px] font-mono px-2 py-1 rounded flex items-center gap-2"
-                                        style={{
-                                          background: `${group.color}08`,
-                                          border: `1px solid ${group.color}20`,
-                                          color: group.color,
-                                        }}
-                                      >
-                                        <span className="w-2 h-2 rounded-full" style={{ background: group.color }} />
-                                        {group.label}
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Puzzle Challenge */}
-                              <div
-                                className="rounded-lg p-4"
+                      {/* Metadata Grid: Tech Stack / Services / Layers */}
+                      <div
+                        className="px-5 py-4 grid grid-cols-1 md:grid-cols-3 gap-4"
+                        style={{ borderTop: "1px solid rgba(180,140,100,0.08)", borderBottom: "1px solid rgba(180,140,100,0.08)" }}
+                      >
+                        {/* Services Used */}
+                        <div>
+                          <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
+                            Services Used
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {puzzle.diagram.nodes.slice(0, 8).map((node) => (
+                              <span
+                                key={node.id}
+                                className="text-[10px] font-mono px-2 py-0.5 rounded"
                                 style={{
-                                  background: "rgba(228,77,38,0.04)",
-                                  border: "1px solid rgba(228,77,38,0.1)",
+                                  background: `${stop.color}08`,
+                                  border: `1px solid ${stop.color}12`,
+                                  color: stop.color,
                                 }}
                               >
-                                <p className="text-[9px] font-mono uppercase mb-2" style={{ color: "#c0553a" }}>
-                                  🧩 Puzzle Challenge
-                                </p>
-                                <p className="text-xs font-body mb-2" style={{ color: "rgba(45,42,38,0.75)" }}>
-                                  Reconstruct this architecture by placing <strong>{puzzle.diagram.hiddenNodeIds.length} hidden components</strong> in their correct positions.
-                                </p>
-                                <div className="flex flex-wrap gap-1">
-                                  {puzzle.diagram.hiddenNodeIds.map((nodeId) => {
-                                    const node = puzzle.diagram.nodes.find(n => n.id === nodeId);
-                                    return node ? (
-                                      <span
-                                        key={nodeId}
-                                        className="text-[9px] font-mono px-1.5 py-0.5 rounded"
-                                        style={{
-                                          background: "rgba(228,77,38,0.08)",
-                                          border: "1px solid rgba(228,77,38,0.15)",
-                                          color: "#c0553a",
-                                        }}
-                                      >
-                                        {node.icon} {node.label}
-                                      </span>
-                                    ) : null;
-                                  })}
-                                </div>
-                              </div>
+                                {node.icon} {node.label}
+                              </span>
+                            ))}
+                            {puzzle.diagram.nodes.length > 8 && (
+                              <span className="text-[10px] font-mono px-2 py-0.5" style={{ color: "rgba(80,70,60,0.4)" }}>
+                                +{puzzle.diagram.nodes.length - 8} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
 
-                              {/* Interactive Puzzle */}
-                              <div className="pt-2">
-                                <ArchDiagramPuzzle
-                                  key={puzzleId}
-                                  data={puzzle}
-                                  solved={isSolved}
-                                  onSolve={() =>
-                                    setSolvedStops((prev) =>
-                                      new Set(prev).add(puzzleId)
-                                    )
-                                  }
-                                />
+                        {/* Architecture Layers */}
+                        <div>
+                          <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
+                            Architecture Layers
+                          </p>
+                          <div className="space-y-1">
+                            {puzzle.diagram.groups?.map((group) => (
+                              <div
+                                key={group.id}
+                                className="text-[10px] font-mono px-2 py-0.5 rounded flex items-center gap-1.5"
+                                style={{
+                                  background: `${group.color}08`,
+                                  border: `1px solid ${group.color}15`,
+                                  color: group.color,
+                                }}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full" style={{ background: group.color }} />
+                                {group.label}
                               </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Puzzle Challenge Info */}
+                        <div>
+                          <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#c0553a" }}>
+                            🧩 Challenge
+                          </p>
+                          <p className="text-[10px] font-body mb-2" style={{ color: "rgba(45,42,38,0.7)" }}>
+                            Place <strong>{puzzle.diagram.hiddenNodeIds.length}</strong> hidden component{puzzle.diagram.hiddenNodeIds.length > 1 ? 's' : ''}:
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {puzzle.diagram.hiddenNodeIds.map((nodeId) => {
+                              const node = puzzle.diagram.nodes.find(n => n.id === nodeId);
+                              return node ? (
+                                <span
+                                  key={nodeId}
+                                  className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+                                  style={{
+                                    background: "rgba(228,77,38,0.08)",
+                                    border: "1px solid rgba(228,77,38,0.12)",
+                                    color: "#c0553a",
+                                  }}
+                                >
+                                  {node.icon} {node.label}
+                                </span>
+                              ) : null;
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Solution Architecture Label */}
+                      <div className="px-5 pt-4 pb-2">
+                        <p className="text-[9px] font-mono uppercase tracking-widest" style={{ color: stop.color }}>
+                          Solution Architecture
+                        </p>
+                      </div>
+
+                      {/* Interactive Puzzle */}
+                      <div className="px-5 pb-5">
+                        <ArchDiagramPuzzle
+                          key={puzzleId}
+                          data={puzzle}
+                          solved={isSolved}
+                          onSolve={() =>
+                            setSolvedStops((prev) =>
+                              new Set(prev).add(puzzleId)
+                            )
+                          }
+                        />
+                      </div>
                     </motion.div>
                   );
                 })}
