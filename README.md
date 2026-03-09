@@ -1,4 +1,4 @@
-# Binita Patel — Cloud Architecture Portfolio
+# Archil Patel — Cloud Architecture Portfolio
 
 An interactive, gamified portfolio showcasing enterprise cloud architecture solutions built across AI/ML, serverless, containers, DevOps, and cybersecurity domains.
 
@@ -50,8 +50,8 @@ src/
 
 ```bash
 # Clone the repository
-git clone <repo-url>
-cd <project-name>
+git clone https://github.com/archil5/archilsworld.git
+cd archilsworld
 
 # Install dependencies
 npm install
@@ -76,11 +76,10 @@ npm run preview
 
 This project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) for automated deployment to GitHub Pages.
 
-1. Update `vite.config.ts` — set the `base` to your repo name: `base: "/your-repo-name/"`
-2. Enable GitHub Pages in your repo settings (Settings → Pages → Source: GitHub Actions)
-3. Push to `main` — the workflow will build and deploy automatically
+1. Enable GitHub Pages in your repo settings (Settings → Pages → Source: GitHub Actions)
+2. Push to `main` — the workflow will build and deploy automatically
 
-## 👩‍💻 About Me
+## 👨‍💻 About Me
 
 **Archil Patel** — Principal Cloud Engineer specializing in enterprise AI platforms, serverless architectures, and zero-trust security patterns. Currently building secure GenAI solutions at scale in Canada's financial sector.
 
