@@ -254,7 +254,7 @@ const Experience = () => {
                 style={{
                   width: i === activeIndex ? 24 : 8,
                   height: 8,
-                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(107,101,96,0.45)" : "rgba(107,101,96,0.15)",
+                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(45,42,38,0.7)" : "rgba(45,42,38,0.35)",
                   boxShadow: i === activeIndex ? `0 0 10px ${ch.color}60` : "none",
                 }}
                 title={ch.label}
