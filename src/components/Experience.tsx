@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CHAPTERS } from "@/data/chapters";
 import HexTile from "@/components/three/HexTile";
@@ -18,6 +18,7 @@ const Experience = () => {
   const [visitedSet, setVisitedSet] = useState<Set<number>>(new Set([0]));
   const [showOverlay, setShowOverlay] = useState(false);
   const [diveChapter, setDiveChapter] = useState<typeof CHAPTERS[0] | null>(null);
+  const [diveAnimating, setDiveAnimating] = useState(false);
   const scrollRef = useRef(0);
   const targetScroll = useRef(0);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
@@ -120,13 +121,29 @@ const Experience = () => {
   }, [goTo]);
 
   const handleDive = useCallback(() => {
-    setDiveChapter(CHAPTERS[activeIndex]);
+    setDiveAnimating(true);
+    setTimeout(() => {
+      setDiveChapter(CHAPTERS[activeIndex]);
+      setDiveAnimating(false);
+    }, 700);
   }, [activeIndex]);
 
   const chapter = CHAPTERS[activeIndex];
 
   return (
     <div className="w-screen h-screen relative overflow-hidden" style={{ background: "#f5f0e8" }}>
+      {/* Dive zoom animation wrapper */}
+      <motion.div
+        className="absolute inset-0"
+        animate={diveAnimating ? {
+          scale: [1, 2.5],
+          opacity: [1, 0],
+        } : {
+          scale: 1,
+          opacity: 1,
+        }}
+        transition={diveAnimating ? { duration: 0.7, ease: [0.45, 0, 0.15, 1] } : { duration: 0 }}
+      >
       <Canvas
         shadows
         camera={{ fov: 50, near: 0.1, far: 100, position: [0, 8, 8] }}
@@ -179,6 +196,21 @@ const Experience = () => {
           <Environment preset="apartment" />
         </Suspense>
       </Canvas>
+      </motion.div>
+
+      {/* Dive flash overlay */}
+      <AnimatePresence>
+        {diveAnimating && (
+          <motion.div
+            className="fixed inset-0 z-50 pointer-events-none"
+            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #f5f0e8)` }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.6, 1] }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: "easeIn" }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Title */}
       <div className="absolute top-6 left-8 z-20 pointer-events-none">
