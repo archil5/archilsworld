@@ -121,10 +121,21 @@ const ArchDiagramPuzzle = ({
   onSolve: () => void;
 }) => {
   const { diagram, color } = data;
-  const [placements, setPlacements] = useState<Record<string, string>>({});
+
+  // If already solved on mount, pre-fill all placements
+  const initialPlacements = useMemo(() => {
+    if (!solved) return {};
+    const auto: Record<string, string> = {};
+    diagram.nodes
+      .filter((n) => diagram.hiddenNodeIds.includes(n.id))
+      .forEach((n) => { auto[n.id] = n.label; });
+    return auto;
+  }, [solved, diagram]);
+
+  const [placements, setPlacements] = useState<Record<string, string>>(initialPlacements);
   const [dragOverNode, setDragOverNode] = useState<string | null>(null);
   const [wrongFeedback, setWrongFeedback] = useState<string | null>(null);
-  const [autoReveal, setAutoReveal] = useState(false);
+  const [autoReveal, setAutoReveal] = useState(solved);
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
 
   const containerW = 900;
