@@ -555,125 +555,114 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
             {panel === "overview" ? (
               <div
-                className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5"
+                className="p-6 space-y-5"
                 style={{ background: "#fefcf9" }}
               >
-                <div className="space-y-4">
+                {/* Philosophy / Story */}
+                <div className="rounded-xl p-4" style={{ background: `${stop.color}05`, border: `1px solid ${stop.color}12` }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Lightbulb size={14} style={{ color: stop.color }} />
+                    <p className="text-[9px] font-mono uppercase tracking-wider" style={{ color: stop.color }}>My Approach</p>
+                  </div>
+                  <p className="text-sm font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.85)" }}>
+                    {stop.overview.philosophy}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Challenge & Impact */}
+                  <div className="space-y-3">
+                    <div className="rounded-lg p-3" style={{ background: "rgba(228,77,38,0.04)", border: "1px solid rgba(228,77,38,0.1)" }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Target size={12} style={{ color: "#c0553a" }} />
+                        <p className="text-[9px] font-mono uppercase" style={{ color: "#c0553a" }}>Challenge</p>
+                      </div>
+                      <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.75)" }}>{stop.challenge}</p>
+                    </div>
+                    <div className="rounded-lg p-3" style={{ background: `${stop.color}08`, border: `1px solid ${stop.color}15` }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Trophy size={12} style={{ color: stop.color }} />
+                        <p className="text-[9px] font-mono uppercase" style={{ color: stop.color }}>Impact</p>
+                      </div>
+                      <p className="text-xs font-mono font-bold" style={{ color: stop.color }}>{stop.impact}</p>
+                    </div>
+                  </div>
+
+                  {/* Key Wins */}
                   <div>
-                    <p
-                      className="text-[9px] font-mono uppercase tracking-wider mb-1.5"
-                      style={{ color: stop.color }}
-                    >
-                      The Story
-                    </p>
-                    <p
-                      className="text-sm font-body italic leading-relaxed"
-                      style={{ color: "rgba(45,42,38,0.8)" }}
-                    >
-                      "{stop.narrative}"
-                    </p>
-                  </div>
-                  <div
-                    className="rounded-lg p-3"
-                    style={{
-                      background: "rgba(228,77,38,0.04)",
-                      border: "1px solid rgba(228,77,38,0.1)",
-                    }}
-                  >
-                    <p
-                      className="text-[9px] font-mono uppercase mb-1"
-                      style={{ color: "#c0553a" }}
-                    >
-                      Challenge
-                    </p>
-                    <p
-                      className="text-xs font-body"
-                      style={{ color: "rgba(45,42,38,0.75)" }}
-                    >
-                      {stop.challenge}
-                    </p>
-                  </div>
-                  <div
-                    className="rounded-lg p-3"
-                    style={{
-                      background: `${stop.color}08`,
-                      border: `1px solid ${stop.color}15`,
-                    }}
-                  >
-                    <p
-                      className="text-[9px] font-mono uppercase mb-1"
-                      style={{ color: stop.color }}
-                    >
-                      Impact
-                    </p>
-                    <p
-                      className="text-xs font-mono font-bold"
-                      style={{ color: stop.color }}
-                    >
-                      {stop.impact}
-                    </p>
-                  </div>
-                  <div>
-                    <p
-                      className="text-[9px] font-mono uppercase tracking-wider mb-2"
-                      style={{ color: stop.color }}
-                    >
-                      Tech Stack
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {stop.techStack.map((t) => (
-                        <span
-                          key={t}
-                          className="text-[10px] font-mono px-2 py-0.5 rounded"
-                          style={{
-                            background: `${stop.color}08`,
-                            border: `1px solid ${stop.color}15`,
-                            color: stop.color,
-                          }}
+                    <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>Key Wins</p>
+                    <div className="space-y-1.5">
+                      {stop.wins.map((w, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex items-start gap-2 p-2 rounded-lg"
+                          initial={{ opacity: 0, x: 10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.15 + i * 0.06 }}
+                          style={{ background: "rgba(42,125,79,0.04)", border: "1px solid rgba(42,125,79,0.08)" }}
                         >
-                          {t}
-                        </span>
+                          <span className="text-[10px] mt-0.5" style={{ color: "#2a7d4f" }}>▸</span>
+                          <span className="text-xs font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{w}</span>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
                 </div>
-                <div>
-                  <p
-                    className="text-[9px] font-mono uppercase tracking-wider mb-2"
-                    style={{ color: "#2a7d4f" }}
-                  >
-                    Key Wins
-                  </p>
-                  <div className="space-y-2">
-                    {stop.wins.map((w, i) => (
-                      <motion.div
-                        key={i}
-                        className="flex items-start gap-2 p-2.5 rounded-lg"
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          delay: 0.15 + i * 0.08,
-                        }}
+
+                {/* Frameworks & Lenses */}
+                <div className="rounded-xl p-4" style={{ background: "rgba(180,140,100,0.03)", border: "1px solid rgba(180,140,100,0.1)" }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Layers size={14} style={{ color: stop.color }} />
+                    <p className="text-[9px] font-mono uppercase tracking-wider" style={{ color: stop.color }}>Frameworks & Lenses I Apply</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {stop.overview.frameworks.map((f, i) => (
+                      <motion.span
+                        key={f}
+                        className="text-[10px] font-mono px-3 py-1.5 rounded-lg"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 + i * 0.05 }}
                         style={{
-                          background: "rgba(42,125,79,0.04)",
-                          border: "1px solid rgba(42,125,79,0.1)",
+                          background: `${stop.color}08`,
+                          border: `1px solid ${stop.color}18`,
+                          color: stop.color,
                         }}
                       >
-                        <span
-                          className="text-[10px] mt-0.5"
-                          style={{ color: "#2a7d4f" }}
-                        >
-                          ▸
-                        </span>
-                        <span
-                          className="text-xs font-body"
-                          style={{
-                            color: "rgba(45,42,38,0.8)",
-                          }}
-                        >
-                          {w}
-                        </span>
+                        {f}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Deliverables & Learnings side by side */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="rounded-lg p-3" style={{ background: `${stop.color}04`, border: `1px solid ${stop.color}10` }}>
+                    <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>What I Delivered</p>
+                    {stop.overview.deliverables.map((d, i) => (
+                      <motion.div key={i} className="flex items-center gap-2 py-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 + i * 0.05 }}>
+                        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: stop.color }} />
+                        <span className="text-[11px] font-body" style={{ color: "rgba(45,42,38,0.8)" }}>{d}</span>
                       </motion.div>
+                    ))}
+                  </div>
+                  <div className="rounded-lg p-3" style={{ background: "rgba(42,125,79,0.03)", border: "1px solid rgba(42,125,79,0.1)" }}>
+                    <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#2a7d4f" }}>What I Learned</p>
+                    {stop.overview.learnings.map((l, i) => (
+                      <motion.div key={i} className="flex items-start gap-2 py-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 + i * 0.05 }}>
+                        <span className="text-[10px] mt-0.5" style={{ color: "#2a7d4f" }}>💡</span>
+                        <span className="text-[11px] font-body italic" style={{ color: "rgba(45,42,38,0.7)" }}>{l}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tech Stack */}
+                <div>
+                  <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>Tech Stack</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {stop.techStack.map((t) => (
+                      <span key={t} className="text-[10px] font-mono px-2 py-0.5 rounded" style={{ background: `${stop.color}08`, border: `1px solid ${stop.color}15`, color: stop.color }}>{t}</span>
                     ))}
                   </div>
                 </div>
