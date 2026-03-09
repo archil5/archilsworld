@@ -225,7 +225,7 @@ export const apiGatewayDiagram: DiagramPuzzleData = {
     "You've mapped the exact zero-trust API Gateway pattern used to secure enterprise traffic across on-prem and cloud — handling thousands of requests per second at scale. 🔒",
   techStack: ["API Gateway", "Lambda", "ECS Fargate", "CDK", "Cognito"],
   services: ["NLB", "VPC Endpoints", "VPC Link", "ENI", "Direct Connect"],
-  layers: ["Network Resource VPC", "API Gateway VPC", "Managed Lambda VPC", "Shared Workload VPC"]
+  layers: ["Network Resource VPC", "API Gateway VPC", "Managed Lambda VPC", "Shared Workload VPC"],
   diagram: {
     groups: [
       { id: "net", label: "Network Resource VPC", x: 10, y: 10, w: 20, h: 28, color: "#0078D4" },
