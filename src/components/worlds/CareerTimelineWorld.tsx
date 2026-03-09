@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, RefreshCw, Trophy, Lightbulb, Target, Layers } from "lucide-react";
 import { brandLogos } from "@/data/brandLogos";
 import ArchDiagramPuzzle, { type DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
 import ReadOnlyDiagram from "@/components/puzzles/ReadOnlyDiagram";
@@ -11,10 +11,10 @@ import {
   mlOpsPipelineDiagram,
   haContainerDiagram,
   multiAccountMlOpsDiagram,
-  funPuzzleAI,
-  funPuzzleServerless,
-  funPuzzleDevOps,
-  funPuzzleSecurity
+  aiPuzzles,
+  serverlessPuzzles,
+  devOpsPuzzles,
+  securityPuzzles
 } from "@/data/careerDiagrams";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,13 @@ interface SolutionArchitecture {
   layers?: string[];
 }
 
+interface RoleOverview {
+  philosophy: string;
+  frameworks: string[];
+  deliverables: string[];
+  learnings: string[];
+}
+
 interface RoleStop {
   company: string;
   title: string;
@@ -48,9 +55,10 @@ interface RoleStop {
   impact: string;
   techStack: string[];
   wins: string[];
+  overview: RoleOverview;
   project?: ProjectShowcase;
   solutions?: SolutionArchitecture[];
-  funPuzzle: DiagramPuzzleData;
+  funPuzzles: DiagramPuzzleData[];
 }
 
 /* ═══════════════════════════════════════════════════════════
