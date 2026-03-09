@@ -52,22 +52,53 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   const handleReset = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
-    // Keep wheel interactions scoped to the diagram (no page scroll)
     e.preventDefault();
     e.stopPropagation();
 
     if (e.ctrlKey || e.metaKey) {
-      // Ctrl/⌘ + scroll = zoom
       setZoom((z) => Math.max(0.5, Math.min(3, z - e.deltaY * 0.003)));
       return;
     }
 
-    // Regular scroll/trackpad = pan
+    // Regular scroll/trackpad = pan (not zoom)
     setPan((p) => ({
       x: p.x - e.deltaX / zoom,
       y: p.y - e.deltaY / zoom,
     }));
   }, [zoom]);
+
+  // Pinch-to-zoom via touch events
+  const lastTouchDist = useRef(0);
+  const handleTouchStartZoom = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastTouchDist.current = Math.sqrt(dx * dx + dy * dy);
+    } else if (e.touches.length === 1) {
+      setIsPanning(true);
+      lastMouse.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+  const handleTouchMoveZoom = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      e.stopPropagation();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (lastTouchDist.current > 0) {
+        const scale = dist / lastTouchDist.current;
+        setZoom(z => Math.max(0.5, Math.min(3, z * scale)));
+      }
+      lastTouchDist.current = dist;
+    } else if (isPanning && e.touches.length === 1) {
+      e.stopPropagation();
+      setPan(p => ({ x: p.x + (e.touches[0].clientX - lastMouse.current.x), y: p.y + (e.touches[0].clientY - lastMouse.current.y) }));
+      lastMouse.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+  const handleTouchEndZoom = () => { setIsPanning(false); lastTouchDist.current = 0; };
 
   const handleMouseDown = (e: React.MouseEvent) => { setIsPanning(true); lastMouse.current = { x: e.clientX, y: e.clientY }; };
   const handleMouseMove = (e: React.MouseEvent) => {
