@@ -229,7 +229,7 @@ const AllSolvedTrophy = () => (
 const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
   const [activeStop, setActiveStop] = useState(0);
   const [revealed, setRevealed] = useState(0);
-  const [panel, setPanel] = useState<"overview" | "puzzle">("puzzle");
+  const [panel, setPanel] = useState<"overview" | "puzzle">("overview");
   const [activeDiagram, setActiveDiagram] = useState(0);
   const [solvedStops, setSolvedStops] = useState<Set<string>>(new Set());
   
@@ -626,80 +626,162 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   </div>
                 </div>
 
-                {/* Some of My Work — Project Showcase */}
-                <div className="col-span-1 md:col-span-2 mt-2">
-                  <div
-                    className="rounded-xl p-5"
-                    style={{
-                      background: `${stop.color}04`,
-                      border: `1px solid ${stop.color}12`,
-                    }}
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-sm">🏗️</span>
-                      <p
-                        className="text-[9px] font-mono uppercase tracking-widest"
-                        style={{ color: stop.color }}
-                      >
-                        Featured Project
-                      </p>
-                    </div>
-                    <h4
-                      className="font-display text-base font-bold mb-2"
-                      style={{ color: "#2d2a26" }}
-                    >
-                      {stop.project.name}
-                    </h4>
-                    <p
-                      className="text-xs font-body leading-relaxed mb-4"
-                      style={{ color: "rgba(45,42,38,0.75)" }}
-                    >
-                      {stop.project.description}
-                    </p>
-                    <div className="space-y-1.5">
-                      {stop.project.highlights.map((h, i) => (
-                        <motion.div
-                          key={i}
-                          className="flex items-start gap-2 py-1"
-                          initial={{ opacity: 0, x: 8 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.3 + i * 0.06 }}
-                        >
-                          <span
-                            className="text-[8px] mt-1 font-mono"
-                            style={{ color: stop.color }}
-                          >
-                            ◆
-                          </span>
-                          <span
-                            className="text-[11px] font-mono"
-                            style={{ color: "rgba(45,42,38,0.7)" }}
-                          >
-                            {h}
-                          </span>
-                        </motion.div>
-                      ))}
-                    </div>
+                {/* Solution Architecture Cards */}
+                {stop.diagramPuzzles && stop.diagramPuzzles.length > 0 && (
+                  <div className="col-span-1 md:col-span-2 mt-2 space-y-4">
+                    {stop.diagramPuzzles.map((puzzle, idx) => {
+                      const puzzleId = `${activeStop}-${idx}`;
+                      const isSolved = solvedStops.has(puzzleId);
 
-                    {/* Read-only architecture diagrams */}
-                    {stop.diagramPuzzles && stop.diagramPuzzles.length > 0 && (
-                      <div className="mt-4 space-y-4">
-                        {stop.diagramPuzzles.map((puzzle, idx) => (
-                          <ReadOnlyDiagram
-                            key={idx}
-                            diagram={puzzle.diagram}
-                            color={stop.color}
-                            title={puzzle.projectName}
-                          />
-                        ))}
-                      </div>
-                    )}
+                      return (
+                        <motion.div
+                          key={idx}
+                          className="rounded-xl overflow-hidden"
+                          style={{
+                            border: `1px solid ${stop.color}25`,
+                            background: "#fff",
+                          }}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.12 }}
+                        >
+                          {/* Card Header */}
+                          <div
+                            className="px-5 py-4 flex items-center justify-between"
+                            style={{
+                              background: `${stop.color}08`,
+                              borderBottom: `1px solid ${stop.color}12`,
+                            }}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div
+                                className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-mono font-bold"
+                                style={{ background: `${stop.color}15`, color: stop.color }}
+                              >
+                                {idx + 1}
+                              </div>
+                              <div>
+                                <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
+                                  {puzzle.projectName}
+                                </h4>
+                                <p className="text-[10px] font-mono mt-0.5" style={{ color: "rgba(80,70,60,0.55)" }}>
+                                  Solution Architecture
+                                </p>
+                              </div>
+                            </div>
+                            {isSolved && (
+                              <span
+                                className="text-[10px] font-mono px-3 py-1 rounded-full flex items-center gap-1"
+                                style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
+                              >
+                                ✓ Completed
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Description */}
+                          <div className="px-5 pt-4 pb-3">
+                            <p className="text-xs font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.8)" }}>
+                              {puzzle.description}
+                            </p>
+                          </div>
+
+                          {/* Metadata Grid: Tech Stack / Services / Layers */}
+                          <div
+                            className="px-5 py-4 grid grid-cols-1 md:grid-cols-3 gap-4"
+                            style={{ borderTop: "1px solid rgba(180,140,100,0.08)", borderBottom: "1px solid rgba(180,140,100,0.08)" }}
+                          >
+                            {/* Tech Stack */}
+                            <div>
+                              <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
+                                Tech Stack
+                              </p>
+                              <div className="flex flex-wrap gap-1">
+                                {puzzle.techStack?.map((tech) => (
+                                  <span
+                                    key={tech}
+                                    className="text-[10px] font-mono px-2 py-0.5 rounded"
+                                    style={{
+                                      background: `${stop.color}08`,
+                                      border: `1px solid ${stop.color}12`,
+                                      color: stop.color,
+                                    }}
+                                  >
+                                    {tech}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Services Used */}
+                            <div>
+                              <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
+                                Services Used
+                              </p>
+                              <div className="flex flex-wrap gap-1">
+                                {puzzle.diagram.nodes.slice(0, 6).map((node) => (
+                                  <span
+                                    key={node.id}
+                                    className="text-[10px] font-mono px-2 py-0.5 rounded"
+                                    style={{
+                                      background: `${stop.color}08`,
+                                      border: `1px solid ${stop.color}12`,
+                                      color: stop.color,
+                                    }}
+                                  >
+                                    {node.icon} {node.label}
+                                  </span>
+                                ))}
+                                {puzzle.diagram.nodes.length > 6 && (
+                                  <span className="text-[10px] font-mono px-2 py-0.5" style={{ color: "rgba(80,70,60,0.4)" }}>
+                                    +{puzzle.diagram.nodes.length - 6} more
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Architecture Layers */}
+                            <div>
+                              <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
+                                Architecture Layers
+                              </p>
+                              <div className="flex flex-wrap gap-1">
+                                {puzzle.diagram.groups?.map((group) => (
+                                  <span
+                                    key={group.id}
+                                    className="text-[10px] font-mono px-2 py-0.5 rounded"
+                                    style={{
+                                      background: `${stop.color}08`,
+                                      border: `1px solid ${stop.color}12`,
+                                      color: stop.color,
+                                    }}
+                                  >
+                                    {group.label}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Challenge Info */}
+                          <div className="px-5 py-3">
+                            <p className="text-[9px] font-mono uppercase tracking-wider mb-1" style={{ color: stop.color }}>
+                              Puzzle Challenge
+                            </p>
+                            <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>
+                              Place <strong>{puzzle.diagram.hiddenNodeIds.length}</strong> hidden component
+                              {puzzle.diagram.hiddenNodeIds.length !== 1 ? "s" : ""} to complete this architecture
+                            </p>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
-                </div>
+                )}
               </div>
             ) : stop.diagramPuzzles && stop.diagramPuzzles.length > 0 ? (
               <div
-                className="p-6 overflow-y-auto space-y-8"
+                className="p-6 overflow-y-auto space-y-6"
                 style={{
                   background: "#fefcf9",
                   maxHeight: "70vh",
@@ -719,11 +801,10 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       }}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.12 }}
+                      transition={{ delay: idx * 0.1 }}
                     >
-                      {/* Card Header */}
                       <div
-                        className="px-5 py-4 flex items-center justify-between"
+                        className="px-5 py-3 flex items-center justify-between"
                         style={{
                           background: `${stop.color}08`,
                           borderBottom: `1px solid ${stop.color}12`,
@@ -731,130 +812,26 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-mono font-bold"
+                            className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-mono font-bold"
                             style={{ background: `${stop.color}15`, color: stop.color }}
                           >
                             {idx + 1}
                           </div>
-                          <div>
-                            <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
-                              {puzzle.projectName}
-                            </h4>
-                            <p className="text-[10px] font-mono mt-0.5" style={{ color: "rgba(80,70,60,0.55)" }}>
-                              Solution Architecture
-                            </p>
-                          </div>
+                          <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
+                            {puzzle.projectName}
+                          </h4>
                         </div>
                         {isSolved && (
                           <span
-                            className="text-[10px] font-mono px-3 py-1 rounded-full flex items-center gap-1"
+                            className="text-[10px] font-mono px-3 py-1 rounded-full"
                             style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
                           >
-                            ✓ Completed
+                            ✓ Solved
                           </span>
                         )}
                       </div>
 
-                      {/* Description */}
-                      <div className="px-5 pt-4 pb-3">
-                        <p className="text-xs font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.8)" }}>
-                          {puzzle.description}
-                        </p>
-                      </div>
-
-                      {/* Metadata Grid: Tech Stack / Services / Layers */}
-                      <div
-                        className="px-5 py-4 grid grid-cols-1 md:grid-cols-3 gap-4"
-                        style={{ borderTop: "1px solid rgba(180,140,100,0.08)", borderBottom: "1px solid rgba(180,140,100,0.08)" }}
-                      >
-                        {/* Services Used */}
-                        <div>
-                          <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
-                            Services Used
-                          </p>
-                          <div className="flex flex-wrap gap-1">
-                            {puzzle.diagram.nodes.slice(0, 8).map((node) => (
-                              <span
-                                key={node.id}
-                                className="text-[10px] font-mono px-2 py-0.5 rounded"
-                                style={{
-                                  background: `${stop.color}08`,
-                                  border: `1px solid ${stop.color}12`,
-                                  color: stop.color,
-                                }}
-                              >
-                                {node.icon} {node.label}
-                              </span>
-                            ))}
-                            {puzzle.diagram.nodes.length > 8 && (
-                              <span className="text-[10px] font-mono px-2 py-0.5" style={{ color: "rgba(80,70,60,0.4)" }}>
-                                +{puzzle.diagram.nodes.length - 8} more
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Architecture Layers */}
-                        <div>
-                          <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
-                            Architecture Layers
-                          </p>
-                          <div className="space-y-1">
-                            {puzzle.diagram.groups?.map((group) => (
-                              <div
-                                key={group.id}
-                                className="text-[10px] font-mono px-2 py-0.5 rounded flex items-center gap-1.5"
-                                style={{
-                                  background: `${group.color}08`,
-                                  border: `1px solid ${group.color}15`,
-                                  color: group.color,
-                                }}
-                              >
-                                <span className="w-1.5 h-1.5 rounded-full" style={{ background: group.color }} />
-                                {group.label}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Puzzle Challenge Info */}
-                        <div>
-                          <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: "#c0553a" }}>
-                            🧩 Challenge
-                          </p>
-                          <p className="text-[10px] font-body mb-2" style={{ color: "rgba(45,42,38,0.7)" }}>
-                            Place <strong>{puzzle.diagram.hiddenNodeIds.length}</strong> hidden component{puzzle.diagram.hiddenNodeIds.length > 1 ? 's' : ''}:
-                          </p>
-                          <div className="flex flex-wrap gap-1">
-                            {puzzle.diagram.hiddenNodeIds.map((nodeId) => {
-                              const node = puzzle.diagram.nodes.find(n => n.id === nodeId);
-                              return node ? (
-                                <span
-                                  key={nodeId}
-                                  className="text-[9px] font-mono px-1.5 py-0.5 rounded"
-                                  style={{
-                                    background: "rgba(228,77,38,0.08)",
-                                    border: "1px solid rgba(228,77,38,0.12)",
-                                    color: "#c0553a",
-                                  }}
-                                >
-                                  {node.icon} {node.label}
-                                </span>
-                              ) : null;
-                            })}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Solution Architecture Label */}
-                      <div className="px-5 pt-4 pb-2">
-                        <p className="text-[9px] font-mono uppercase tracking-widest" style={{ color: stop.color }}>
-                          Solution Architecture
-                        </p>
-                      </div>
-
-                      {/* Interactive Puzzle */}
-                      <div className="px-5 pb-5">
+                      <div className="p-5">
                         <ArchDiagramPuzzle
                           key={puzzleId}
                           data={puzzle}

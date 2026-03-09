@@ -52,6 +52,7 @@ export interface DiagramPuzzleData {
   diagram: ArchDiagram;
   successMessage: string;
   color: string;
+  techStack?: string[];
 }
 
 /* ═══════════════════════════════════════════════════════════
