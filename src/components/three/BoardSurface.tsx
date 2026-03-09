@@ -32,13 +32,13 @@ const BoardSurface = () => {
 
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3, -0.2, -1.5]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3, -0.2, -1.5]} receiveShadow raycast={() => null}>
         <planeGeometry args={[40, 20]} />
         <meshStandardMaterial color="#f0ebe3" roughness={0.95} metalness={0.0} />
       </mesh>
 
       {hexPositions.map((pos, i) => (
-        <mesh key={i} position={pos} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <mesh key={i} position={pos} rotation={[-Math.PI / 2, 0, 0]} receiveShadow raycast={() => null}>
           <shapeGeometry args={[hexShape]} />
           <meshStandardMaterial
             color="#e8e0d4"
