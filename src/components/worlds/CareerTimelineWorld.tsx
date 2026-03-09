@@ -194,7 +194,7 @@ const stops: RoleStop[] = [
     company: "RBC",
     title: "DevOps Engineer — Cybersecurity",
     period: "Sep 2018–Sep 2020",
-    color: "#003168",
+    color: "#0078D4",
     narrative:
       "Where the journey started. Automating cybersecurity operations at one of Canada's largest banks — vulnerability scanning, compliance automation, and building the tools the security team relied on daily.",
     challenge: "Automate manual cybersecurity processes across enterprise infrastructure",
