@@ -5,6 +5,70 @@ import type { DiagramPuzzleData } from "@/components/puzzles/ArchDiagramPuzzle";
    ═══════════════════════════════════════════════════════════ */
 
 /* ───────────────────────────────────────────────────────────
+   GENERIC CLOUD PUZZLE (Fun, not related to actual work)
+   ─────────────────────────────────────────────────────────── */
+
+export const genericCloudPuzzle: DiagramPuzzleData = {
+  title: "Cloud Services Puzzle",
+  roleTitle: "Fun Cloud Challenge",
+  projectName: "Build Your First Cloud App",
+  description:
+    "A simple cloud application puzzle! Build a serverless web application that stores user uploads in object storage, processes them with serverless functions, and serves the results via an API. This is a fun learning puzzle to understand basic cloud patterns.",
+  color: "#FF6B6B",
+  successMessage:
+    "You've built a complete serverless cloud application! This pattern forms the foundation for thousands of modern web apps. 🎉",
+  diagram: {
+    groups: [
+      { id: "users", label: "Users", x: 8, y: 15, w: 18, h: 30, color: "#4CAF50" },
+      { id: "api", label: "API Layer", x: 28, y: 15, w: 20, h: 30, color: "#2196F3" },
+      { id: "compute", label: "Compute", x: 50, y: 15, w: 22, h: 30, color: "#FF9800" },
+      { id: "storage", label: "Storage", x: 74, y: 15, w: 20, h: 30, color: "#9C27B0" },
+    ],
+    nodes: [
+      // Users
+      { id: "browser", label: "Web Browser", x: 17, y: 25, w: 110, h: 32, icon: "🌐" },
+      { id: "mobile", label: "Mobile App", x: 17, y: 35, w: 100, h: 32, icon: "📱" },
+      
+      // API Layer
+      { id: "cdn", label: "CDN", x: 38, y: 20, w: 70, h: 28, icon: "⚡", hidden: true },
+      { id: "gateway", label: "API Gateway", x: 38, y: 30, w: 110, h: 32, icon: "🚪", hidden: true },
+      { id: "auth", label: "Auth Service", x: 38, y: 40, w: 105, h: 32, icon: "🔐" },
+      
+      // Compute
+      { id: "lambda", label: "Lambda Functions", x: 61, y: 25, w: 135, h: 32, icon: "⚡", hidden: true },
+      { id: "queue", label: "Message Queue", x: 61, y: 35, w: 125, h: 32, icon: "📬", hidden: true },
+      
+      // Storage
+      { id: "s3", label: "Object Storage", x: 84, y: 25, w: 125, h: 32, icon: "🪣", hidden: true },
+      { id: "database", label: "NoSQL Database", x: 84, y: 35, w: 135, h: 32, icon: "🗄️" },
+    ],
+    edges: [
+      { from: "browser", to: "cdn", label: "HTTPS" },
+      { from: "mobile", to: "cdn", label: "HTTPS" },
+      { from: "cdn", to: "gateway", label: "Route" },
+      { from: "gateway", to: "auth", label: "Validate" },
+      { from: "gateway", to: "lambda", label: "Invoke" },
+      { from: "lambda", to: "s3", label: "Store Files" },
+      { from: "lambda", to: "database", label: "Save Data" },
+      { from: "lambda", to: "queue", label: "Async Tasks" },
+      { from: "queue", to: "lambda", label: "Process", bidirectional: true },
+    ],
+    hiddenNodeIds: ["cdn", "gateway", "lambda", "queue", "s3"],
+    wordBank: [
+      "CDN",
+      "API Gateway",
+      "Lambda Functions",
+      "Message Queue",
+      "Object Storage",
+      "Load Balancer",
+      "Container Registry",
+      "Cache Service",
+    ],
+  },
+  techStack: ["Serverless", "REST API", "Cloud Functions", "Object Storage", "NoSQL"],
+};
+
+/* ───────────────────────────────────────────────────────────
    DIAGRAM 1: Enterprise AI & GraphRAG Platform (Azure)
    ─────────────────────────────────────────────────────────── */
 
