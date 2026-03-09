@@ -514,21 +514,21 @@ const ArchDiagramPuzzle = ({
                   zIndex: 2,
                   background: isBlank
                     ? isOver
-                      ? `${color}20`
-                      : "rgba(255,255,255,0.03)"
+                      ? `${color}15`
+                      : "rgba(180,140,100,0.04)"
                     : placed
-                      ? `${color}20`
-                      : "rgba(255,255,255,0.08)",
+                      ? `${color}12`
+                      : "#fff",
                   border: isBlank
-                    ? `2px dashed ${isOver ? color : `${color}40`}`
+                    ? `2px dashed ${isOver ? color : `${color}50`}`
                     : placed
-                      ? `2px solid ${color}70`
-                      : `1px solid rgba(255,255,255,0.12)`,
+                      ? `2px solid ${color}60`
+                      : `1px solid rgba(180,140,100,0.2)`,
                   boxShadow: placed
-                    ? `0 0 12px ${color}25`
+                    ? `0 0 12px ${color}20`
                     : isOver
-                      ? `0 0 16px ${color}30`
-                      : "0 2px 8px rgba(0,0,0,0.3)",
+                      ? `0 0 16px ${color}25`
+                      : "0 2px 8px rgba(180,140,100,0.08)",
                   cursor: isBlank ? "pointer" : "default",
                 }}
                 animate={
