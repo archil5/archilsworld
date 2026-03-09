@@ -177,7 +177,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
 
         <motion.p
           className="text-[10px] font-mono mt-6"
-          style={{ color: "rgba(245,240,232,0.25)" }}
+          style={{ color: "rgba(107,101,96,0.4)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}
