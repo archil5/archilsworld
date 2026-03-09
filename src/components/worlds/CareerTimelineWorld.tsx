@@ -50,6 +50,7 @@ interface RoleStop {
   wins: string[];
   project?: ProjectShowcase;
   solutions?: SolutionArchitecture[];
+  funPuzzle: DiagramPuzzleData;
 }
 
 /* ═══════════════════════════════════════════════════════════
