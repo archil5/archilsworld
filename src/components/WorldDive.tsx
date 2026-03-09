@@ -7,13 +7,10 @@ import CareerTimelineWorld from "./worlds/CareerTimelineWorld";
 import ContactWorld from "./worlds/ContactWorld";
 import type { ChapterData } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
-import { useProgressiveTheme } from "@/hooks/useProgressiveTheme";
 
 interface WorldDiveProps {
   chapter: ChapterData | null;
   onClose: () => void;
-  themeIndex: number;
-  totalChapters: number;
 }
 
 const worldMap: Record<string, () => JSX.Element> = {
@@ -24,15 +21,13 @@ const worldMap: Record<string, () => JSX.Element> = {
   "contact": () => <ContactWorld />,
 };
 
-const WorldDive = ({ chapter, onClose, themeIndex, totalChapters }: WorldDiveProps) => {
-  const theme = useProgressiveTheme(themeIndex, totalChapters);
-
+const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
   return (
     <AnimatePresence>
       {chapter && (
         <motion.div
           className="fixed inset-0 z-50 flex flex-col"
-          style={{ background: theme.bg }}
+          style={{ background: "#faf8f4" }}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
@@ -45,13 +40,9 @@ const WorldDive = ({ chapter, onClose, themeIndex, totalChapters }: WorldDivePro
             initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
             <button onClick={onClose}
               className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all cursor-pointer"
-              style={{
-                color: theme.textMuted,
-                background: theme.isDark ? "rgba(181,101,58,0.1)" : "rgba(180,140,100,0.08)",
-                border: `1px solid ${theme.uiBorder}`,
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = theme.isDark ? "rgba(181,101,58,0.2)" : "rgba(180,140,100,0.15)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = theme.isDark ? "rgba(181,101,58,0.1)" : "rgba(180,140,100,0.08)"; }}>
+              style={{ color: "#6b6560", background: "rgba(180,140,100,0.08)", border: "1px solid rgba(180,140,100,0.15)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(180,140,100,0.15)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(180,140,100,0.08)"; }}>
               <ArrowLeft size={16} />
               <span className="text-xs font-display tracking-wider">Back to Board</span>
             </button>
@@ -65,7 +56,7 @@ const WorldDive = ({ chapter, onClose, themeIndex, totalChapters }: WorldDivePro
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded"
                   style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}20` }}>
                   <img src={careerLogos.RBC} alt="RBC" className="h-5 object-contain" />
-                  <span style={{ color: theme.textMuted, fontSize: 8 }}>+</span>
+                  <span style={{ color: "#aaa", fontSize: 8 }}>+</span>
                   <img src={careerLogos.BMO} alt="BMO" className="h-5 object-contain" />
                 </span>
               ) : chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
@@ -77,8 +68,8 @@ const WorldDive = ({ chapter, onClose, themeIndex, totalChapters }: WorldDivePro
                 <span className="text-2xl">{chapter.icon}</span>
               )}
               <div className="text-right">
-                <p className="font-display text-sm tracking-wider" style={{ color: theme.text }}>{chapter.title}</p>
-                <p className="text-[10px] font-mono" style={{ color: theme.textMuted }}>{chapter.year}</p>
+                <p className="font-display text-sm tracking-wider" style={{ color: "#2d2a26" }}>{chapter.title}</p>
+                <p className="text-[10px] font-mono" style={{ color: "#6b6560" }}>{chapter.year}</p>
               </div>
             </div>
           </motion.div>
@@ -90,7 +81,7 @@ const WorldDive = ({ chapter, onClose, themeIndex, totalChapters }: WorldDivePro
 
           <motion.div className="relative z-10 text-center py-3"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-            <p className="text-[10px] font-mono" style={{ color: theme.textMuted }}>
+            <p className="text-[10px] font-mono" style={{ color: "#8a8078" }}>
               Press ESC or click Back to return to the board
             </p>
           </motion.div>
