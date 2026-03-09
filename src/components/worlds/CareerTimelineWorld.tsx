@@ -119,7 +119,11 @@ const stops: RoleStop[] = [
         "Model monitoring with automated retraining triggers",
       ],
     },
-    diagramPuzzles: [apiGatewayDiagram, haContainerDiagram, mlOpsPipelineDiagram],
+    solutions: [
+      { name: "Zero-Trust API Gateway", description: "Private API Gateway with custom Lambda authorizers", diagram: apiGatewayDiagram },
+      { name: "HA Container Platform", description: "Multi-AZ ECS Fargate with PostgreSQL failover", diagram: haContainerDiagram },
+      { name: "Automated MLOps Pipeline", description: "End-to-end model training and deployment", diagram: mlOpsPipelineDiagram }
+    ],
   },
   {
     company: "BMO",
