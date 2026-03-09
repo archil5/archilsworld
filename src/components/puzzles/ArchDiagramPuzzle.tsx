@@ -394,13 +394,13 @@ const ArchDiagramPuzzle = ({
                 top: `${group.y}%`,
                 width: `${group.w}%`,
                 height: `${group.h}%`,
-                background: `${group.color || color}08`,
-                border: `1px solid ${group.color || color}20`,
+                background: `${group.color || color}10`,
+                border: `1px solid ${group.color || color}25`,
               }}
             >
               <span
                 className="absolute top-1 left-2 text-[7px] font-mono uppercase tracking-wider"
-                style={{ color: `${group.color || color}60` }}
+                style={{ color: `${group.color || color}90` }}
               >
                 {group.label}
               </span>
