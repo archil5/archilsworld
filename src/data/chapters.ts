@@ -27,7 +27,7 @@ export const CHAPTERS: ChapterData[] = [
     subtitle: "Where it all began",
     narrative: "I didn't just play DOS games — I interrogated them. Every pixel, every sound, every menu screen made me ask the same restless question: how did someone make this?",
     tagline: "The one who took things apart to understand how they worked",
-    exploreHint: "⟩ boot sequence initiated…",
+    exploreHint: "Where it all started ↗",
     skills: ["Curiosity", "Problem Solving", "DOS"],
     position: [-5, 0, 0],
     color: "#2d4a7a",
