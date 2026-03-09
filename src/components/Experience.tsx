@@ -304,11 +304,11 @@ const Experience = () => {
       <ChapterOverlay chapter={chapter} visible={showOverlay && !isDiving} onDive={handleDive} />
 
       {activeIndex === 0 && !showOverlay && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
-          <p className="text-xs font-display tracking-[0.3em] uppercase" style={{ color: "#6b6560" }}>
-            Scroll or use arrows
+        <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
+          <p className="text-[10px] md:text-xs font-display tracking-[0.2em] md:tracking-[0.3em] uppercase" style={{ color: "#6b6560" }}>
+            Swipe or tap arrows
           </p>
-          <svg width="20" height="30" viewBox="0 0 20 30" fill="none" className="opacity-50">
+          <svg width="20" height="30" viewBox="0 0 20 30" fill="none" className="opacity-50 hidden md:block">
             <rect x="1" y="1" width="18" height="28" rx="9" stroke="#b5653a" strokeWidth="1.5" />
             <circle cx="10" cy="10" r="2.5" fill="#b5653a">
               <animate attributeName="cy" values="8;18;8" dur="2s" repeatCount="indefinite" />
