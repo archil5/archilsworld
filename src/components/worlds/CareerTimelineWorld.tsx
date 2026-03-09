@@ -633,12 +633,10 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 </div>
 
                 {/* Solution Architecture Cards */}
-                {stop.diagramPuzzles && stop.diagramPuzzles.length > 0 && (
+                {stop.solutions && stop.solutions.length > 0 && (
                   <div className="col-span-1 md:col-span-2 mt-2 space-y-4">
-                    {stop.diagramPuzzles.map((puzzle, idx) => {
-                      const puzzleId = `${activeStop}-${idx}`;
-                      const isSolved = solvedStops.has(puzzleId);
-
+                    {stop.solutions.map((solution, idx) => {
+                      const puzzle = solution.diagram;
                       return (
                         <motion.div
                           key={idx}
@@ -675,14 +673,6 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                                 </p>
                               </div>
                             </div>
-                            {isSolved && (
-                              <span
-                                className="text-[10px] font-mono px-3 py-1 rounded-full flex items-center gap-1"
-                                style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
-                              >
-                                ✓ Completed
-                              </span>
-                            )}
                           </div>
 
                           {/* Description */}
@@ -704,17 +694,18 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                               </p>
                               <div className="flex flex-wrap gap-1">
                                 {puzzle.techStack?.map((tech) => (
-                                  <span
+                                  <Badge
                                     key={tech}
-                                    className="text-[10px] font-mono px-2 py-0.5 rounded"
+                                    variant="outline"
+                                    className="text-[10px] font-mono px-2 py-0.5"
                                     style={{
                                       background: `${stop.color}08`,
-                                      border: `1px solid ${stop.color}12`,
+                                      borderColor: `${stop.color}20`,
                                       color: stop.color,
                                     }}
                                   >
                                     {tech}
-                                  </span>
+                                  </Badge>
                                 ))}
                               </div>
                             </div>
@@ -722,27 +713,23 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                             {/* Services Used */}
                             <div>
                               <p className="text-[9px] font-mono uppercase tracking-wider mb-2" style={{ color: stop.color }}>
-                                Services Used
+                                Services
                               </p>
                               <div className="flex flex-wrap gap-1">
-                                {puzzle.diagram.nodes.slice(0, 6).map((node) => (
-                                  <span
-                                    key={node.id}
-                                    className="text-[10px] font-mono px-2 py-0.5 rounded"
+                                {puzzle.services?.map((service) => (
+                                  <Badge
+                                    key={service}
+                                    variant="outline"
+                                    className="text-[10px] font-mono px-2 py-0.5"
                                     style={{
                                       background: `${stop.color}08`,
-                                      border: `1px solid ${stop.color}12`,
+                                      borderColor: `${stop.color}20`,
                                       color: stop.color,
                                     }}
                                   >
-                                    {node.icon} {node.label}
-                                  </span>
+                                    {service}
+                                  </Badge>
                                 ))}
-                                {puzzle.diagram.nodes.length > 6 && (
-                                  <span className="text-[10px] font-mono px-2 py-0.5" style={{ color: "rgba(80,70,60,0.4)" }}>
-                                    +{puzzle.diagram.nodes.length - 6} more
-                                  </span>
-                                )}
                               </div>
                             </div>
 
@@ -752,32 +739,31 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                                 Architecture Layers
                               </p>
                               <div className="flex flex-wrap gap-1">
-                                {puzzle.diagram.groups?.map((group) => (
-                                  <span
-                                    key={group.id}
-                                    className="text-[10px] font-mono px-2 py-0.5 rounded"
+                                {puzzle.layers?.map((layer) => (
+                                  <Badge
+                                    key={layer}
+                                    variant="outline"
+                                    className="text-[10px] font-mono px-2 py-0.5"
                                     style={{
                                       background: `${stop.color}08`,
-                                      border: `1px solid ${stop.color}12`,
+                                      borderColor: `${stop.color}20`,
                                       color: stop.color,
                                     }}
                                   >
-                                    {group.label}
-                                  </span>
+                                    {layer}
+                                  </Badge>
                                 ))}
                               </div>
                             </div>
                           </div>
 
-                          {/* Challenge Info */}
-                          <div className="px-5 py-3">
-                            <p className="text-[9px] font-mono uppercase tracking-wider mb-1" style={{ color: stop.color }}>
-                              Puzzle Challenge
-                            </p>
-                            <p className="text-xs font-body" style={{ color: "rgba(45,42,38,0.7)" }}>
-                              Place <strong>{puzzle.diagram.hiddenNodeIds.length}</strong> hidden component
-                              {puzzle.diagram.hiddenNodeIds.length !== 1 ? "s" : ""} to complete this architecture
-                            </p>
+                          {/* Read-Only Diagram */}
+                          <div className="p-5">
+                            <ReadOnlyDiagram
+                              diagram={puzzle.diagram}
+                              color={puzzle.color}
+                              title={puzzle.projectName}
+                            />
                           </div>
                         </motion.div>
                       );
@@ -785,75 +771,67 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   </div>
                 )}
               </div>
-            ) : stop.diagramPuzzles && stop.diagramPuzzles.length > 0 ? (
+            ) : (
+              /* Puzzle Tab - Single Generic Fun Puzzle */
               <div
-                className="p-6 overflow-y-auto space-y-6"
+                className="p-6 overflow-y-auto"
                 style={{
                   background: "#fefcf9",
                   maxHeight: "70vh",
                 }}
               >
-                {stop.diagramPuzzles.map((puzzle, idx) => {
-                  const puzzleId = `${activeStop}-${idx}`;
-                  const isSolved = solvedStops.has(puzzleId);
-
-                  return (
-                    <motion.div
-                      key={idx}
-                      className="rounded-xl overflow-hidden"
-                      style={{
-                        border: `1px solid ${stop.color}25`,
-                        background: "#fff",
-                      }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                    >
+                <motion.div
+                  className="rounded-xl overflow-hidden"
+                  style={{
+                    border: `1px solid ${genericCloudPuzzle.color}25`,
+                    background: "#fff",
+                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <div
+                    className="px-5 py-3 flex items-center justify-between"
+                    style={{
+                      background: `${genericCloudPuzzle.color}08`,
+                      borderBottom: `1px solid ${genericCloudPuzzle.color}12`,
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
                       <div
-                        className="px-5 py-3 flex items-center justify-between"
-                        style={{
-                          background: `${stop.color}08`,
-                          borderBottom: `1px solid ${stop.color}12`,
-                        }}
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
+                        style={{ background: `${genericCloudPuzzle.color}15` }}
                       >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-mono font-bold"
-                            style={{ background: `${stop.color}15`, color: stop.color }}
-                          >
-                            {idx + 1}
-                          </div>
-                          <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
-                            {puzzle.projectName}
-                          </h4>
-                        </div>
-                        {isSolved && (
-                          <span
-                            className="text-[10px] font-mono px-3 py-1 rounded-full"
-                            style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
-                          >
-                            ✓ Solved
-                          </span>
-                        )}
+                        🎮
                       </div>
+                      <div>
+                        <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
+                          {genericCloudPuzzle.projectName}
+                        </h4>
+                        <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
+                          Fun cloud services puzzle — not related to real projects!
+                        </p>
+                      </div>
+                    </div>
+                    {genericPuzzleSolved && (
+                      <span
+                        className="text-[10px] font-mono px-3 py-1 rounded-full"
+                        style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
+                      >
+                        ✓ Solved
+                      </span>
+                    )}
+                  </div>
 
-                      <div className="p-5">
-                        <ArchDiagramPuzzle
-                          key={puzzleId}
-                          data={puzzle}
-                          solved={isSolved}
-                          onSolve={() =>
-                            setSolvedStops((prev) =>
-                              new Set(prev).add(puzzleId)
-                            )
-                          }
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                  <div className="p-5">
+                    <ArchDiagramPuzzle
+                      data={genericCloudPuzzle}
+                      solved={genericPuzzleSolved}
+                      onSolve={() => setSolvedPuzzle(true)}
+                    />
+                  </div>
+                </motion.div>
               </div>
-            ) : null}
+            )}
 
             {/* Nav */}
             <div
@@ -905,7 +883,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {allSolved && <AllSolvedTrophy />}
+        {genericPuzzleSolved && <AllSolvedTrophy />}
       </AnimatePresence>
     </div>
   );
