@@ -18,6 +18,7 @@ const Experience = () => {
   const [visitedSet, setVisitedSet] = useState<Set<number>>(new Set([0]));
   const [showOverlay, setShowOverlay] = useState(false);
   const [diveChapter, setDiveChapter] = useState<typeof CHAPTERS[0] | null>(null);
+  const [diveAnimating, setDiveAnimating] = useState(false);
   const scrollRef = useRef(0);
   const targetScroll = useRef(0);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>();
