@@ -221,10 +221,6 @@ const HexTile = ({
               fontWeight: 600,
               color: "#e0e0e0",
               letterSpacing: 0.6,
-              textTransform: "none" as const,
-              maxWidth: 180,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
             }}>
               {exploreHint || `Inside ${label}`}
             </span>
