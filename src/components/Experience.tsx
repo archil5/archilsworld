@@ -224,11 +224,11 @@ const Experience = () => {
 
       {/* Single bottom navigation */}
       {!isDiving && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+        <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 md:gap-3">
           <motion.button
             onClick={goPrev}
             disabled={activeIndex === 0}
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
             style={{
               background: "rgba(245,240,232,0.9)",
               border: "1px solid rgba(180,140,100,0.25)",
@@ -238,10 +238,10 @@ const Experience = () => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
           </motion.button>
 
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full" style={{
+          <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full" style={{
             background: "rgba(245,240,232,0.95)",
             border: "1px solid rgba(180,140,100,0.2)",
             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
@@ -252,15 +252,15 @@ const Experience = () => {
                 onClick={() => goTo(i)}
                 className="relative group transition-all duration-300 cursor-pointer rounded-full"
                 style={{
-                  width: i === activeIndex ? 32 : 10,
-                  height: 10,
+                  width: i === activeIndex ? 24 : 8,
+                  height: 8,
                   background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(107,101,96,0.45)" : "rgba(107,101,96,0.15)",
                   boxShadow: i === activeIndex ? `0 0 10px ${ch.color}60` : "none",
                 }}
                 title={ch.label}
               >
                 <span
-                  className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-0.5 rounded"
+                  className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-0.5 rounded hidden md:block"
                   style={{
                     color: "#2d2a26",
                     background: "rgba(245,240,232,0.95)",
@@ -274,7 +274,7 @@ const Experience = () => {
             ))}
           </div>
 
-          <span className="text-[10px] font-mono px-2 py-1 rounded-full" style={{
+          <span className="text-[9px] md:text-[10px] font-mono px-1.5 md:px-2 py-1 rounded-full" style={{
             color: "#6b6560",
             background: "rgba(245,240,232,0.9)",
             border: "1px solid rgba(180,140,100,0.15)",
@@ -285,7 +285,7 @@ const Experience = () => {
           <motion.button
             onClick={goNext}
             disabled={activeIndex === CHAPTERS.length - 1}
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
             style={{
               background: "rgba(245,240,232,0.9)",
               border: "1px solid rgba(180,140,100,0.25)",
@@ -295,7 +295,7 @@ const Experience = () => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={16} />
           </motion.button>
         </div>
       )}
