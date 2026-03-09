@@ -791,7 +791,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                 <motion.div
                   className="rounded-xl overflow-hidden"
                   style={{
-                    border: `1px solid ${genericCloudPuzzle.color}25`,
+                    border: `1px solid ${stop.funPuzzle.color}25`,
                     background: "#fff",
                   }}
                   initial={{ opacity: 0, y: 20 }}
@@ -800,27 +800,27 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                   <div
                     className="px-5 py-3 flex items-center justify-between"
                     style={{
-                      background: `${genericCloudPuzzle.color}08`,
-                      borderBottom: `1px solid ${genericCloudPuzzle.color}12`,
+                      background: `${stop.funPuzzle.color}08`,
+                      borderBottom: `1px solid ${stop.funPuzzle.color}12`,
                     }}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
-                        style={{ background: `${genericCloudPuzzle.color}15` }}
+                        style={{ background: `${stop.funPuzzle.color}15` }}
                       >
                         🎮
                       </div>
                       <div>
                         <h4 className="font-display text-sm font-bold" style={{ color: "#2d2a26" }}>
-                          {genericCloudPuzzle.projectName}
+                          {stop.funPuzzle.projectName}
                         </h4>
                         <p className="text-[10px] font-mono" style={{ color: "rgba(80,70,60,0.55)" }}>
-                          Fun cloud services puzzle — not related to real projects!
+                          Fun puzzle — test your cloud architecture skills!
                         </p>
                       </div>
                     </div>
-                    {genericPuzzleSolved && (
+                    {currentPuzzleSolved && (
                       <span
                         className="text-[10px] font-mono px-3 py-1 rounded-full"
                         style={{ background: "rgba(42,125,79,0.1)", color: "#2a7d4f", border: "1px solid rgba(42,125,79,0.2)" }}
@@ -832,9 +832,9 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
                   <div className="p-5">
                     <ArchDiagramPuzzle
-                      data={genericCloudPuzzle}
-                      solved={genericPuzzleSolved}
-                      onSolve={() => setSolvedPuzzle(true)}
+                      data={stop.funPuzzle}
+                      solved={currentPuzzleSolved}
+                      onSolve={() => setSolvedPuzzles(prev => new Set(prev).add(activeStop))}
                     />
                   </div>
                 </motion.div>
