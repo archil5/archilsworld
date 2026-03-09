@@ -26,6 +26,15 @@ interface ProjectShowcase {
   highlights: string[];
 }
 
+interface SolutionArchitecture {
+  name: string;
+  description: string;
+  diagram: DiagramPuzzleData;
+  techStack?: string[];
+  services?: string[];
+  layers?: string[];
+}
+
 interface RoleStop {
   company: string;
   title: string;
@@ -37,7 +46,7 @@ interface RoleStop {
   techStack: string[];
   wins: string[];
   project?: ProjectShowcase;
-  diagramPuzzles?: DiagramPuzzleData[]; // Changed to array
+  solutions?: SolutionArchitecture[];
 }
 
 /* ═══════════════════════════════════════════════════════════
