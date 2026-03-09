@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ZoomIn, ZoomOut, Maximize2, RotateCcw } from "lucide-react";
 import type { ArchDiagram } from "./ArchDiagramPuzzle";
 
@@ -45,13 +45,28 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const lastMouse = useRef({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleZoomIn = () => setZoom(z => Math.min(3, z + 0.3));
   const handleZoomOut = () => setZoom(z => Math.max(0.5, z - 0.3));
   const handleReset = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
 
+  // Click outside to deactivate
+  const handleClickOutside = useCallback((e: MouseEvent) => {
+    if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      setIsActive(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
+
   const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (!isActive && !isFullscreen) return; // Only intercept scroll when active
     e.preventDefault();
     e.stopPropagation();
 
@@ -65,7 +80,7 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
       x: p.x - e.deltaX / zoom,
       y: p.y - e.deltaY / zoom,
     }));
-  }, [zoom]);
+  }, [zoom, isActive, isFullscreen]);
 
   // Pinch-to-zoom via touch events
   const lastTouchDist = useRef(0);
@@ -171,10 +186,11 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
 
         {/* Diagram */}
         <motion.div
-          className="overflow-hidden rounded-b-xl overscroll-contain touch-none"
+          ref={containerRef}
+          className="overflow-hidden rounded-b-xl overscroll-contain touch-none relative"
           style={{
             background: bgColor,
-            border: `1px solid ${borderColor}`,
+            border: `1px solid ${isActive ? color : borderColor}`,
             borderTop: "none",
             height: isFullscreen ? "100%" : 450,
             cursor: isPanning ? "grabbing" : "grab",
@@ -183,8 +199,9 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
+          onClick={() => setIsActive(true)}
           onWheelCapture={handleWheel}
-          onMouseDown={handleMouseDown}
+          onMouseDown={(e) => { setIsActive(true); handleMouseDown(e); }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
@@ -192,6 +209,22 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
           onTouchMove={handleTouchMoveZoom}
           onTouchEnd={handleTouchEndZoom}
         >
+          {/* Click to interact hint */}
+          {!isActive && !isFullscreen && (
+            <div
+              className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
+              style={{ background: "rgba(254,252,249,0.3)" }}
+            >
+              <span className="text-[10px] font-mono px-3 py-1.5 rounded-lg" style={{
+                background: "rgba(245,240,232,0.95)",
+                border: "1px solid rgba(180,140,100,0.2)",
+                color: "#6b6560",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+              }}>
+                Click to interact with diagram
+              </span>
+            </div>
+          )}
           <div
             style={{
               transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,

@@ -115,7 +115,7 @@ const stops: RoleStop[] = [
     company: "BMO",
     title: "Principal — Serverless & Containers",
     period: "Jul 2022–Aug 2025",
-    color: "#FF9900",
+    color: "#0078D4",
     narrative:
       "Owning the platform. From serverless microservices to container orchestration at scale — multi-region architectures, service mesh patterns, and the zero-trust API gateway adopted bank-wide.",
     challenge: "Create a secure, standardized API gateway pattern for 1000+ developers",
@@ -156,7 +156,7 @@ const stops: RoleStop[] = [
     company: "BMO",
     title: "DevOps Engineer",
     period: "Sep 2020–Jul 2022",
-    color: "#24292e",
+    color: "#0078D4",
     narrative:
       "Built the CI/CD backbone. Ephemeral runners, automated compliance, and zero-trust deployment pipelines that process thousands of jobs daily.",
     challenge: "Build secure, scalable CI/CD with zero persistent infrastructure",
@@ -194,7 +194,7 @@ const stops: RoleStop[] = [
     company: "RBC",
     title: "DevOps Engineer — Cybersecurity",
     period: "Sep 2018–Sep 2020",
-    color: "#003168",
+    color: "#0078D4",
     narrative:
       "Where the journey started. Automating cybersecurity operations at one of Canada's largest banks — vulnerability scanning, compliance automation, and building the tools the security team relied on daily.",
     challenge: "Automate manual cybersecurity processes across enterprise infrastructure",
