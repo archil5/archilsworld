@@ -43,6 +43,7 @@ export const CHAPTERS: ChapterData[] = [
     subtitle: "From HTML to packets — the full picture",
     narrative: "I found HTML and CSS — and suddenly I wasn't just a consumer anymore. Then networking cracked open the whole machine. I could see how everything talked to everything.",
     tagline: "Where I stopped consuming and started creating",
+    exploreHint: "See where code met curiosity and the web came alive",
     skills: ["HTML", "CSS", "TCP/IP", "Network Architecture", "Web Design"],
     position: [-1.5, 0, -2],
     color: "#E44D26",
