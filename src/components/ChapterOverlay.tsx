@@ -80,7 +80,9 @@ const TypewriterText = ({ text, delay = 0, cursorColor }: { text: string; delay?
   );
 };
 
-const ChapterOverlay = ({ chapter, visible, onDive, theme }: ChapterOverlayProps) => {
+const ChapterOverlay = ({ chapter, visible, onDive, theme: themeProp }: ChapterOverlayProps) => {
+  const fallback = useProgressiveTheme(0, 5);
+  const theme = themeProp || fallback;
   return (
     <AnimatePresence mode="wait">
       {visible && (
