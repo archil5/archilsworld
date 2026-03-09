@@ -106,7 +106,7 @@ const HexTile = ({
         <meshBasicMaterial color={color} transparent opacity={0} />
       </mesh>
 
-      <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.35, 0]}>
+      <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.35, 0]} raycast={() => null}>
         <ringGeometry args={[0.85, 0.95, 6]} />
         <meshBasicMaterial color={color} transparent opacity={0} side={THREE.DoubleSide} />
       </mesh>
