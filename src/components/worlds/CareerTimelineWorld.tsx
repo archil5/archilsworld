@@ -156,7 +156,7 @@ const stops: RoleStop[] = [
     company: "BMO",
     title: "DevOps Engineer",
     period: "Sep 2020–Jul 2022",
-    color: "#24292e",
+    color: "#0078D4",
     narrative:
       "Built the CI/CD backbone. Ephemeral runners, automated compliance, and zero-trust deployment pipelines that process thousands of jobs daily.",
     challenge: "Build secure, scalable CI/CD with zero persistent infrastructure",
