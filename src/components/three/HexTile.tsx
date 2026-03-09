@@ -116,7 +116,7 @@ const HexTile = ({
       <mesh
         ref={meshRef}
         rotation={[-Math.PI / 2, 0, 0]}
-        onClick={(e) => { e.stopPropagation(); onClick(); }}
+        onClick={(e) => { e.stopPropagation(); if (isActive && onExplore) { onExplore(); } else { onClick(); } }}
         castShadow receiveShadow
       >
         <extrudeGeometry args={[hexShape, extrudeSettings]} />
