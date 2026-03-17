@@ -130,37 +130,44 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   };
   const handleMouseUp = () => setIsPanning(false);
 
+  // Track fullscreen in a ref so capture-phase popstate can read it synchronously
+  const wasFullscreenRef = useRef(false);
+  useEffect(() => { wasFullscreenRef.current = isFullscreen; }, [isFullscreen]);
+
   // Handle fullscreen with browser history
   const toggleFullscreen = useCallback(() => {
     if (!isFullscreen) {
       window.history.pushState({ fullscreenDiagram: true }, "");
+    } else {
+      // Exiting fullscreen via button — go back to remove history entry
+      window.history.back();
     }
     setIsFullscreen(f => !f);
     handleReset();
   }, [isFullscreen]);
 
   useEffect(() => {
+    // Use CAPTURE phase so this fires BEFORE Experience's popstate handler
     const handlePopState = (e: PopStateEvent) => {
-      if (isFullscreen) {
+      if (wasFullscreenRef.current) {
         e.stopImmediatePropagation();
         setIsFullscreen(false);
         handleReset();
       }
     };
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isFullscreen) {
-        setIsFullscreen(false);
-        handleReset();
+      if (e.key === "Escape" && wasFullscreenRef.current) {
+        // Just trigger history.back() — the capture-phase popstate handler will close fullscreen
         window.history.back();
       }
     };
-    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("popstate", handlePopState, true); // capture phase!
     window.addEventListener("keydown", handleEsc);
     return () => {
-      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("popstate", handlePopState, true);
       window.removeEventListener("keydown", handleEsc);
     };
-  }, [isFullscreen]);
+  }, []);
 
   // Touch handlers replaced by pinch-to-zoom aware versions above
 
@@ -324,56 +331,24 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                 );
               })}
 
-              {/* Edges with step numbers */}
+              {/* Edge lines only (rendered BEFORE nodes) */}
               {diagram.edges.map((edge, i) => {
                 const fromNode = diagram.nodes.find((n) => n.id === edge.from);
                 const toNode = diagram.nodes.find((n) => n.id === edge.to);
                 if (!fromNode || !toNode) return null;
-                const { path, mid } = getEdgePath(fromNode, toNode);
-                const stepNum = i + 1;
+                const { path } = getEdgePath(fromNode, toNode);
                 return (
-                  <g key={i}>
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke={edgeColor}
-                      strokeOpacity={0.6}
-                      strokeWidth="2.5"
-                      strokeDasharray={edge.dashed ? "8 5" : "none"}
-                      markerEnd="url(#ro-arrow-light)"
-                      markerStart={edge.bidirectional ? "url(#ro-arrow-rev-light)" : undefined}
-                    />
-                    {/* Step number circle */}
-                    <g filter="url(#step-shadow)">
-                      <circle cx={mid.x} cy={mid.y} r={13} fill={color} />
-                      <circle cx={mid.x} cy={mid.y} r={12} fill="white" />
-                      <circle cx={mid.x} cy={mid.y} r={11} fill={color} />
-                      <text
-                        x={mid.x} y={mid.y + 4.5}
-                        textAnchor="middle"
-                        fill="white"
-                        fontSize="11"
-                        fontFamily="monospace"
-                        fontWeight="800"
-                      >
-                        {stepNum}
-                      </text>
-                    </g>
-                    {/* Edge label */}
-                    {edge.label && (
-                      <text
-                        x={mid.x}
-                        y={mid.y - 16}
-                        textAnchor="middle"
-                        fill={subtleText}
-                        fontSize="9"
-                        fontFamily="monospace"
-                        fontWeight="600"
-                      >
-                        {edge.label}
-                      </text>
-                    )}
-                  </g>
+                  <path
+                    key={i}
+                    d={path}
+                    fill="none"
+                    stroke={edgeColor}
+                    strokeOpacity={0.6}
+                    strokeWidth="2.5"
+                    strokeDasharray={edge.dashed ? "8 5" : "none"}
+                    markerEnd="url(#ro-arrow-light)"
+                    markerStart={edge.bidirectional ? "url(#ro-arrow-rev-light)" : undefined}
+                  />
                 );
               })}
 
@@ -417,6 +392,58 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                     >
                       {node.label}
                     </text>
+                  </g>
+                );
+              })}
+
+              {/* Step number circles rendered AFTER nodes so they're always on top */}
+              {diagram.edges.map((edge, i) => {
+                const fromNode = diagram.nodes.find((n) => n.id === edge.from);
+                const toNode = diagram.nodes.find((n) => n.id === edge.to);
+                if (!fromNode || !toNode) return null;
+                const { mid } = getEdgePath(fromNode, toNode);
+                const stepNum = i + 1;
+                return (
+                  <g key={`step-${i}`}>
+                    <g filter="url(#step-shadow)">
+                      <circle cx={mid.x} cy={mid.y} r={14} fill={color} />
+                      <circle cx={mid.x} cy={mid.y} r={13} fill="white" />
+                      <circle cx={mid.x} cy={mid.y} r={12} fill={color} />
+                      <text
+                        x={mid.x} y={mid.y + 4.5}
+                        textAnchor="middle"
+                        fill="white"
+                        fontSize="11"
+                        fontFamily="monospace"
+                        fontWeight="800"
+                      >
+                        {stepNum}
+                      </text>
+                    </g>
+                    {edge.label && (
+                      <g>
+                        <rect
+                          x={mid.x - (edge.label.length * 3.2 + 6)}
+                          y={mid.y - 26}
+                          width={edge.label.length * 6.4 + 12}
+                          height={14}
+                          rx={3}
+                          fill={bgColor}
+                          fillOpacity={0.9}
+                        />
+                        <text
+                          x={mid.x}
+                          y={mid.y - 16}
+                          textAnchor="middle"
+                          fill={subtleText}
+                          fontSize="9"
+                          fontFamily="monospace"
+                          fontWeight="600"
+                        >
+                          {edge.label}
+                        </text>
+                      </g>
+                    )}
                   </g>
                 );
               })}
