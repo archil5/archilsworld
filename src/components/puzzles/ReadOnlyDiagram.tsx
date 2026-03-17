@@ -226,27 +226,28 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
         {/* Diagram */}
         <motion.div
           ref={containerRef}
-          className={`overflow-hidden rounded-b-xl relative ${isActive ? "overscroll-contain touch-none" : ""}`}
+          className={`overflow-hidden rounded-b-xl relative select-none`}
           style={{
             background: bgColor,
             border: `1px solid ${isActive ? color : borderColor}`,
             borderTop: "none",
             height: isFullscreen ? "100%" : 450,
-            cursor: isActive ? (isPanning ? "grabbing" : "grab") : "pointer",
+            cursor: isPanning ? "grabbing" : "grab",
+            userSelect: "none",
+            WebkitUserSelect: "none",
             ...(isFullscreen ? { borderRadius: 0, flex: 1 } : {}),
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          onClick={() => setIsActive(true)}
           onWheel={handleWheel}
           onMouseDown={(e) => { setIsActive(true); handleMouseDown(e); }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onTouchStart={isActive ? handleTouchStartZoom : undefined}
-          onTouchMove={isActive ? handleTouchMoveZoom : undefined}
-          onTouchEnd={isActive ? handleTouchEndZoom : undefined}
+          onTouchStart={handleTouchStartZoom}
+          onTouchMove={handleTouchMoveZoom}
+          onTouchEnd={handleTouchEndZoom}
         >
           <div
             style={{
