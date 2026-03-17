@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { ZoomIn, ZoomOut, Maximize2, RotateCcw } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize2, Minimize2, RotateCcw } from "lucide-react";
 import type { ArchDiagram } from "./ArchDiagramPuzzle";
 
 const VW = 1600;
@@ -117,13 +117,50 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   };
   const handleTouchEndZoom = () => { setIsPanning(false); lastTouchDist.current = 0; };
 
-  const handleMouseDown = (e: React.MouseEvent) => { setIsPanning(true); lastMouse.current = { x: e.clientX, y: e.clientY }; };
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsPanning(true);
+    lastMouse.current = { x: e.clientX, y: e.clientY };
+  };
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
+    e.preventDefault();
     setPan(p => ({ x: p.x + (e.clientX - lastMouse.current.x), y: p.y + (e.clientY - lastMouse.current.y) }));
     lastMouse.current = { x: e.clientX, y: e.clientY };
   };
   const handleMouseUp = () => setIsPanning(false);
+
+  // Handle fullscreen with browser history
+  const toggleFullscreen = useCallback(() => {
+    if (!isFullscreen) {
+      window.history.pushState({ fullscreenDiagram: true }, "");
+    }
+    setIsFullscreen(f => !f);
+    handleReset();
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (isFullscreen) {
+        e.stopImmediatePropagation();
+        setIsFullscreen(false);
+        handleReset();
+      }
+    };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isFullscreen) {
+        setIsFullscreen(false);
+        handleReset();
+        window.history.back();
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleEsc);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [isFullscreen]);
 
   // Touch handlers replaced by pinch-to-zoom aware versions above
 
@@ -177,11 +214,11 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
               Drag to pan · Ctrl+Scroll to zoom
             </span>
             <button
-              onClick={() => { setIsFullscreen(f => !f); handleReset(); }}
+              onClick={toggleFullscreen}
               className="p-1.5 rounded hover:bg-black/5 transition-colors cursor-pointer"
               title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
             >
-              <Maximize2 size={13} color={subtleText} />
+              {isFullscreen ? <Minimize2 size={13} color={subtleText} /> : <Maximize2 size={13} color={subtleText} />}
             </button>
           </div>
         </div>
@@ -189,27 +226,28 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
         {/* Diagram */}
         <motion.div
           ref={containerRef}
-          className={`overflow-hidden rounded-b-xl relative ${isActive ? "overscroll-contain touch-none" : ""}`}
+          className={`overflow-hidden rounded-b-xl relative select-none`}
           style={{
             background: bgColor,
             border: `1px solid ${isActive ? color : borderColor}`,
             borderTop: "none",
             height: isFullscreen ? "100%" : 450,
-            cursor: isActive ? (isPanning ? "grabbing" : "grab") : "pointer",
+            cursor: isPanning ? "grabbing" : "grab",
+            userSelect: "none",
+            WebkitUserSelect: "none",
             ...(isFullscreen ? { borderRadius: 0, flex: 1 } : {}),
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          onClick={() => setIsActive(true)}
           onWheel={handleWheel}
           onMouseDown={(e) => { setIsActive(true); handleMouseDown(e); }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onTouchStart={isActive ? handleTouchStartZoom : undefined}
-          onTouchMove={isActive ? handleTouchMoveZoom : undefined}
-          onTouchEnd={isActive ? handleTouchEndZoom : undefined}
+          onTouchStart={handleTouchStartZoom}
+          onTouchMove={handleTouchMoveZoom}
+          onTouchEnd={handleTouchEndZoom}
         >
           <div
             style={{
@@ -299,22 +337,24 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                       d={path}
                       fill="none"
                       stroke={edgeColor}
-                      strokeOpacity={0.4}
-                      strokeWidth="2"
+                      strokeOpacity={0.6}
+                      strokeWidth="2.5"
                       strokeDasharray={edge.dashed ? "8 5" : "none"}
                       markerEnd="url(#ro-arrow-light)"
                       markerStart={edge.bidirectional ? "url(#ro-arrow-rev-light)" : undefined}
                     />
                     {/* Step number circle */}
                     <g filter="url(#step-shadow)">
-                      <circle cx={mid.x} cy={mid.y} r={10} fill={color} fillOpacity={0.9} />
+                      <circle cx={mid.x} cy={mid.y} r={13} fill={color} />
+                      <circle cx={mid.x} cy={mid.y} r={12} fill="white" />
+                      <circle cx={mid.x} cy={mid.y} r={11} fill={color} />
                       <text
-                        x={mid.x} y={mid.y + 3.5}
+                        x={mid.x} y={mid.y + 4.5}
                         textAnchor="middle"
                         fill="white"
-                        fontSize="9"
+                        fontSize="11"
                         fontFamily="monospace"
-                        fontWeight="700"
+                        fontWeight="800"
                       >
                         {stepNum}
                       </text>
@@ -388,11 +428,11 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
         {isFullscreen && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
             <button
-              onClick={() => { setIsFullscreen(false); handleReset(); }}
+              onClick={() => { toggleFullscreen(); }}
               className="text-[10px] font-mono px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-black/5"
               style={{ color: subtleText, background: "hsl(30, 20%, 96%)", border: `1px solid ${borderColor}` }}
             >
-              Press ESC or click to exit fullscreen
+              Press ESC or Back to exit fullscreen
             </button>
           </div>
         )}

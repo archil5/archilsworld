@@ -73,7 +73,7 @@ interface RoleStop {
 const stops: RoleStop[] = [
   {
     company: "BMO",
-    title: "Principal Cloud Engineer — AI",
+    title: "Principal Cloud Engineer",
     period: "Jun 2025–Present",
     color: "#0078D4",
     narrative:
