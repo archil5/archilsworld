@@ -214,11 +214,11 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
               Drag to pan · Ctrl+Scroll to zoom
             </span>
             <button
-              onClick={() => { setIsFullscreen(f => !f); handleReset(); }}
+              onClick={toggleFullscreen}
               className="p-1.5 rounded hover:bg-black/5 transition-colors cursor-pointer"
               title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
             >
-              <Maximize2 size={13} color={subtleText} />
+              {isFullscreen ? <Minimize2 size={13} color={subtleText} /> : <Maximize2 size={13} color={subtleText} />}
             </button>
           </div>
         </div>
