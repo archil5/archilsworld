@@ -331,56 +331,24 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                 );
               })}
 
-              {/* Edges with step numbers */}
+              {/* Edge lines only (rendered BEFORE nodes) */}
               {diagram.edges.map((edge, i) => {
                 const fromNode = diagram.nodes.find((n) => n.id === edge.from);
                 const toNode = diagram.nodes.find((n) => n.id === edge.to);
                 if (!fromNode || !toNode) return null;
-                const { path, mid } = getEdgePath(fromNode, toNode);
-                const stepNum = i + 1;
+                const { path } = getEdgePath(fromNode, toNode);
                 return (
-                  <g key={i}>
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke={edgeColor}
-                      strokeOpacity={0.6}
-                      strokeWidth="2.5"
-                      strokeDasharray={edge.dashed ? "8 5" : "none"}
-                      markerEnd="url(#ro-arrow-light)"
-                      markerStart={edge.bidirectional ? "url(#ro-arrow-rev-light)" : undefined}
-                    />
-                    {/* Step number circle */}
-                    <g filter="url(#step-shadow)">
-                      <circle cx={mid.x} cy={mid.y} r={13} fill={color} />
-                      <circle cx={mid.x} cy={mid.y} r={12} fill="white" />
-                      <circle cx={mid.x} cy={mid.y} r={11} fill={color} />
-                      <text
-                        x={mid.x} y={mid.y + 4.5}
-                        textAnchor="middle"
-                        fill="white"
-                        fontSize="11"
-                        fontFamily="monospace"
-                        fontWeight="800"
-                      >
-                        {stepNum}
-                      </text>
-                    </g>
-                    {/* Edge label */}
-                    {edge.label && (
-                      <text
-                        x={mid.x}
-                        y={mid.y - 16}
-                        textAnchor="middle"
-                        fill={subtleText}
-                        fontSize="9"
-                        fontFamily="monospace"
-                        fontWeight="600"
-                      >
-                        {edge.label}
-                      </text>
-                    )}
-                  </g>
+                  <path
+                    key={i}
+                    d={path}
+                    fill="none"
+                    stroke={edgeColor}
+                    strokeOpacity={0.6}
+                    strokeWidth="2.5"
+                    strokeDasharray={edge.dashed ? "8 5" : "none"}
+                    markerEnd="url(#ro-arrow-light)"
+                    markerStart={edge.bidirectional ? "url(#ro-arrow-rev-light)" : undefined}
+                  />
                 );
               })}
 
