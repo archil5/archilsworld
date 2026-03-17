@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { ZoomIn, ZoomOut, Maximize2, RotateCcw } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize2, Minimize2, RotateCcw } from "lucide-react";
 import type { ArchDiagram } from "./ArchDiagramPuzzle";
 
 const VW = 1600;
