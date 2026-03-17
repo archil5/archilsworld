@@ -130,37 +130,44 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   };
   const handleMouseUp = () => setIsPanning(false);
 
+  // Track fullscreen in a ref so capture-phase popstate can read it synchronously
+  const wasFullscreenRef = useRef(false);
+  useEffect(() => { wasFullscreenRef.current = isFullscreen; }, [isFullscreen]);
+
   // Handle fullscreen with browser history
   const toggleFullscreen = useCallback(() => {
     if (!isFullscreen) {
       window.history.pushState({ fullscreenDiagram: true }, "");
+    } else {
+      // Exiting fullscreen via button — go back to remove history entry
+      window.history.back();
     }
     setIsFullscreen(f => !f);
     handleReset();
   }, [isFullscreen]);
 
   useEffect(() => {
+    // Use CAPTURE phase so this fires BEFORE Experience's popstate handler
     const handlePopState = (e: PopStateEvent) => {
-      if (isFullscreen) {
+      if (wasFullscreenRef.current) {
         e.stopImmediatePropagation();
         setIsFullscreen(false);
         handleReset();
       }
     };
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isFullscreen) {
-        setIsFullscreen(false);
-        handleReset();
+      if (e.key === "Escape" && wasFullscreenRef.current) {
+        // Just trigger history.back() — the capture-phase popstate handler will close fullscreen
         window.history.back();
       }
     };
-    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("popstate", handlePopState, true); // capture phase!
     window.addEventListener("keydown", handleEsc);
     return () => {
-      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("popstate", handlePopState, true);
       window.removeEventListener("keydown", handleEsc);
     };
-  }, [isFullscreen]);
+  }, []);
 
   // Touch handlers replaced by pinch-to-zoom aware versions above
 
