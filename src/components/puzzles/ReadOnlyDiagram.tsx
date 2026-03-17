@@ -117,13 +117,50 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
   };
   const handleTouchEndZoom = () => { setIsPanning(false); lastTouchDist.current = 0; };
 
-  const handleMouseDown = (e: React.MouseEvent) => { setIsPanning(true); lastMouse.current = { x: e.clientX, y: e.clientY }; };
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsPanning(true);
+    lastMouse.current = { x: e.clientX, y: e.clientY };
+  };
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
+    e.preventDefault();
     setPan(p => ({ x: p.x + (e.clientX - lastMouse.current.x), y: p.y + (e.clientY - lastMouse.current.y) }));
     lastMouse.current = { x: e.clientX, y: e.clientY };
   };
   const handleMouseUp = () => setIsPanning(false);
+
+  // Handle fullscreen with browser history
+  const toggleFullscreen = useCallback(() => {
+    if (!isFullscreen) {
+      window.history.pushState({ fullscreenDiagram: true }, "");
+    }
+    setIsFullscreen(f => !f);
+    handleReset();
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (isFullscreen) {
+        e.stopImmediatePropagation();
+        setIsFullscreen(false);
+        handleReset();
+      }
+    };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isFullscreen) {
+        setIsFullscreen(false);
+        handleReset();
+        window.history.back();
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleEsc);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [isFullscreen]);
 
   // Touch handlers replaced by pinch-to-zoom aware versions above
 
