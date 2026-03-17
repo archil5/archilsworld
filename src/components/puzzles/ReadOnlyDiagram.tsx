@@ -395,6 +395,58 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                   </g>
                 );
               })}
+
+              {/* Step number circles rendered AFTER nodes so they're always on top */}
+              {diagram.edges.map((edge, i) => {
+                const fromNode = diagram.nodes.find((n) => n.id === edge.from);
+                const toNode = diagram.nodes.find((n) => n.id === edge.to);
+                if (!fromNode || !toNode) return null;
+                const { mid } = getEdgePath(fromNode, toNode);
+                const stepNum = i + 1;
+                return (
+                  <g key={`step-${i}`}>
+                    <g filter="url(#step-shadow)">
+                      <circle cx={mid.x} cy={mid.y} r={14} fill={color} />
+                      <circle cx={mid.x} cy={mid.y} r={13} fill="white" />
+                      <circle cx={mid.x} cy={mid.y} r={12} fill={color} />
+                      <text
+                        x={mid.x} y={mid.y + 4.5}
+                        textAnchor="middle"
+                        fill="white"
+                        fontSize="11"
+                        fontFamily="monospace"
+                        fontWeight="800"
+                      >
+                        {stepNum}
+                      </text>
+                    </g>
+                    {edge.label && (
+                      <g>
+                        <rect
+                          x={mid.x - (edge.label.length * 3.2 + 6)}
+                          y={mid.y - 26}
+                          width={edge.label.length * 6.4 + 12}
+                          height={14}
+                          rx={3}
+                          fill={bgColor}
+                          fillOpacity={0.9}
+                        />
+                        <text
+                          x={mid.x}
+                          y={mid.y - 16}
+                          textAnchor="middle"
+                          fill={subtleText}
+                          fontSize="9"
+                          fontFamily="monospace"
+                          fontWeight="600"
+                        >
+                          {edge.label}
+                        </text>
+                      </g>
+                    )}
+                  </g>
+                );
+              })}
             </svg>
           </div>
         </motion.div>
