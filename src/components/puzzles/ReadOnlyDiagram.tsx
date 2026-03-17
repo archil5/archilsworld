@@ -428,11 +428,11 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
         {isFullscreen && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
             <button
-              onClick={() => { setIsFullscreen(false); handleReset(); }}
+              onClick={() => { toggleFullscreen(); }}
               className="text-[10px] font-mono px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-black/5"
               style={{ color: subtleText, background: "hsl(30, 20%, 96%)", border: `1px solid ${borderColor}` }}
             >
-              Press ESC or click to exit fullscreen
+              Press ESC or Back to exit fullscreen
             </button>
           </div>
         )}
