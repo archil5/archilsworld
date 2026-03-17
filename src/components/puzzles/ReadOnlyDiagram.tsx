@@ -337,8 +337,8 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                       d={path}
                       fill="none"
                       stroke={edgeColor}
-                      strokeOpacity={0.4}
-                      strokeWidth="2"
+                      strokeOpacity={0.6}
+                      strokeWidth="2.5"
                       strokeDasharray={edge.dashed ? "8 5" : "none"}
                       markerEnd="url(#ro-arrow-light)"
                       markerStart={edge.bidirectional ? "url(#ro-arrow-rev-light)" : undefined}
