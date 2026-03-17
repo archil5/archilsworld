@@ -345,14 +345,16 @@ const ReadOnlyDiagram = ({ diagram, color, title }: ReadOnlyDiagramProps) => {
                     />
                     {/* Step number circle */}
                     <g filter="url(#step-shadow)">
-                      <circle cx={mid.x} cy={mid.y} r={10} fill={color} fillOpacity={0.9} />
+                      <circle cx={mid.x} cy={mid.y} r={13} fill={color} />
+                      <circle cx={mid.x} cy={mid.y} r={12} fill="white" />
+                      <circle cx={mid.x} cy={mid.y} r={11} fill={color} />
                       <text
-                        x={mid.x} y={mid.y + 3.5}
+                        x={mid.x} y={mid.y + 4.5}
                         textAnchor="middle"
                         fill="white"
-                        fontSize="9"
+                        fontSize="11"
                         fontFamily="monospace"
-                        fontWeight="700"
+                        fontWeight="800"
                       >
                         {stepNum}
                       </text>
