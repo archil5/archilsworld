@@ -5,6 +5,7 @@ import DosTerminalWorld from "./worlds/DosTerminalWorld";
 import WebFoundationsWorld from "./worlds/WebFoundationsWorld";
 import SkillTreeWorld from "./worlds/SkillTreeWorld";
 import CareerTimelineWorld from "./worlds/CareerTimelineWorld";
+import KnowledgeHubWorld from "./worlds/KnowledgeHubWorld";
 import ContactWorld from "./worlds/ContactWorld";
 import type { ChapterData } from "@/data/chapters";
 import { brandLogos, careerLogos, chapterImages } from "@/data/brandLogos";
@@ -19,6 +20,7 @@ const worldMap: Record<string, () => JSX.Element> = {
   "web-foundations": () => <WebFoundationsWorld />,
   "dalhousie": () => <SkillTreeWorld />,
   "career": () => <CareerTimelineWorld />,
+  "knowledge": () => <KnowledgeHubWorld />,
   "contact": () => <ContactWorld />,
 };
 
