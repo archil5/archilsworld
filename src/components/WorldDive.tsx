@@ -20,6 +20,7 @@ const worldMap: Record<string, () => JSX.Element> = {
   "web-foundations": () => <WebFoundationsWorld />,
   "dalhousie": () => <SkillTreeWorld />,
   "career": () => <CareerTimelineWorld />,
+  "knowledge": () => <KnowledgeHubWorld />,
   "contact": () => <ContactWorld />,
 };
 
