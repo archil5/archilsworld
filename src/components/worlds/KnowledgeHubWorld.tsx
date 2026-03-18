@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, TrendingUp, Cloud, Cpu, BookOpen } from "lucide-react";
+import { ArrowLeft, TrendingUp, Cloud, Cpu, BookOpen, BarChart3 } from "lucide-react";
 import CandlestickModule from "@/components/knowledge/CandlestickModule";
+import StockBasicsModule from "@/components/knowledge/StockBasicsModule";
 
 interface KnowledgeModule {
   id: string;
@@ -14,9 +15,17 @@ interface KnowledgeModule {
 
 const MODULES: KnowledgeModule[] = [
   {
+    id: "stock-basics",
+    title: "Stock Market 101",
+    description: "New to investing? Start here. A plain-English mini-course covering what stocks are, how the market works, and how to get started.",
+    icon: <BarChart3 size={24} />,
+    tags: ["Finance", "Beginner"],
+    ready: true,
+  },
+  {
     id: "candlestick",
     title: "Candlestick Patterns",
-    description: "20 essential candlestick patterns for stock & crypto trading — visual diagrams, plain English, and trade tips.",
+    description: "35+ candlestick patterns for trading — visual diagrams, simple explanations, and practical trade tips.",
     icon: <TrendingUp size={24} />,
     tags: ["Finance", "Trading"],
     ready: true,
@@ -52,6 +61,9 @@ const KnowledgeHubWorld = () => {
 
   if (activeModule === "candlestick") {
     return <CandlestickModule onBack={() => setActiveModule(null)} />;
+  }
+  if (activeModule === "stock-basics") {
+    return <StockBasicsModule onBack={() => setActiveModule(null)} />;
   }
 
   return (
