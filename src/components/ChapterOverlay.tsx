@@ -19,22 +19,22 @@ const categoryLabels: Record<string, string> = {
 const BrandBadge = ({ chapter }: { chapter: ChapterData }) => {
   if (chapter.image && chapterImages[chapter.image]) {
     return (
-      <img src={chapterImages[chapter.image]} alt="Archil" className="w-10 h-10 rounded-full object-cover"
-        style={{ border: `2px solid ${chapter.color}40` }} />
+      <img src={chapterImages[chapter.image]} alt="Archil" className="w-10 h-10 object-cover"
+        style={{ border: `1px solid ${chapter.color}30` }} />
     );
   }
   if (chapter.brandLogo === "Career") {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded" style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}25` }}>
+      <span className="inline-flex items-center gap-1.5 px-2 py-1" style={{ background: `${chapter.color}08`, border: `1px solid ${chapter.color}15` }}>
         <img src={careerLogos.RBC} alt="RBC" className="h-5 object-contain" />
-        <span style={{ color: "#999", fontSize: 9 }}>+</span>
+        <span style={{ color: "hsl(220, 12%, 38%)", fontSize: 9 }}>+</span>
         <img src={careerLogos.BMO} alt="BMO" className="h-5 object-contain" />
       </span>
     );
   }
   if (chapter.brandLogo && brandLogos[chapter.brandLogo]) {
     return (
-      <span className="inline-flex items-center px-2 py-1 rounded" style={{ background: `${chapter.color}10`, border: `1px solid ${chapter.color}25` }}>
+      <span className="inline-flex items-center px-2 py-1" style={{ background: `${chapter.color}08`, border: `1px solid ${chapter.color}15` }}>
         <img src={brandLogos[chapter.brandLogo]} alt={chapter.brandLogo} className="h-5 object-contain" />
       </span>
     );
@@ -67,8 +67,8 @@ const TypewriterText = ({ text, delay = 0 }: { text: string; delay?: number }) =
       "{displayed}
       {displayed.length < text.length ? (
         <motion.span
-          className="inline-block w-[2px] h-[14px] ml-0.5 align-middle"
-          style={{ background: "rgba(45,42,38,0.4)" }}
+          className="inline-block w-[1.5px] h-[13px] ml-0.5 align-middle"
+          style={{ background: "hsl(220 30% 10% / 0.3)" }}
           animate={{ opacity: [1, 0, 1] }}
           transition={{ repeat: Infinity, duration: 0.6 }}
         />
@@ -87,68 +87,66 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, rgba(245,240,232,0.97) 0%, rgba(245,240,232,0.75) 40%, transparent 100%)",
+              background: "linear-gradient(to top, hsl(40 33% 93% / 0.97) 0%, hsl(40 33% 93% / 0.7) 40%, transparent 100%)",
             }}
           />
 
-          <div className="relative px-4 md:px-16 pb-6 md:pb-10 pt-20 md:pt-32 max-w-3xl">
+          <div className="relative px-6 md:px-16 pb-8 md:pb-12 pt-24 md:pt-36 max-w-2xl">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3 flex-wrap"
+              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-center gap-3 mb-3 flex-wrap"
             >
               <BrandBadge chapter={chapter} />
               <span
-                className="text-[8px] md:text-[10px] font-display uppercase tracking-[0.2em] md:tracking-[0.3em] px-2 md:px-3 py-0.5 md:py-1 rounded-full"
+                className="font-mono text-mono-xs uppercase tracking-[0.2em] px-2 py-0.5"
                 style={{
                   color: chapter.color,
-                  border: `1px solid ${chapter.color}30`,
-                  background: `${chapter.color}10`,
+                  borderBottom: `1px solid ${chapter.color}40`,
                 }}
               >
                 {categoryLabels[chapter.category] || "Career"}
               </span>
-              <span className="text-[10px] md:text-xs font-mono" style={{ color: "#6b6560" }}>
+              <span className="font-mono text-mono-xs" style={{ color: "hsl(220, 12%, 38%)" }}>
                 {chapter.year}
               </span>
             </motion.div>
 
             <motion.h2
-              className="font-display text-2xl md:text-5xl font-bold mb-1 md:mb-2"
-              style={{ color: "#2d2a26" }}
-              initial={{ opacity: 0, y: 30 }}
+              className="font-display text-display-lg md:text-display-hero font-bold mb-2"
+              style={{ color: "hsl(220, 30%, 10%)" }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
+              transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               {chapter.title}
             </motion.h2>
 
             <motion.p
-              className="font-display text-[10px] md:text-xs uppercase tracking-[0.15em] md:tracking-[0.2em] mb-2 md:mb-3"
-              style={{ color: "#6b6560" }}
-              initial={{ opacity: 0, y: 20 }}
+              className="font-mono text-mono-xs uppercase tracking-[0.2em] mb-3"
+              style={{ color: "hsl(220, 12%, 38%)" }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+              transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               {chapter.subtitle}
             </motion.p>
 
             <motion.div
-              className="font-body text-xs md:text-sm leading-relaxed mb-4 md:mb-5 max-w-md"
-              style={{ color: "rgba(45,42,38,0.6)", fontStyle: "italic" }}
+              className="font-display text-sm md:text-base leading-relaxed mb-6 max-w-md"
+              style={{ color: "hsl(220 12% 38% / 0.7)", fontStyle: "italic" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.3 }}
             >
               <TypewriterText text={chapter.tagline} delay={0.6} />
             </motion.div>
-
           </div>
         </motion.div>
       )}

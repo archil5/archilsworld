@@ -2,7 +2,6 @@ import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CHAPTERS } from "@/data/chapters";
 import HexTile from "@/components/three/HexTile";
 import BoardPath from "@/components/three/BoardPath";
@@ -33,7 +32,6 @@ const Experience = () => {
     setVisitedSet(prev => new Set(prev).add(clamped));
     setShowOverlay(false);
     setTimeout(() => setShowOverlay(true), 600);
-    // Push history so browser back button works
     skipPopState.current = true;
     window.history.pushState({ tile: clamped }, "");
   }, []);
@@ -77,11 +75,8 @@ const Experience = () => {
       if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy) * 1.5) {
         e.preventDefault();
         swiped = true;
-        if (dx < 0) {
-          goTo(activeIndex + 1);
-        } else {
-          goTo(activeIndex - 1);
-        }
+        if (dx < 0) goTo(activeIndex + 1);
+        else goTo(activeIndex - 1);
       }
     };
 
@@ -109,9 +104,7 @@ const Experience = () => {
     };
   }, [activeIndex, isDiving, goTo]);
 
-  // Browser back button support
   useEffect(() => {
-    // Set initial history state
     window.history.replaceState({ tile: 0 }, "");
 
     const handlePopState = (e: PopStateEvent) => {
@@ -119,14 +112,11 @@ const Experience = () => {
         skipPopState.current = false;
         return;
       }
-      // If currently in a world dive, close it
       if (diveChapter !== null) {
         setDiveChapter(null);
-        // Re-push so we stay at current tile
         window.history.pushState({ tile: activeIndex }, "");
         return;
       }
-      // Otherwise go to previous tile
       if (e.state && typeof e.state.tile === "number") {
         const idx = e.state.tile;
         targetScroll.current = idx / (CHAPTERS.length - 1);
@@ -135,7 +125,6 @@ const Experience = () => {
         setShowOverlay(false);
         setTimeout(() => setShowOverlay(true), 600);
       } else if (activeIndex > 0) {
-        // No state, go back one tile
         const prev = activeIndex - 1;
         targetScroll.current = prev / (CHAPTERS.length - 1);
         setActiveIndex(prev);
@@ -166,7 +155,6 @@ const Experience = () => {
 
   const handleDive = useCallback(() => {
     setDiveAnimating(true);
-    // Push history for dive so back button can close it
     window.history.pushState({ tile: activeIndex, dive: true }, "");
     setTimeout(() => {
       setDiveChapter(CHAPTERS[activeIndex]);
@@ -177,18 +165,12 @@ const Experience = () => {
   const chapter = CHAPTERS[activeIndex];
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden" style={{ background: "#f5f0e8" }}>
-      {/* Dive zoom animation wrapper */}
+    <div className="w-screen h-screen relative overflow-hidden paper-grain" style={{ background: "#E8E0D0" }}>
+      {/* Dive zoom */}
       <motion.div
         className="absolute inset-0"
-        animate={diveAnimating ? {
-          scale: [1, 2.5],
-          opacity: [1, 0],
-        } : {
-          scale: 1,
-          opacity: 1,
-        }}
-        transition={diveAnimating ? { duration: 0.7, ease: [0.45, 0, 0.15, 1] } : { duration: 0 }}
+        animate={diveAnimating ? { scale: [1, 2.5], opacity: [1, 0] } : { scale: 1, opacity: 1 }}
+        transition={diveAnimating ? { duration: 0.7, ease: [0.22, 1, 0.36, 1] } : { duration: 0 }}
       >
       <Canvas
         shadows
@@ -213,7 +195,7 @@ const Experience = () => {
             shadow-camera-bottom={-10}
           />
           <pointLight position={[3, 3, -2]} intensity={0.3} color="#c8956c" distance={15} />
-          <fog attach="fog" args={["#f5f0e8", 12, 35]} />
+          <fog attach="fog" args={["#E8E0D0", 12, 35]} />
 
           <CameraController scrollProgress={scrollProgress} activeIndex={activeIndex} />
           <BoardSurface />
@@ -244,74 +226,70 @@ const Experience = () => {
       </Canvas>
       </motion.div>
 
-      {/* Dive flash overlay */}
+      {/* Dive flash */}
       <AnimatePresence>
         {diveAnimating && (
           <motion.div
             className="fixed inset-0 z-50 pointer-events-none"
-            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #f5f0e8)` }}
+            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #E8E0D0)` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 0.6, 1] }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.7, ease: "easeIn" }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           />
         )}
       </AnimatePresence>
 
-      {/* Title */}
-      <div className="absolute top-4 left-4 md:top-6 md:left-8 z-20 pointer-events-none">
-        <h1 className="font-display text-lg md:text-3xl tracking-wide" style={{ color: "#2d2a26" }}>
+      {/* Title — top left */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-10 z-20 pointer-events-none">
+        <h1 className="font-display text-display-sm md:text-display-md tracking-wider" style={{ color: "hsl(220, 30%, 10%)" }}>
           Archil Patel
         </h1>
-        <p className="font-body text-[10px] md:text-sm italic mt-0.5 hidden sm:block" style={{ color: "#6b6560" }}>
+        <p className="font-mono text-mono-xs mt-1 hidden sm:block" style={{ color: "hsl(220, 12%, 38%)" }}>
           Principal Cloud Engineer · A Journey in Tiles
         </p>
       </div>
 
-      {/* Single bottom navigation */}
+      {/* Bottom nav */}
       {!isDiving && (
-        <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 md:gap-3">
+        <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
           <motion.button
             onClick={goPrev}
             disabled={activeIndex === 0}
-            className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
+            className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center transition-all disabled:opacity-15 disabled:cursor-default"
             style={{
-              background: "rgba(245,240,232,0.9)",
-              border: "1px solid rgba(180,140,100,0.25)",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-              color: "#2d2a26",
+              background: "hsl(220 30% 10% / 0.06)",
+              border: "1px solid hsl(220 30% 10% / 0.12)",
+              color: "hsl(220, 30%, 10%)",
             }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ background: "hsl(220 30% 10% / 0.1)" }}
             whileTap={{ scale: 0.95 }}
           >
-            <ChevronLeft size={16} />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
           </motion.button>
 
-          <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full" style={{
-            background: "rgba(245,240,232,0.95)",
-            border: "1px solid rgba(180,140,100,0.2)",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+          <div className="flex items-center gap-2 px-4 py-2.5" style={{
+            background: "hsl(40 33% 93% / 0.9)",
+            border: "1px solid hsl(220 30% 10% / 0.08)",
           }}>
             {CHAPTERS.map((ch, i) => (
               <button
                 key={ch.id}
                 onClick={() => goTo(i)}
-                className="relative group transition-all duration-300 cursor-pointer rounded-full"
+                className="relative group transition-all duration-300"
                 style={{
-                  width: i === activeIndex ? 24 : 8,
-                  height: 8,
-                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "rgba(45,42,38,0.7)" : "rgba(45,42,38,0.35)",
-                  boxShadow: i === activeIndex ? `0 0 10px ${ch.color}60` : "none",
+                  width: i === activeIndex ? 20 : 6,
+                  height: 6,
+                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "hsl(220 30% 10% / 0.5)" : "hsl(220 30% 10% / 0.15)",
                 }}
                 title={ch.label}
               >
                 <span
-                  className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-display tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-0.5 rounded hidden md:block"
+                  className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-mono-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-0.5 hidden md:block"
                   style={{
-                    color: "#2d2a26",
-                    background: "rgba(245,240,232,0.95)",
-                    border: "1px solid rgba(180,140,100,0.2)",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                    color: "hsl(220, 30%, 10%)",
+                    background: "hsl(40 33% 93% / 0.95)",
+                    border: "1px solid hsl(220 30% 10% / 0.08)",
                   }}
                 >
                   {ch.label}
@@ -320,10 +298,10 @@ const Experience = () => {
             ))}
           </div>
 
-          <span className="text-[9px] md:text-[10px] font-mono px-1.5 md:px-2 py-1 rounded-full" style={{
-            color: "#6b6560",
-            background: "rgba(245,240,232,0.9)",
-            border: "1px solid rgba(180,140,100,0.15)",
+          <span className="font-mono text-mono-xs px-2 py-1" style={{
+            color: "hsl(220, 12%, 38%)",
+            background: "hsl(40 33% 93% / 0.8)",
+            border: "1px solid hsl(220 30% 10% / 0.06)",
           }}>
             {activeIndex + 1}/{CHAPTERS.length}
           </span>
@@ -331,45 +309,38 @@ const Experience = () => {
           <motion.button
             onClick={goNext}
             disabled={activeIndex === CHAPTERS.length - 1}
-            className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all disabled:opacity-20 disabled:cursor-default"
+            className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center transition-all disabled:opacity-15 disabled:cursor-default"
             style={{
-              background: "rgba(245,240,232,0.9)",
-              border: "1px solid rgba(180,140,100,0.25)",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-              color: "#2d2a26",
+              background: "hsl(220 30% 10% / 0.06)",
+              border: "1px solid hsl(220 30% 10% / 0.12)",
+              color: "hsl(220, 30%, 10%)",
             }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ background: "hsl(220 30% 10% / 0.1)" }}
             whileTap={{ scale: 0.95 }}
           >
-            <ChevronRight size={16} />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
           </motion.button>
         </div>
       )}
 
-      {/* Chapter overlay — original bottom text/tagline */}
+      {/* Chapter overlay */}
       <ChapterOverlay chapter={chapter} visible={showOverlay && !isDiving} onDive={handleDive} />
 
       {activeIndex === 0 && !showOverlay && (
         <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
-          <p className="text-[10px] md:text-xs font-display tracking-[0.2em] md:tracking-[0.3em] uppercase" style={{ color: "#6b6560" }}>
+          <p className="font-mono text-mono-xs tracking-[0.3em] uppercase" style={{ color: "hsl(220, 12%, 38%)" }}>
             Swipe or tap arrows
           </p>
-          <svg width="20" height="30" viewBox="0 0 20 30" fill="none" className="opacity-50 hidden md:block">
-            <rect x="1" y="1" width="18" height="28" rx="9" stroke="#b5653a" strokeWidth="1.5" />
-            <circle cx="10" cy="10" r="2.5" fill="#b5653a">
-              <animate attributeName="cy" values="8;18;8" dur="2s" repeatCount="indefinite" />
-            </circle>
-          </svg>
         </div>
       )}
 
-      {/* Keyboard hint - hidden on mobile */}
+      {/* Keyboard hint */}
       {!isDiving && (
-        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-20 pointer-events-none hidden md:block">
-          <div className="flex items-center gap-1.5 text-[9px] font-mono" style={{ color: "rgba(107,101,96,0.4)" }}>
-            <span className="px-1.5 py-0.5 rounded" style={{ border: "1px solid rgba(107,101,96,0.2)" }}>←→</span>
+        <div className="absolute top-6 right-6 md:top-8 md:right-10 z-20 pointer-events-none hidden md:block">
+          <div className="flex items-center gap-2 font-mono text-mono-xs" style={{ color: "hsl(220 12% 38% / 0.3)" }}>
+            <span className="px-1.5 py-0.5" style={{ border: "1px solid hsl(220 12% 38% / 0.15)" }}>←→</span>
             navigate
-            <span className="px-1.5 py-0.5 rounded ml-2" style={{ border: "1px solid rgba(107,101,96,0.2)" }}>Enter</span>
+            <span className="px-1.5 py-0.5 ml-2" style={{ border: "1px solid hsl(220 12% 38% / 0.15)" }}>Enter</span>
             dive in
           </div>
         </div>
