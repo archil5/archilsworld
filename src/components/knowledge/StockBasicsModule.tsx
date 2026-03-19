@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ChevronRight, ChevronLeft } from "lucide-react";
 import { STOCK_BASICS, type StockBasicsTopic } from "@/data/stockBasics";
+
+const INK = "hsl(220, 30%, 10%)";
+const INK_MUTED = "hsl(220, 12%, 38%)";
+const COPPER = "hsl(144, 14%, 55%)";
 
 interface StockBasicsModuleProps {
   onBack: () => void;
@@ -9,49 +12,43 @@ interface StockBasicsModuleProps {
 
 const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
   const [activeTopic, setActiveTopic] = useState<StockBasicsTopic | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   if (activeTopic) {
     return (
-      <div className="h-full flex flex-col"
-        style={{ background: "linear-gradient(180deg, #faf8f4 0%, #f0ebe3 100%)" }}>
-
-        {/* Header */}
+      <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
         <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
-          style={{ borderBottom: "1px solid rgba(180,140,100,0.15)" }}>
+          style={{ borderBottom: `1px solid ${INK}08` }}>
           <button onClick={() => setActiveTopic(null)}
-            className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all cursor-pointer"
-            style={{ color: "#6b6560", background: "rgba(180,140,100,0.08)", border: "1px solid rgba(180,140,100,0.15)" }}>
-            <ArrowLeft size={14} />
-            <span className="text-[10px] md:text-xs font-display tracking-wider">Topics</span>
+            className="flex items-center gap-2 px-3 py-1.5 transition-all"
+            style={{ color: INK_MUTED, background: `${INK}04`, border: `1px solid ${INK}08` }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            <span className="font-mono text-mono-xs tracking-wider">Topics</span>
           </button>
-          <h2 className="font-display text-sm md:text-lg" style={{ color: "#2d2a26" }}>
+          <h2 className="font-display text-display-sm" style={{ color: INK }}>
             {activeTopic.icon} {activeTopic.title}
           </h2>
         </div>
 
-        {/* Content cards */}
         <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6">
           <div className="max-w-2xl mx-auto space-y-4">
             {activeTopic.content.map((paragraph, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -15 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08, duration: 0.4 }}
-                className="p-4 md:p-5 rounded-xl"
+                transition={{ delay: i * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="p-4 md:p-5"
                 style={{
-                  background: "rgba(255,252,248,0.85)",
-                  border: "1px solid rgba(180,140,100,0.18)",
-                  boxShadow: "0 1px 6px rgba(0,0,0,0.03)",
+                  background: `${INK}02`,
+                  borderLeft: `2px solid ${COPPER}20`,
                 }}
               >
                 <div className="flex gap-3">
-                  <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-display"
-                    style={{ background: "rgba(42,125,95,0.1)", color: "#2a7d5f" }}>
+                  <span className="shrink-0 w-6 h-6 flex items-center justify-center font-mono text-mono-xs"
+                    style={{ background: `${COPPER}10`, color: COPPER }}>
                     {i + 1}
                   </span>
-                  <p className="font-body text-xs md:text-sm leading-relaxed" style={{ color: "#2d2a26" }}>
+                  <p className="font-display text-sm leading-relaxed" style={{ color: INK }}>
                     {paragraph}
                   </p>
                 </div>
@@ -59,7 +56,6 @@ const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
             ))}
           </div>
 
-          {/* Quick nav between topics */}
           <div className="max-w-2xl mx-auto mt-8 flex items-center justify-between">
             <button
               onClick={() => {
@@ -67,11 +63,11 @@ const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
                 if (idx > 0) { setActiveTopic(STOCK_BASICS[idx - 1]); }
               }}
               disabled={STOCK_BASICS.findIndex(t => t.id === activeTopic.id) === 0}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-display tracking-wider cursor-pointer disabled:opacity-30 disabled:cursor-default transition-all"
-              style={{ color: "#6b6560", background: "rgba(180,140,100,0.08)", border: "1px solid rgba(180,140,100,0.15)" }}>
-              <ChevronLeft size={12} /> Prev Topic
+              className="flex items-center gap-1 px-3 py-1.5 font-mono text-mono-xs tracking-wider disabled:opacity-20 disabled:cursor-default transition-all"
+              style={{ color: INK_MUTED, background: `${INK}04`, border: `1px solid ${INK}08` }}>
+              ← Prev
             </button>
-            <span className="text-[9px] font-mono" style={{ color: "#8a8078" }}>
+            <span className="font-mono text-mono-xs" style={{ color: INK_MUTED }}>
               {STOCK_BASICS.findIndex(t => t.id === activeTopic.id) + 1} / {STOCK_BASICS.length}
             </span>
             <button
@@ -80,9 +76,9 @@ const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
                 if (idx < STOCK_BASICS.length - 1) { setActiveTopic(STOCK_BASICS[idx + 1]); }
               }}
               disabled={STOCK_BASICS.findIndex(t => t.id === activeTopic.id) === STOCK_BASICS.length - 1}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-display tracking-wider cursor-pointer disabled:opacity-30 disabled:cursor-default transition-all"
-              style={{ color: "#6b6560", background: "rgba(180,140,100,0.08)", border: "1px solid rgba(180,140,100,0.15)" }}>
-              Next Topic <ChevronRight size={12} />
+              className="flex items-center gap-1 px-3 py-1.5 font-mono text-mono-xs tracking-wider disabled:opacity-20 disabled:cursor-default transition-all"
+              style={{ color: INK_MUTED, background: `${INK}04`, border: `1px solid ${INK}08` }}>
+              Next →
             </button>
           </div>
         </div>
@@ -91,25 +87,22 @@ const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
   }
 
   return (
-    <div className="h-full overflow-y-auto px-4 md:px-8 py-6"
-      style={{ background: "linear-gradient(180deg, #faf8f4 0%, #f0ebe3 100%)" }}>
-
-      {/* Header */}
+    <div className="h-full overflow-y-auto px-4 md:px-8 py-6" style={{ background: "#E8E0D0" }}>
       <div className="shrink-0 mb-6 flex items-center gap-3">
         <button onClick={onBack}
-          className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all cursor-pointer"
-          style={{ color: "#6b6560", background: "rgba(180,140,100,0.08)", border: "1px solid rgba(180,140,100,0.15)" }}>
-          <ArrowLeft size={14} />
-          <span className="text-[10px] md:text-xs font-display tracking-wider">Hub</span>
+          className="flex items-center gap-2 px-3 py-1.5 transition-all"
+          style={{ color: INK_MUTED, background: `${INK}04`, border: `1px solid ${INK}08` }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          <span className="font-mono text-mono-xs tracking-wider">Hub</span>
         </button>
       </div>
 
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-6">
-          <h2 className="font-display text-xl md:text-2xl mb-2" style={{ color: "#2d2a26" }}>
-            📈 Stock Market 101
+        <div className="text-center mb-8">
+          <h2 className="font-display text-display-md mb-3" style={{ color: INK }}>
+            Stock Market 101
           </h2>
-          <p className="font-body text-xs md:text-sm max-w-md mx-auto" style={{ color: "#6b6560" }}>
+          <p className="font-mono text-mono-sm max-w-md mx-auto" style={{ color: INK_MUTED }}>
             Everything you need to know to get started — explained like you're a smart friend asking over coffee.
           </p>
         </div>
@@ -118,42 +111,40 @@ const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
           {STOCK_BASICS.map((topic, i) => (
             <motion.button
               key={topic.id}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
               onClick={() => setActiveTopic(topic)}
-              className="text-left p-4 md:p-5 rounded-xl transition-all cursor-pointer group"
+              className="text-left p-4 md:p-5 transition-all group"
               style={{
-                background: "rgba(255,252,248,0.85)",
-                border: "1px solid rgba(180,140,100,0.18)",
-                boxShadow: "0 1px 6px rgba(0,0,0,0.03)",
+                background: `${INK}02`,
+                border: `1px solid ${INK}06`,
               }}
-              whileHover={{ y: -2, boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
+              whileHover={{ y: -2, rotate: 0.5 }}
             >
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{topic.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-display text-xs md:text-sm mb-0.5" style={{ color: "#2d2a26" }}>
+                  <h3 className="font-display text-base mb-0.5" style={{ color: INK }}>
                     {topic.title}
                   </h3>
-                  <p className="text-[9px] md:text-[10px] font-mono" style={{ color: "#8a8078" }}>
+                  <p className="font-mono text-mono-xs" style={{ color: INK_MUTED }}>
                     {topic.content.length} cards
                   </p>
                 </div>
-                <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                  style={{ color: "#2a7d5f" }} />
+                <span className="font-mono text-mono-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ color: COPPER }}>→</span>
               </div>
             </motion.button>
           ))}
         </div>
 
-        {/* Disclaimer */}
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-          className="mt-8 text-center p-3 rounded-lg"
-          style={{ background: "rgba(180,140,100,0.06)", border: "1px solid rgba(180,140,100,0.1)" }}>
-          <p className="text-[9px] md:text-[10px] font-body" style={{ color: "#8a8078" }}>
-            ⚠️ This is educational content, not financial advice. Always do your own research before investing real money.
+          className="mt-10 text-center p-4"
+          style={{ background: `${INK}03`, borderTop: `1px solid ${INK}06` }}>
+          <p className="font-mono text-mono-xs" style={{ color: INK_MUTED }}>
+            ⚠ This is educational content, not financial advice. Always do your own research before investing.
           </p>
         </motion.div>
       </div>
