@@ -1,61 +1,63 @@
 import { motion } from "framer-motion";
-import { Linkedin, Mail } from "lucide-react";
 import { chapterImages } from "@/data/brandLogos";
 
+const INK = "hsl(220, 30%, 10%)";
+const INK_MUTED = "hsl(220, 12%, 38%)";
+const COPPER = "hsl(144, 14%, 55%)";
+
 const links = [
-  { label: "LinkedIn", url: "https://www.linkedin.com/in/archil5/", Icon: Linkedin },
-  { label: "Email", url: "mailto:archil620@gmail.com", Icon: Mail },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/archil5/", icon: "↗" },
+  { label: "Email", url: "mailto:archil620@gmail.com", icon: "✉" },
 ];
 
 const ContactWorld = () => {
   return (
-    <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
-      <div className="max-w-lg w-full flex flex-col items-center gap-6">
+    <div className="w-full h-full flex items-center justify-center p-6 md:p-12">
+      <div className="max-w-md w-full flex flex-col items-center gap-8">
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, type: "spring" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <img
             src={chapterImages.archil}
             alt="Archil Patel"
-            className="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover"
+            className="w-36 h-36 md:w-44 md:h-44 object-cover"
             style={{
-              border: "3px solid rgba(181,101,58,0.3)",
-              boxShadow: "0 8px 30px rgba(181,101,58,0.15)",
+              border: `1px solid ${COPPER}40`,
             }}
           />
         </motion.div>
 
         <motion.div
           className="text-center"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="font-display text-2xl md:text-3xl font-bold mb-1" style={{ color: "#2d2a26" }}>
+          <h2 className="font-display text-display-lg font-bold mb-2" style={{ color: INK }}>
             Archil Patel
           </h2>
-          <p className="font-body text-sm" style={{ color: "#6b6560" }}>
+          <p className="font-mono text-mono-sm" style={{ color: INK_MUTED }}>
             Principal Cloud Engineer · AI Platform Architect
           </p>
         </motion.div>
 
         <motion.p
-          className="font-body text-sm italic text-center max-w-sm leading-relaxed"
-          style={{ color: "rgba(45,42,38,0.75)" }}
+          className="font-display text-base italic text-center max-w-sm leading-relaxed"
+          style={{ color: `${INK_MUTED}` }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          "I'm always open to connecting — whether it's about cloud architecture, AI, leadership, or the next big thing. Let's build something together."
+          "I'm always open to connecting — whether it's about cloud architecture, AI, leadership, or the next big thing."
         </motion.p>
 
         <motion.div
-          className="flex gap-3"
-          initial={{ opacity: 0, y: 15 }}
+          className="flex gap-4"
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
+          transition={{ delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           {links.map((link) => (
             <a
@@ -63,41 +65,39 @@ const ContactWorld = () => {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-5 py-3 rounded-xl transition-all font-display text-sm tracking-wider"
+              className="flex items-center gap-2 px-5 py-3 transition-all font-mono text-mono-sm tracking-wider ink-underline"
               style={{
-                background: "rgba(181,101,58,0.06)",
-                border: "1px solid rgba(181,101,58,0.2)",
-                color: "#b5653a",
+                background: `${INK}06`,
+                border: `1px solid ${INK}12`,
+                color: INK,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(181,101,58,0.15)";
-                e.currentTarget.style.boxShadow = "0 4px 16px rgba(181,101,58,0.12)";
+                e.currentTarget.style.background = `${INK}10`;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(181,101,58,0.06)";
-                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.background = `${INK}06`;
               }}
             >
-              <link.Icon size={16} />
+              <span>{link.icon}</span>
               {link.label}
             </a>
           ))}
         </motion.div>
 
         <motion.div
-          className="mt-4 p-4 rounded-xl text-center max-w-sm"
+          className="mt-4 p-5 text-center max-w-sm"
           style={{
-            background: "rgba(181,101,58,0.04)",
-            border: "1px solid rgba(181,101,58,0.1)",
+            background: `${INK}03`,
+            borderLeft: `2px solid ${COPPER}30`,
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
         >
-          <p className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: "#b5653a" }}>
+          <p className="font-mono text-mono-xs uppercase tracking-[0.2em] mb-2" style={{ color: COPPER }}>
             Current Focus
           </p>
-          <p className="text-xs font-body" style={{ color: "#6b6560" }}>
+          <p className="font-display text-sm" style={{ color: INK_MUTED }}>
             Enterprise AI Platforms · Azure OpenAI · RAG at Scale · Model Governance
           </p>
         </motion.div>
