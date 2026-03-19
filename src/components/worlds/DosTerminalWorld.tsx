@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 
+const INK = "hsl(220, 30%, 10%)";
+const INK_MUTED = "hsl(220, 12%, 38%)";
+const COPPER = "hsl(144, 14%, 55%)";
+const PARCHMENT = "#E8E0D0";
+const SURFACE = "hsl(40, 30%, 95%)";
+
 const fileSystem: Record<string, string[]> = {
   "C:\\>": ["Type HELP for commands", ""],
   "HELP": [
@@ -156,16 +162,16 @@ const DosTerminalWorld = () => {
 
   const getColor = (type: string) => {
     switch (type) {
-      case "command": return "#2d2a26";
-      case "output": return "#2a7d4f";
-      case "highlight": return "#b5653a";
-      case "system": return "#3d7aaf";
-      case "hint": return "#8a8078";
-      case "error": return "#c44040";
-      case "skill": return "#3d7aaf";
-      case "value": return "#b5653a";
-      case "box": return "#6b6560";
-      default: return "#8a8078";
+      case "command": return INK;
+      case "output": return COPPER;
+      case "highlight": return "hsl(5, 50%, 48%)";
+      case "system": return INK_MUTED;
+      case "hint": return INK_MUTED;
+      case "error": return "hsl(0, 55%, 48%)";
+      case "skill": return COPPER;
+      case "value": return "hsl(5, 50%, 48%)";
+      case "box": return INK_MUTED;
+      default: return INK_MUTED;
     }
   };
 
@@ -175,58 +181,56 @@ const DosTerminalWorld = () => {
     <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-3xl flex flex-col gap-4">
         <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
-          <span className="text-[10px] font-mono" style={{ color: "#3d7aaf" }}>
+          <span className="font-mono text-mono-xs" style={{ color: COPPER }}>
             DISCOVERY: {commandsUsed.size}/{validCommands.length}
           </span>
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(61,122,175,0.1)" }}>
-            <motion.div className="h-full rounded-full" style={{ background: "#3d7aaf" }}
+          <div className="flex-1 h-1 overflow-hidden" style={{ background: `${COPPER}15` }}>
+            <motion.div className="h-full" style={{ background: COPPER }}
               animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
           </div>
           {progress < 100 && (
             <button onClick={handleRevealAll}
-              className="text-[10px] font-mono px-3 py-1 rounded cursor-pointer transition-all"
-              style={{ color: "#b5653a", background: "rgba(181,101,58,0.08)", border: "1px solid rgba(181,101,58,0.2)" }}>
-              ⚡ Reveal All
+              className="font-mono text-mono-xs px-3 py-1 transition-all"
+              style={{ color: COPPER, background: `${COPPER}08`, border: `1px solid ${COPPER}20` }}>
+              Reveal All
             </button>
           )}
           {progress === 100 && (
-            <motion.span className="text-[10px] font-mono" style={{ color: "#b5653a" }}
+            <motion.span className="font-mono text-mono-xs" style={{ color: COPPER }}
               initial={{ scale: 0 }} animate={{ scale: 1 }}>★ COMPLETE</motion.span>
           )}
         </motion.div>
 
-        <motion.div className="rounded-xl overflow-hidden"
-          initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          style={{ background: "#1e1e1e", border: "1px solid #e0d8cc",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}
+        <motion.div className="overflow-hidden"
+          initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{ background: INK, border: `1px solid ${INK_MUTED}30` }}
           onClick={() => inputRef.current?.focus()}>
-          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "#282828", borderBottom: "1px solid #3a3a3a" }}>
-            <div className="w-3 h-3 rounded-full" style={{ background: "#ff5f57" }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: "#febc2e" }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: "#28c840" }} />
-            <span className="ml-2 text-xs font-mono" style={{ color: "#888" }}>ARCHIL-DOS — Interactive Terminal</span>
+          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "hsl(220, 25%, 14%)", borderBottom: `1px solid hsl(220 30% 10% / 0.5)` }}>
+            <div className="w-2.5 h-2.5" style={{ background: "hsl(0, 55%, 48%)" }} />
+            <div className="w-2.5 h-2.5" style={{ background: "hsl(43, 55%, 55%)" }} />
+            <div className="w-2.5 h-2.5" style={{ background: COPPER }} />
+            <span className="ml-2 font-mono text-mono-xs" style={{ color: "hsl(220 12% 38% / 0.5)" }}>ARCHIL-DOS — Interactive Terminal</span>
           </div>
 
           <div ref={containerRef} className="p-6 font-mono text-sm leading-relaxed overflow-y-auto"
-            style={{ height: 400, background: "#1e1e1e" }}>
+            style={{ height: 400, background: INK }}>
             {history.map((line, i) => (
               <div key={i} className="min-h-[1.4em]">
                 <span style={{ color: getColor(line.type),
-                  textShadow: line.type === "highlight" ? "0 0 6px rgba(181,101,58,0.3)" : undefined,
                   fontStyle: line.type === "value" ? "italic" : undefined }}>
                   {line.text}
                 </span>
               </div>
             ))}
             <div className="flex items-center min-h-[1.4em]">
-              <span style={{ color: "#888" }}>C:\&gt;&nbsp;</span>
+              <span style={{ color: INK_MUTED }}>C:\&gt;&nbsp;</span>
               <input ref={inputRef} value={input}
                 onChange={(e) => setInput(e.target.value.toUpperCase())}
                 onKeyDown={(e) => { if (e.key === "Enter" && input.trim()) executeCommand(input); }}
                 className="bg-transparent border-none outline-none font-mono text-sm flex-1"
-                style={{ color: "#e0e0e0", caretColor: "#28c840" }} autoFocus spellCheck={false} />
-              {cursorBlink && !input && <span className="inline-block w-2 h-4" style={{ background: "#28c840" }} />}
+                style={{ color: PARCHMENT, caretColor: COPPER }} autoFocus spellCheck={false} />
+              {cursorBlink && !input && <span className="inline-block w-2 h-4" style={{ background: COPPER }} />}
             </div>
           </div>
         </motion.div>
@@ -234,11 +238,11 @@ const DosTerminalWorld = () => {
         <motion.div className="flex flex-wrap gap-2 justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
           {validCommands.map(cmd => (
             <button key={cmd} onClick={() => executeCommand(cmd)}
-              className="text-[10px] font-mono px-2 py-1 rounded cursor-pointer transition-all"
+              className="font-mono text-mono-xs px-3 py-1.5 transition-all"
               style={{
-                color: commandsUsed.has(cmd) ? "#2a7d4f" : "rgba(42,125,79,0.5)",
-                background: commandsUsed.has(cmd) ? "rgba(42,125,79,0.08)" : "rgba(42,125,79,0.04)",
-                border: `1px solid ${commandsUsed.has(cmd) ? "rgba(42,125,79,0.25)" : "rgba(42,125,79,0.1)"}`,
+                color: commandsUsed.has(cmd) ? COPPER : `${COPPER}60`,
+                background: commandsUsed.has(cmd) ? `${COPPER}08` : `${COPPER}04`,
+                border: `1px solid ${commandsUsed.has(cmd) ? `${COPPER}25` : `${COPPER}10`}`,
                 textDecoration: commandsUsed.has(cmd) ? "line-through" : "none",
               }}>
               {cmd}
