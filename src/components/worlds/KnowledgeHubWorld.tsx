@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { TrendingUp, Cloud, Cpu, BookOpen, BarChart3 } from "lucide-react";
 import CandlestickModule from "@/components/knowledge/CandlestickModule";
 import StockBasicsModule from "@/components/knowledge/StockBasicsModule";
+import CloudPatternsModule from "@/components/knowledge/CloudPatternsModule";
+import SystemDesignModule from "@/components/knowledge/SystemDesignModule";
+import MentalModelsModule from "@/components/knowledge/MentalModelsModule";
 
 const INK = "hsl(220, 30%, 10%)";
 const INK_MUTED = "hsl(220, 12%, 38%)";
@@ -37,43 +40,40 @@ const MODULES: KnowledgeModule[] = [
   {
     id: "cloud-patterns",
     title: "Cloud Architecture Patterns",
-    description: "Common cloud architecture patterns — from event sourcing to CQRS to saga orchestration.",
+    description: "10 battle-tested patterns from enterprise cloud engineering — event sourcing, CQRS, saga orchestration, circuit breakers, and more. Written from production experience.",
     icon: <Cloud size={22} />,
     tags: ["Cloud", "Architecture"],
-    ready: false,
+    ready: true,
   },
   {
     id: "system-design",
     title: "System Design Essentials",
-    description: "Core system design concepts — load balancing, caching strategies, database sharding, and more.",
+    description: "Core system design concepts explained by a practitioner — load balancing, caching, sharding, rate limiting, and more. Not textbook summaries — real trade-offs from real systems.",
     icon: <Cpu size={22} />,
     tags: ["Engineering", "Interviews"],
-    ready: false,
+    ready: true,
   },
   {
     id: "mental-models",
-    title: "Mental Models",
-    description: "Thinking frameworks from first principles to inversion — tools for better decisions.",
+    title: "Mental Models & Puzzles",
+    description: "Thinking frameworks from first principles to inversion, plus interactive logic puzzles and mathematical reasoning challenges. The kind of thing that makes you stop and think.",
     icon: <BookOpen size={22} />,
-    tags: ["Thinking", "Leadership"],
-    ready: false,
+    tags: ["Thinking", "Puzzles"],
+    ready: true,
   },
 ];
 
 const KnowledgeHubWorld = () => {
   const [activeModule, setActiveModule] = useState<string | null>(null);
 
-  if (activeModule === "candlestick") {
-    return <CandlestickModule onBack={() => setActiveModule(null)} />;
-  }
-  if (activeModule === "stock-basics") {
-    return <StockBasicsModule onBack={() => setActiveModule(null)} />;
-  }
+  if (activeModule === "candlestick") return <CandlestickModule onBack={() => setActiveModule(null)} />;
+  if (activeModule === "stock-basics") return <StockBasicsModule onBack={() => setActiveModule(null)} />;
+  if (activeModule === "cloud-patterns") return <CloudPatternsModule onBack={() => setActiveModule(null)} />;
+  if (activeModule === "system-design") return <SystemDesignModule onBack={() => setActiveModule(null)} />;
+  if (activeModule === "mental-models") return <MentalModelsModule onBack={() => setActiveModule(null)} />;
 
   return (
-    <div className="h-full overflow-y-auto px-4 md:px-10 py-8"
-      style={{ background: "#E8E0D0" }}>
-
+    <div className="h-full overflow-y-auto px-4 md:px-10 py-8" style={{ background: "#E8E0D0" }}>
       <motion.div className="max-w-3xl mx-auto"
         initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
 
@@ -102,28 +102,19 @@ const KnowledgeHubWorld = () => {
               }}
               whileHover={mod.ready ? { y: -2, rotate: 0.5 } : {}}
             >
-              {!mod.ready && (
-                <span className="absolute top-3 right-3 font-mono text-mono-xs uppercase tracking-[0.15em] px-2 py-0.5"
-                  style={{ background: `${INK}04`, color: INK_MUTED, borderBottom: `1px solid ${INK}08` }}>
-                  Coming Soon
-                </span>
-              )}
-
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shrink-0"
                   style={{
-                    background: mod.ready ? `${COPPER}10` : `${INK}04`,
-                    color: mod.ready ? COPPER : INK_MUTED,
+                    background: `${COPPER}10`,
+                    color: COPPER,
                   }}>
                   {mod.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-display text-base md:text-lg mb-1"
-                    style={{ color: mod.ready ? INK : INK_MUTED }}>
+                  <h3 className="font-display text-base md:text-lg mb-1" style={{ color: INK }}>
                     {mod.title}
                   </h3>
-                  <p className="font-mono text-mono-xs leading-relaxed mb-3"
-                    style={{ color: INK_MUTED, opacity: mod.ready ? 1 : 0.5 }}>
+                  <p className="font-mono text-mono-xs leading-relaxed mb-3" style={{ color: INK_MUTED }}>
                     {mod.description}
                   </p>
                   <div className="flex gap-2 flex-wrap">
