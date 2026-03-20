@@ -100,7 +100,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
               </div>
             </motion.div>
 
-            <motion.div className="flex-1 relative z-10 overflow-hidden"
+            <motion.div className="flex-1 relative z-10 overflow-auto"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
               {worldMap[chapter.id]?.()}
             </motion.div>
