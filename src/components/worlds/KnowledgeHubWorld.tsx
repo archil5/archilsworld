@@ -49,7 +49,7 @@ const MODULES: KnowledgeModule[] = [
     id: "system-design",
     title: "System Design Essentials",
     description: "Core system design concepts explained by a practitioner — load balancing, caching, sharding, rate limiting, and more. Not textbook summaries — real trade-offs from real systems.",
-    icon: <Cpu size={22} />,
+    icon: "⚙️",
     tags: ["Engineering", "Interviews"],
     ready: true,
   },
