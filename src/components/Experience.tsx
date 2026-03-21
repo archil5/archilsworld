@@ -180,11 +180,11 @@ const Experience = () => {
         gl={{ antialias: true, toneMapping: 3 }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.6} color="#faf5ee" />
+          <ambientLight intensity={0.7} color="#f0f4f8" />
           <directionalLight
             position={[10, 15, 5]}
-            intensity={1.2}
-            color="#fff5e6"
+            intensity={1.1}
+            color="#f8fafc"
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
