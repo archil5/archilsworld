@@ -41,7 +41,7 @@ const MODULES: KnowledgeModule[] = [
     id: "cloud-patterns",
     title: "Cloud Architecture Patterns",
     description: "10 battle-tested patterns from enterprise cloud engineering — event sourcing, CQRS, saga orchestration, circuit breakers, and more. Written from production experience.",
-    icon: <Cloud size={22} />,
+    icon: "☁️",
     tags: ["Cloud", "Architecture"],
     ready: true,
   },
