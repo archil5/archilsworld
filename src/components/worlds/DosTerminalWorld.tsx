@@ -162,16 +162,16 @@ const DosTerminalWorld = () => {
 
   const getColor = (type: string) => {
     switch (type) {
-      case "command": return INK;
-      case "output": return COPPER;
-      case "highlight": return "#DC2626";
-      case "system": return INK_MUTED;
-      case "hint": return INK_MUTED;
-      case "error": return "hsl(0, 55%, 48%)";
-      case "skill": return COPPER;
-      case "value": return "#DC2626";
-      case "box": return INK_MUTED;
-      default: return INK_MUTED;
+      case "command": return "#E2E8F0";
+      case "output": return "#5EEAD4";
+      case "highlight": return "#FB923C";
+      case "system": return "#94A3B8";
+      case "hint": return "#94A3B8";
+      case "error": return "#F87171";
+      case "skill": return "#5EEAD4";
+      case "value": return "#FB923C";
+      case "box": return "#94A3B8";
+      default: return "#94A3B8";
     }
   };
 

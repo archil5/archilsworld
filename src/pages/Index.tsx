@@ -11,45 +11,14 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Canvas texture */}
-      <div
-        className="absolute inset-0 opacity-15"
-        style={{
-          backgroundImage: "url('/images/parchment-bg.jpg')",
-          backgroundSize: "cover",
-          mixBlendMode: "multiply",
-        }}
-      />
-
-      {/* Cartographer's grid */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
+      {/* Subtle grid */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `
-          linear-gradient(hsl(222 47% 11% / 0.3) 1px, transparent 1px),
-          linear-gradient(90deg, hsl(222 47% 11% / 0.3) 1px, transparent 1px)
+          linear-gradient(hsl(222 47% 11% / 0.15) 1px, transparent 1px),
+          linear-gradient(90deg, hsl(222 47% 11% / 0.15) 1px, transparent 1px)
         `,
-        backgroundSize: "80px 80px",
+        backgroundSize: "60px 60px",
       }} />
-
-      {/* Hex marks — faint cartographic reference */}
-      <svg className="absolute inset-0 w-full h-full opacity-[0.05]" viewBox="0 0 1200 800">
-        {[
-          [100, 150], [300, 50], [500, 200], [700, 100], [900, 250], [1100, 150],
-          [200, 400], [400, 350], [600, 450], [800, 380], [1000, 420],
-          [150, 650], [350, 600], [550, 700], [750, 620], [950, 680],
-        ].map(([x, y], i) => (
-          <motion.polygon
-            key={i}
-            points="30,0 60,17 60,52 30,69 0,52 0,17"
-            transform={`translate(${x},${y})`}
-            fill="none"
-            stroke="hsl(222 47% 11%)"
-            strokeWidth="0.5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 + i * 0.08, duration: 0.8 }}
-          />
-        ))}
-      </svg>
 
       <div className="relative z-10 flex flex-col items-center text-center px-8 max-w-xl">
         {/* Meeple */}
@@ -59,7 +28,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="mb-8"
         >
-          <img src={meepleImg} alt="Game piece" className="w-14 h-14 object-contain animate-float-piece" style={{ filter: "drop-shadow(0 3px 8px hsl(222 47% 11% / 0.15))" }} />
+          <img src={meepleImg} alt="Game piece" className="w-14 h-14 object-contain animate-float-piece" style={{ filter: "drop-shadow(0 3px 8px hsl(222 47% 11% / 0.12))" }} />
         </motion.div>
 
         {/* Name */}
@@ -73,14 +42,13 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           Archil Patel
         </motion.h1>
 
-        {/* Hand-drawn line separator */}
-        <motion.svg
-          viewBox="0 0 200 6" className="w-32 mb-5"
-          initial={{ opacity: 0 }} animate={{ opacity: 0.4 }}
+        {/* Separator */}
+        <motion.div
+          className="w-16 h-0.5 mb-5 rounded-full"
+          style={{ background: "#0D9488" }}
+          initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
           transition={{ delay: 0.7, duration: 0.6 }}
-        >
-          <path d="M0 3 Q 40 0, 80 3 T 160 3 T 200 3" fill="none" stroke="#0D9488" strokeWidth="1.5" />
-        </motion.svg>
+        />
 
         <motion.p
           className="font-mono text-mono-sm uppercase tracking-[0.3em] mb-10"
@@ -94,16 +62,16 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
 
         {/* Brief ethos */}
         <motion.div
-          className="px-6 py-5 mb-10 max-w-sm"
+          className="px-6 py-5 mb-10 max-w-sm rounded-lg"
           style={{
             background: "hsl(222 47% 11% / 0.03)",
-            borderLeft: "2px solid hsl(174 83% 32% / 0.3)",
+            borderLeft: "3px solid hsl(174 83% 32% / 0.4)",
           }}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1 }}
         >
-          <p className="font-display text-base leading-relaxed italic" style={{ color: "#64748B" }}>
+          <p className="font-display text-base leading-relaxed italic" style={{ color: "#475569" }}>
             I take things apart to understand how they work — then build them back better.
             This portfolio is my game board. Each tile is a chapter.
           </p>
@@ -119,10 +87,11 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           {["Problem Solver", "Builder", "Strategic Thinker", "Cloud"].map((tag, i) => (
             <motion.span
               key={tag}
-              className="font-mono text-mono-xs uppercase tracking-[0.15em] px-3 py-1.5"
+              className="font-mono text-mono-xs uppercase tracking-[0.15em] px-3 py-1.5 rounded"
               style={{
                 color: "#64748B",
-                borderBottom: "1px solid hsl(174 83% 32% / 0.25)",
+                background: "hsl(222 47% 11% / 0.04)",
+                borderBottom: "2px solid hsl(174 83% 32% / 0.2)",
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -136,15 +105,12 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
         {/* Enter */}
         <motion.button
           onClick={onEnter}
-          className="group relative px-10 py-4 font-display text-display-sm tracking-[0.15em] uppercase transition-all"
+          className="group relative px-10 py-4 font-display text-display-sm tracking-[0.15em] uppercase transition-all rounded-lg"
           style={{
             color: "#F8FAFC",
             background: "#0F172A",
-            border: "1px solid hsl(222 47% 11% / 0.8)",
           }}
-          whileHover={{
-            background: "hsl(220, 30%, 15%)",
-          }}
+          whileHover={{ background: "#1E293B" }}
           whileTap={{ scale: 0.98 }}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -163,7 +129,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
 
         <motion.p
           className="font-mono text-mono-xs mt-8 tracking-wider"
-          style={{ color: "hsl(215 16% 47% / 0.35)" }}
+          style={{ color: "hsl(215 16% 47% / 0.4)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}

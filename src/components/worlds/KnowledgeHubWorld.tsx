@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, Cloud, Cpu, BookOpen, BarChart3 } from "lucide-react";
+// Icons replaced with distinctive emoji for a unique feel
 import CandlestickModule from "@/components/knowledge/CandlestickModule";
 import StockBasicsModule from "@/components/knowledge/StockBasicsModule";
 import CloudPatternsModule from "@/components/knowledge/CloudPatternsModule";

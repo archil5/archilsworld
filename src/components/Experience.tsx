@@ -194,7 +194,7 @@ const Experience = () => {
             shadow-camera-top={10}
             shadow-camera-bottom={-10}
           />
-          <pointLight position={[3, 3, -2]} intensity={0.3} color="#c8956c" distance={15} />
+          <pointLight position={[3, 3, -2]} intensity={0.3} color="#5eead4" distance={15} />
           <fog attach="fog" args={["#F8FAFC", 12, 35]} />
 
           <CameraController scrollProgress={scrollProgress} activeIndex={activeIndex} />
