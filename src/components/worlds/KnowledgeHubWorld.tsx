@@ -15,7 +15,7 @@ interface KnowledgeModule {
   id: string;
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon: string;
   tags: string[];
   ready: boolean;
 }
