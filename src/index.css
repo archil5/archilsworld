@@ -4,48 +4,47 @@
 
 @layer base {
   :root {
-    /* ═══ CARTOGRAPHER'S PALETTE ═══ */
-    --background: 40 33% 93%;
-    --foreground: 220 30% 10%;
+    /* ═══ REFINED SLATE & TEAL ═══ */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 40 30% 95%;
-    --card-foreground: 220 25% 12%;
+    --card: 210 40% 96%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 40 30% 95%;
-    --popover-foreground: 220 25% 12%;
+    --popover: 210 40% 96%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Oxidized copper — the ONE accent */
-    --primary: 144 14% 55%;
-    --primary-foreground: 40 33% 95%;
+    --primary: 174 83% 32%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 30 18% 50%;
-    --secondary-foreground: 40 33% 95%;
+    --secondary: 215 16% 47%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 35 18% 85%;
-    --muted-foreground: 220 10% 42%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 40 45% 62%;
-    --accent-foreground: 220 25% 10%;
+    --accent: 36 95% 44%;
+    --accent-foreground: 222 47% 11%;
 
-    --destructive: 0 55% 48%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 15% 78%;
-    --input: 35 15% 78%;
-    --ring: 144 14% 55%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 174 83% 32%;
 
-    --radius: 0.25rem;
+    --radius: 0.5rem;
 
     /* Extended palette */
-    --ink: 220 30% 10%;
-    --ink-muted: 220 12% 38%;
-    --parchment: 40 33% 93%;
-    --parchment-dark: 35 25% 85%;
-    --copper: 144 14% 55%;
-    --copper-light: 144 18% 65%;
-    --vermillion: 5 50% 48%;
-    --aged-gold: 43 55% 55%;
-    --aged-gold-dim: 40 35% 42%;
+    --ink: 222 47% 11%;
+    --ink-muted: 215 16% 47%;
+    --parchment: 210 40% 98%;
+    --parchment-dark: 214 32% 91%;
+    --copper: 174 83% 32%;
+    --copper-light: 173 80% 40%;
+    --vermillion: 0 72% 51%;
+    --aged-gold: 36 95% 44%;
+    --aged-gold-dim: 33 86% 37%;
 
     --font-display: 'Cormorant Garamond', Georgia, serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -72,7 +71,6 @@
     font-size: 14px;
     letter-spacing: 0.01em;
     overflow: hidden;
-    cursor: crosshair;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -81,19 +79,14 @@
     font-weight: 600;
   }
 
-  /* Custom cursor for interactive elements */
-  button, a, [role="button"], input, textarea, select {
-    cursor: crosshair;
-  }
-
   /* Selection color */
   ::selection {
-    background: hsl(144 14% 55% / 0.35);
-    color: hsl(220 30% 10%);
+    background: hsl(174 83% 32% / 0.2);
+    color: hsl(222 47% 11%);
   }
   ::-moz-selection {
-    background: hsl(144 14% 55% / 0.35);
-    color: hsl(220 30% 10%);
+    background: hsl(174 83% 32% / 0.2);
+    color: hsl(222 47% 11%);
   }
 
   /* Custom scrollbar */
@@ -104,45 +97,28 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(144 14% 55% / 0.4);
-    border-radius: 0;
+    background: hsl(174 83% 32% / 0.3);
+    border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(144 14% 55% / 0.6);
+    background: hsl(174 83% 32% / 0.5);
   }
 
   /* Firefox scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: hsl(144 14% 55% / 0.4) transparent;
+    scrollbar-color: hsl(174 83% 32% / 0.3) transparent;
   }
 }
 
-/* Remove default focus ring, replace with subtle ink line */
+/* Focus ring */
 @layer base {
   *:focus-visible {
-    outline: 1px solid hsl(var(--copper));
+    outline: 2px solid hsl(var(--copper));
     outline-offset: 2px;
-    border-radius: 0;
+    border-radius: 4px;
     box-shadow: none;
   }
-}
-
-/* Paper grain texture via SVG filter */
-.paper-grain {
-  position: relative;
-}
-.paper-grain::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.035;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
-  mix-blend-mode: multiply;
-  z-index: 1;
 }
 
 /* Scrollbar hide */
@@ -160,27 +136,12 @@
   bottom: -2px;
   left: 0;
   width: 0;
-  height: 1px;
+  height: 1.5px;
   background: hsl(var(--copper));
   transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .ink-underline:hover::after {
   width: 100%;
-}
-
-/* Compass separator */
-.compass-separator {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  opacity: 0.3;
-}
-.compass-separator::before,
-.compass-separator::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, hsl(var(--ink) / 0.2), transparent);
 }
 
 @keyframes float-piece {
@@ -193,20 +154,10 @@
   50% { box-shadow: 0 0 20px hsl(var(--copper) / 0.3); }
 }
 
-@keyframes ink-drop {
-  0% { transform: scale(0); opacity: 0.8; }
-  60% { transform: scale(1.2); opacity: 0.4; }
-  100% { transform: scale(1); opacity: 0; }
-}
-
 .animate-float-piece {
   animation: float-piece 3.5s ease-in-out infinite;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2.5s ease-in-out infinite;
-}
-
-.animate-ink-drop {
-  animation: ink-drop 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }

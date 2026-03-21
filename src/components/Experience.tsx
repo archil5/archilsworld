@@ -165,7 +165,7 @@ const Experience = () => {
   const chapter = CHAPTERS[activeIndex];
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden paper-grain" style={{ background: "#E8E0D0" }}>
+    <div className="w-screen h-screen relative overflow-hidden" style={{ background: "#F8FAFC" }}>
       {/* Dive zoom */}
       <motion.div
         className="absolute inset-0"
@@ -180,11 +180,11 @@ const Experience = () => {
         gl={{ antialias: true, toneMapping: 3 }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.6} color="#faf5ee" />
+          <ambientLight intensity={0.7} color="#f0f4f8" />
           <directionalLight
             position={[10, 15, 5]}
-            intensity={1.2}
-            color="#fff5e6"
+            intensity={1.1}
+            color="#f8fafc"
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
@@ -194,8 +194,8 @@ const Experience = () => {
             shadow-camera-top={10}
             shadow-camera-bottom={-10}
           />
-          <pointLight position={[3, 3, -2]} intensity={0.3} color="#c8956c" distance={15} />
-          <fog attach="fog" args={["#E8E0D0", 12, 35]} />
+          <pointLight position={[3, 3, -2]} intensity={0.3} color="#5eead4" distance={15} />
+          <fog attach="fog" args={["#F8FAFC", 12, 35]} />
 
           <CameraController scrollProgress={scrollProgress} activeIndex={activeIndex} />
           <BoardSurface />
@@ -242,10 +242,10 @@ const Experience = () => {
 
       {/* Title — top left */}
       <div className="absolute top-6 left-6 md:top-8 md:left-10 z-20 pointer-events-none">
-        <h1 className="font-display text-display-sm md:text-display-md tracking-wider" style={{ color: "hsl(220, 30%, 10%)" }}>
+        <h1 className="font-display text-display-sm md:text-display-md tracking-wider" style={{ color: "#0F172A" }}>
           Archil Patel
         </h1>
-        <p className="font-mono text-mono-xs mt-1 hidden sm:block" style={{ color: "hsl(220, 12%, 38%)" }}>
+        <p className="font-mono text-mono-xs mt-1 hidden sm:block" style={{ color: "#64748B" }}>
           Principal Cloud Engineer · A Journey in Tiles
         </p>
       </div>
@@ -258,19 +258,19 @@ const Experience = () => {
             disabled={activeIndex === 0}
             className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center transition-all disabled:opacity-15 disabled:cursor-default"
             style={{
-              background: "hsl(220 30% 10% / 0.06)",
-              border: "1px solid hsl(220 30% 10% / 0.12)",
-              color: "hsl(220, 30%, 10%)",
+              background: "hsl(222 47% 11% / 0.06)",
+              border: "1px solid hsl(222 47% 11% / 0.12)",
+              color: "#0F172A",
             }}
-            whileHover={{ background: "hsl(220 30% 10% / 0.1)" }}
+            whileHover={{ background: "hsl(222 47% 11% / 0.1)" }}
             whileTap={{ scale: 0.95 }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
           </motion.button>
 
           <div className="flex items-center gap-2 px-4 py-2.5" style={{
-            background: "hsl(40 33% 93% / 0.9)",
-            border: "1px solid hsl(220 30% 10% / 0.08)",
+            background: "hsl(210 40% 98% / 0.9)",
+            border: "1px solid hsl(222 47% 11% / 0.08)",
           }}>
             {CHAPTERS.map((ch, i) => (
               <button
@@ -280,16 +280,16 @@ const Experience = () => {
                 style={{
                   width: i === activeIndex ? 20 : 6,
                   height: 6,
-                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "hsl(220 30% 10% / 0.5)" : "hsl(220 30% 10% / 0.15)",
+                  background: i === activeIndex ? ch.color : visitedSet.has(i) ? "hsl(222 47% 11% / 0.5)" : "hsl(222 47% 11% / 0.15)",
                 }}
                 title={ch.label}
               >
                 <span
                   className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-mono-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none px-2 py-0.5 hidden md:block"
                   style={{
-                    color: "hsl(220, 30%, 10%)",
-                    background: "hsl(40 33% 93% / 0.95)",
-                    border: "1px solid hsl(220 30% 10% / 0.08)",
+                    color: "#0F172A",
+                    background: "hsl(210 40% 98% / 0.95)",
+                    border: "1px solid hsl(222 47% 11% / 0.08)",
                   }}
                 >
                   {ch.label}
@@ -299,9 +299,9 @@ const Experience = () => {
           </div>
 
           <span className="font-mono text-mono-xs px-2 py-1" style={{
-            color: "hsl(220, 12%, 38%)",
-            background: "hsl(40 33% 93% / 0.8)",
-            border: "1px solid hsl(220 30% 10% / 0.06)",
+            color: "#64748B",
+            background: "hsl(210 40% 98% / 0.8)",
+            border: "1px solid hsl(222 47% 11% / 0.06)",
           }}>
             {activeIndex + 1}/{CHAPTERS.length}
           </span>
@@ -311,11 +311,11 @@ const Experience = () => {
             disabled={activeIndex === CHAPTERS.length - 1}
             className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center transition-all disabled:opacity-15 disabled:cursor-default"
             style={{
-              background: "hsl(220 30% 10% / 0.06)",
-              border: "1px solid hsl(220 30% 10% / 0.12)",
-              color: "hsl(220, 30%, 10%)",
+              background: "hsl(222 47% 11% / 0.06)",
+              border: "1px solid hsl(222 47% 11% / 0.12)",
+              color: "#0F172A",
             }}
-            whileHover={{ background: "hsl(220 30% 10% / 0.1)" }}
+            whileHover={{ background: "hsl(222 47% 11% / 0.1)" }}
             whileTap={{ scale: 0.95 }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
@@ -328,7 +328,7 @@ const Experience = () => {
 
       {activeIndex === 0 && !showOverlay && (
         <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
-          <p className="font-mono text-mono-xs tracking-[0.3em] uppercase" style={{ color: "hsl(220, 12%, 38%)" }}>
+          <p className="font-mono text-mono-xs tracking-[0.3em] uppercase" style={{ color: "#64748B" }}>
             Swipe or tap arrows
           </p>
         </div>
@@ -337,10 +337,10 @@ const Experience = () => {
       {/* Keyboard hint */}
       {!isDiving && (
         <div className="absolute top-6 right-6 md:top-8 md:right-10 z-20 pointer-events-none hidden md:block">
-          <div className="flex items-center gap-2 font-mono text-mono-xs" style={{ color: "hsl(220 12% 38% / 0.3)" }}>
-            <span className="px-1.5 py-0.5" style={{ border: "1px solid hsl(220 12% 38% / 0.15)" }}>←→</span>
+          <div className="flex items-center gap-2 font-mono text-mono-xs" style={{ color: "hsl(215 16% 47% / 0.3)" }}>
+            <span className="px-1.5 py-0.5" style={{ border: "1px solid hsl(215 16% 47% / 0.15)" }}>←→</span>
             navigate
-            <span className="px-1.5 py-0.5 ml-2" style={{ border: "1px solid hsl(220 12% 38% / 0.15)" }}>Enter</span>
+            <span className="px-1.5 py-0.5 ml-2" style={{ border: "1px solid hsl(215 16% 47% / 0.15)" }}>Enter</span>
             dive in
           </div>
         </div>

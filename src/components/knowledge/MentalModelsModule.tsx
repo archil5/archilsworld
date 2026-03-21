@@ -2,9 +2,9 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MENTAL_MODELS, LOGIC_PUZZLES, MENTAL_MODEL_CATEGORIES, type MentalModel, type LogicPuzzle } from "@/data/mentalModels";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 interface MentalModelsModuleProps {
   onBack: () => void;
@@ -15,8 +15,8 @@ const PuzzleCard = ({ puzzle }: { puzzle: LogicPuzzle }) => {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const diffColor = puzzle.difficulty === "easy" ? COPPER
-    : puzzle.difficulty === "medium" ? "hsl(43, 55%, 55%)"
-    : "hsl(5, 50%, 48%)";
+    : puzzle.difficulty === "medium" ? "#D97706"
+    : "#DC2626";
 
   return (
     <div className="space-y-4">
@@ -39,8 +39,8 @@ const PuzzleCard = ({ puzzle }: { puzzle: LogicPuzzle }) => {
       <div className="space-y-2">
         {puzzle.hints.slice(0, hintsRevealed).map((hint, i) => (
           <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-            className="flex gap-2 p-2" style={{ background: "hsl(43 55% 55% / 0.06)", borderLeft: "2px solid hsl(43 55% 55% / 0.2)" }}>
-            <span className="font-mono text-mono-xs mt-0.5" style={{ color: "hsl(43, 55%, 55%)" }}>💡</span>
+            className="flex gap-2 p-2" style={{ background: "hsl(36 95% 44% / 0.06)", borderLeft: "2px solid hsl(36 95% 44% / 0.2)" }}>
+            <span className="font-mono text-mono-xs mt-0.5" style={{ color: "#D97706" }}>💡</span>
             <p className="font-display text-sm" style={{ color: INK_MUTED }}>{hint}</p>
           </motion.div>
         ))}
@@ -49,7 +49,7 @@ const PuzzleCard = ({ puzzle }: { puzzle: LogicPuzzle }) => {
           {hintsRevealed < puzzle.hints.length && (
             <button onClick={() => setHintsRevealed(h => h + 1)}
               className="font-mono text-mono-xs px-3 py-1.5 transition-all"
-              style={{ color: "hsl(43, 55%, 55%)", background: "hsl(43 55% 55% / 0.06)", border: "1px solid hsl(43 55% 55% / 0.15)" }}>
+              style={{ color: "#D97706", background: "hsl(36 95% 44% / 0.06)", border: "1px solid hsl(36 95% 44% / 0.15)" }}>
               Hint {hintsRevealed + 1}/{puzzle.hints.length}
             </button>
           )}
@@ -95,7 +95,7 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
   // Detail view for a model
   if (selectedModel) {
     return (
-      <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+      <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
         <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
           style={{ borderBottom: `1px solid ${INK}08` }}>
           <button onClick={() => setSelectedModel(null)}
@@ -131,8 +131,8 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
 
             {/* Engineering Application */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="p-4" style={{ background: `${INK}03`, borderLeft: "2px solid hsl(43 55% 55% / 0.3)" }}>
-              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(43, 55%, 55%)" }}>
+              className="p-4" style={{ background: `${INK}03`, borderLeft: "2px solid hsl(36 95% 44% / 0.3)" }}>
+              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#D97706" }}>
                 Applied to Engineering
               </p>
               <p className="font-display text-sm leading-relaxed" style={{ color: INK }}>{selectedModel.engineeringApplication}</p>
@@ -182,7 +182,7 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
   // Detail view for a puzzle
   if (selectedPuzzle) {
     return (
-      <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+      <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
         <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
           style={{ borderBottom: `1px solid ${INK}08` }}>
           <button onClick={() => setSelectedPuzzle(null)}
@@ -233,7 +233,7 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+    <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
       <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
         style={{ borderBottom: `1px solid ${INK}08` }}>
         <button onClick={onBack}
@@ -252,7 +252,7 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
           className="px-4 py-1.5 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
           style={{
             background: view === "models" ? INK : `${INK}04`,
-            color: view === "models" ? "#E8E0D0" : INK_MUTED,
+            color: view === "models" ? "#F8FAFC" : INK_MUTED,
             border: `1px solid ${INK}15`,
           }}>
           Mental Models ({MENTAL_MODELS.length})
@@ -261,7 +261,7 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
           className="px-4 py-1.5 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
           style={{
             background: view === "puzzles" ? INK : `${INK}04`,
-            color: view === "puzzles" ? "#E8E0D0" : INK_MUTED,
+            color: view === "puzzles" ? "#F8FAFC" : INK_MUTED,
             border: `1px solid ${INK}15`,
           }}>
           Logic Puzzles ({LOGIC_PUZZLES.length})
@@ -273,7 +273,7 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
                 className="px-3 py-1 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all hidden md:block"
                 style={{
                   background: categoryFilter === cat.value ? INK : `${INK}04`,
-                  color: categoryFilter === cat.value ? "#E8E0D0" : INK_MUTED,
+                  color: categoryFilter === cat.value ? "#F8FAFC" : INK_MUTED,
                   border: `1px solid ${INK}15`,
                 }}>{cat.label}</button>
             ))}
@@ -311,8 +311,8 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-3xl mx-auto">
             {LOGIC_PUZZLES.map((p, i) => {
               const diffColor = p.difficulty === "easy" ? COPPER
-                : p.difficulty === "medium" ? "hsl(43, 55%, 55%)"
-                : "hsl(5, 50%, 48%)";
+                : p.difficulty === "medium" ? "#D97706"
+                : "#DC2626";
               return (
                 <motion.button key={p.id}
                   initial={{ opacity: 0, y: 10 }}

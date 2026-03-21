@@ -7,9 +7,9 @@ import {
   type CandlestickPattern,
 } from "@/data/candlestickPatterns";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 const CandleSVG = ({ pattern }: { pattern: CandlestickPattern }) => {
   const { candles } = pattern;
@@ -25,7 +25,7 @@ const CandleSVG = ({ pattern }: { pattern: CandlestickPattern }) => {
     <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       {[25, 50, 75].map(v => (
         <line key={v} x1={0} y1={scale(v)} x2={svgW} y2={scale(v)}
-          stroke="hsl(220 30% 10% / 0.06)" strokeWidth={0.5} strokeDasharray="3,3" />
+          stroke="hsl(222 47% 11% / 0.06)" strokeWidth={0.5} strokeDasharray="3,3" />
       ))}
       {candles.map((c, i) => {
         const x = (svgW - totalW) / 2 + i * (candleWidth + gap);
@@ -33,7 +33,7 @@ const CandleSVG = ({ pattern }: { pattern: CandlestickPattern }) => {
         const bodyTop = scale(Math.max(c.o, c.c));
         const bodyBot = scale(Math.min(c.o, c.c));
         const bodyH = Math.max(bodyBot - bodyTop, 1.5);
-        const color = isBullish ? COPPER : "hsl(5, 50%, 48%)";
+        const color = isBullish ? COPPER : "#DC2626";
         const cx = x + candleWidth / 2;
         return (
           <g key={i}>
@@ -66,7 +66,7 @@ const CandlestickModule = ({ onBack }: CandlestickModuleProps) => {
   }, [search, categoryFilter]);
 
   return (
-    <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+    <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
       {/* Header */}
       <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
         style={{ borderBottom: `1px solid ${INK}08` }}>
@@ -119,7 +119,7 @@ const CandlestickModule = ({ onBack }: CandlestickModuleProps) => {
             className="px-3 py-1 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
             style={{
               background: categoryFilter === "all" ? INK : `${INK}04`,
-              color: categoryFilter === "all" ? "#E8E0D0" : INK_MUTED,
+              color: categoryFilter === "all" ? "#F8FAFC" : INK_MUTED,
               border: `1px solid ${INK}15`,
             }}>
             All
@@ -130,7 +130,7 @@ const CandlestickModule = ({ onBack }: CandlestickModuleProps) => {
               className="px-3 py-1 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
               style={{
                 background: categoryFilter === cat.value ? INK : `${INK}04`,
-                color: categoryFilter === cat.value ? "#E8E0D0" : INK_MUTED,
+                color: categoryFilter === cat.value ? "#F8FAFC" : INK_MUTED,
                 border: `1px solid ${INK}15`,
               }}>
               {cat.label}
@@ -185,11 +185,11 @@ const CandlestickModule = ({ onBack }: CandlestickModuleProps) => {
           <motion.div
             className="fixed inset-0 z-[100] flex items-center justify-center p-4"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div className="absolute inset-0" style={{ background: "hsl(220 30% 10% / 0.3)" }} onClick={() => setSelectedPattern(null)} />
+            <div className="absolute inset-0" style={{ background: "hsl(222 47% 11% / 0.3)" }} onClick={() => setSelectedPattern(null)} />
             <motion.div
               className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto p-6 md:p-8"
               style={{
-                background: "#E8E0D0",
+                background: "#F8FAFC",
                 border: `1px solid ${INK}12`,
               }}
               initial={{ scale: 0.95, y: 15 }}

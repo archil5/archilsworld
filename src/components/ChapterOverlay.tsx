@@ -27,7 +27,7 @@ const BrandBadge = ({ chapter }: { chapter: ChapterData }) => {
     return (
       <span className="inline-flex items-center gap-1.5 px-2 py-1" style={{ background: `${chapter.color}08`, border: `1px solid ${chapter.color}15` }}>
         <img src={careerLogos.RBC} alt="RBC" className="h-5 object-contain" />
-        <span style={{ color: "hsl(220, 12%, 38%)", fontSize: 9 }}>+</span>
+        <span style={{ color: "#64748B", fontSize: 9 }}>+</span>
         <img src={careerLogos.BMO} alt="BMO" className="h-5 object-contain" />
       </span>
     );
@@ -68,7 +68,7 @@ const TypewriterText = ({ text, delay = 0 }: { text: string; delay?: number }) =
       {displayed.length < text.length ? (
         <motion.span
           className="inline-block w-[1.5px] h-[13px] ml-0.5 align-middle"
-          style={{ background: "hsl(220 30% 10% / 0.3)" }}
+          style={{ background: "hsl(222 47% 11% / 0.3)" }}
           animate={{ opacity: [1, 0, 1] }}
           transition={{ repeat: Infinity, duration: 0.6 }}
         />
@@ -92,7 +92,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, hsl(40 33% 93% / 0.97) 0%, hsl(40 33% 93% / 0.7) 40%, transparent 100%)",
+              background: "linear-gradient(to top, hsl(210 40% 98% / 0.97) 0%, hsl(210 40% 98% / 0.7) 40%, transparent 100%)",
             }}
           />
 
@@ -113,14 +113,14 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
               >
                 {categoryLabels[chapter.category] || "Career"}
               </span>
-              <span className="font-mono text-mono-xs" style={{ color: "hsl(220, 12%, 38%)" }}>
+              <span className="font-mono text-mono-xs" style={{ color: "#64748B" }}>
                 {chapter.year}
               </span>
             </motion.div>
 
             <motion.h2
               className="font-display text-display-lg md:text-display-hero font-bold mb-2"
-              style={{ color: "hsl(220, 30%, 10%)" }}
+              style={{ color: "#0F172A" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -130,7 +130,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
 
             <motion.p
               className="font-mono text-mono-xs uppercase tracking-[0.2em] mb-3"
-              style={{ color: "hsl(220, 12%, 38%)" }}
+              style={{ color: "#64748B" }}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -140,7 +140,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
 
             <motion.div
               className="font-display text-sm md:text-base leading-relaxed mb-6 max-w-md"
-              style={{ color: "hsl(220 12% 38% / 0.7)", fontStyle: "italic" }}
+              style={{ color: "hsl(215 16% 47% / 0.7)", fontStyle: "italic" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.3 }}

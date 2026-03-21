@@ -1,21 +1,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, Cloud, Cpu, BookOpen, BarChart3 } from "lucide-react";
+// Icons replaced with distinctive emoji for a unique feel
 import CandlestickModule from "@/components/knowledge/CandlestickModule";
 import StockBasicsModule from "@/components/knowledge/StockBasicsModule";
 import CloudPatternsModule from "@/components/knowledge/CloudPatternsModule";
 import SystemDesignModule from "@/components/knowledge/SystemDesignModule";
 import MentalModelsModule from "@/components/knowledge/MentalModelsModule";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 interface KnowledgeModule {
   id: string;
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon: string;
   tags: string[];
   ready: boolean;
 }
@@ -25,7 +25,7 @@ const MODULES: KnowledgeModule[] = [
     id: "stock-basics",
     title: "Stock Market 101",
     description: "New to investing? Start here. A plain-English mini-course covering what stocks are, how the market works, and how to get started.",
-    icon: <BarChart3 size={22} />,
+    icon: "📊",
     tags: ["Finance", "Beginner"],
     ready: true,
   },
@@ -33,7 +33,7 @@ const MODULES: KnowledgeModule[] = [
     id: "candlestick",
     title: "Candlestick Patterns",
     description: "35+ candlestick patterns for trading — visual diagrams, simple explanations, and practical trade tips.",
-    icon: <TrendingUp size={22} />,
+    icon: "🕯️",
     tags: ["Finance", "Trading"],
     ready: true,
   },
@@ -41,7 +41,7 @@ const MODULES: KnowledgeModule[] = [
     id: "cloud-patterns",
     title: "Cloud Architecture Patterns",
     description: "10 battle-tested patterns from enterprise cloud engineering — event sourcing, CQRS, saga orchestration, circuit breakers, and more. Written from production experience.",
-    icon: <Cloud size={22} />,
+    icon: "☁️",
     tags: ["Cloud", "Architecture"],
     ready: true,
   },
@@ -49,7 +49,7 @@ const MODULES: KnowledgeModule[] = [
     id: "system-design",
     title: "System Design Essentials",
     description: "Core system design concepts explained by a practitioner — load balancing, caching, sharding, rate limiting, and more. Not textbook summaries — real trade-offs from real systems.",
-    icon: <Cpu size={22} />,
+    icon: "⚙️",
     tags: ["Engineering", "Interviews"],
     ready: true,
   },
@@ -57,7 +57,7 @@ const MODULES: KnowledgeModule[] = [
     id: "mental-models",
     title: "Mental Models & Puzzles",
     description: "Thinking frameworks from first principles to inversion, plus interactive logic puzzles and mathematical reasoning challenges. The kind of thing that makes you stop and think.",
-    icon: <BookOpen size={22} />,
+    icon: "🧩",
     tags: ["Thinking", "Puzzles"],
     ready: true,
   },
@@ -73,7 +73,7 @@ const KnowledgeHubWorld = () => {
   if (activeModule === "mental-models") return <MentalModelsModule onBack={() => setActiveModule(null)} />;
 
   return (
-    <div className="h-full overflow-y-auto px-4 md:px-10 py-8" style={{ background: "#E8E0D0" }}>
+    <div className="h-full overflow-y-auto px-4 md:px-10 py-8" style={{ background: "#F8FAFC" }}>
       <motion.div className="max-w-3xl mx-auto"
         initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
 
@@ -103,11 +103,8 @@ const KnowledgeHubWorld = () => {
               whileHover={mod.ready ? { y: -2, rotate: 0.5 } : {}}
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shrink-0"
-                  style={{
-                    background: `${COPPER}10`,
-                    color: COPPER,
-                  }}>
+                <div className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shrink-0 text-2xl rounded-lg"
+                  style={{ background: `${COPPER}10` }}>
                   {mod.icon}
                 </div>
                 <div className="flex-1 min-w-0">

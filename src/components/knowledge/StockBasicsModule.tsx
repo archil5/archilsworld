@@ -2,9 +2,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { STOCK_BASICS, type StockBasicsTopic } from "@/data/stockBasics";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 interface StockBasicsModuleProps {
   onBack: () => void;
@@ -15,7 +15,7 @@ const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
 
   if (activeTopic) {
     return (
-      <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+      <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
         <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
           style={{ borderBottom: `1px solid ${INK}08` }}>
           <button onClick={() => setActiveTopic(null)}
@@ -87,7 +87,7 @@ const StockBasicsModule = ({ onBack }: StockBasicsModuleProps) => {
   }
 
   return (
-    <div className="h-full overflow-y-auto px-4 md:px-8 py-6" style={{ background: "#E8E0D0" }}>
+    <div className="h-full overflow-y-auto px-4 md:px-8 py-6" style={{ background: "#F8FAFC" }}>
       <div className="shrink-0 mb-6 flex items-center gap-3">
         <button onClick={onBack}
           className="flex items-center gap-2 px-3 py-1.5 transition-all"

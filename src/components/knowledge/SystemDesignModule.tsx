@@ -2,9 +2,9 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SYSTEM_DESIGN_TOPICS, SYSTEM_DESIGN_CATEGORIES, type SystemDesignTopic } from "@/data/systemDesign";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 interface SystemDesignModuleProps {
   onBack: () => void;
@@ -26,7 +26,7 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
 
   if (selectedTopic) {
     return (
-      <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+      <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
         <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
           style={{ borderBottom: `1px solid ${INK}08` }}>
           <button onClick={() => setSelectedTopic(null)}
@@ -52,7 +52,7 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
 
             {/* The Real Problem */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(5, 50%, 48%)" }}>
+              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#DC2626" }}>
                 The Real Problem (Not the Textbook Version)
               </p>
               <p className="font-display text-sm leading-relaxed" style={{ color: INK }}>{selectedTopic.theRealProblem}</p>
@@ -76,14 +76,14 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
 
             {/* Common Mistakes */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-3" style={{ color: "hsl(5, 50%, 48%)" }}>
+              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-3" style={{ color: "#DC2626" }}>
                 Common Mistakes I've Seen
               </p>
               <div className="space-y-2">
                 {selectedTopic.commonMistakes.map((m, i) => (
                   <div key={i} className="flex items-start gap-2 p-3"
-                    style={{ background: "hsl(5 50% 48% / 0.04)", borderLeft: "2px solid hsl(5 50% 48% / 0.2)" }}>
-                    <span className="font-mono text-mono-xs mt-0.5" style={{ color: "hsl(5, 50%, 48%)" }}>✗</span>
+                    style={{ background: "hsl(0 72% 51% / 0.04)", borderLeft: "2px solid hsl(0 72% 51% / 0.2)" }}>
+                    <span className="font-mono text-mono-xs mt-0.5" style={{ color: "#DC2626" }}>✗</span>
                     <p className="font-display text-sm leading-relaxed" style={{ color: INK }}>{m}</p>
                   </div>
                 ))}
@@ -92,8 +92,8 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
 
             {/* Interview Tip */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-              className="p-4" style={{ background: `${INK}03`, borderLeft: "2px solid hsl(43 55% 55% / 0.3)" }}>
-              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(43, 55%, 55%)" }}>
+              className="p-4" style={{ background: `${INK}03`, borderLeft: "2px solid hsl(36 95% 44% / 0.3)" }}>
+              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#D97706" }}>
                 Interview Tip
               </p>
               <p className="font-display text-sm leading-relaxed" style={{ color: INK }}>{selectedTopic.interviewTip}</p>
@@ -141,7 +141,7 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+    <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
       <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
         style={{ borderBottom: `1px solid ${INK}08` }}>
         <button onClick={onBack}
@@ -168,7 +168,7 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
             className="px-3 py-1 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
             style={{
               background: categoryFilter === "all" ? INK : `${INK}04`,
-              color: categoryFilter === "all" ? "#E8E0D0" : INK_MUTED,
+              color: categoryFilter === "all" ? "#F8FAFC" : INK_MUTED,
               border: `1px solid ${INK}15`,
             }}>All</button>
           {SYSTEM_DESIGN_CATEGORIES.map(cat => (
@@ -176,7 +176,7 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
               className="px-3 py-1 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
               style={{
                 background: categoryFilter === cat.value ? INK : `${INK}04`,
-                color: categoryFilter === cat.value ? "#E8E0D0" : INK_MUTED,
+                color: categoryFilter === cat.value ? "#F8FAFC" : INK_MUTED,
                 border: `1px solid ${INK}15`,
               }}>{cat.label}</button>
           ))}

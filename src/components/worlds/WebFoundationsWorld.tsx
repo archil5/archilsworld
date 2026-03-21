@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
-const VERMILLION = "hsl(5, 50%, 48%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
+const VERMILLION = "#DC2626";
 const HTML_COLOR = "#8B6350";
 
 const codePieces = [
@@ -171,7 +171,7 @@ const HTMLBuilderPuzzle = () => {
         <div className="flex items-center gap-2 mb-4">
           <div className="flex gap-1.5">
             <div className="w-2 h-2" style={{ background: VERMILLION }} />
-            <div className="w-2 h-2" style={{ background: "hsl(43, 55%, 55%)" }} />
+            <div className="w-2 h-2" style={{ background: "#D97706" }} />
             <div className="w-2 h-2" style={{ background: COPPER }} />
           </div>
           <span className="font-mono text-mono-xs ml-2" style={{ color: `${INK_MUTED}40` }}>localhost:3000</span>
@@ -364,7 +364,7 @@ const WebFoundationsWorld = () => {
               className="px-4 py-1.5 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
               style={{
                 background: activeSection === tab.key ? INK : `${INK}04`,
-                color: activeSection === tab.key ? "#E8E0D0" : INK_MUTED,
+                color: activeSection === tab.key ? "#F8FAFC" : INK_MUTED,
                 border: `1px solid ${activeSection === tab.key ? INK : `${INK}08`}`,
               }}>
               {tab.label}
