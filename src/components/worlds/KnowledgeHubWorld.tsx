@@ -25,7 +25,7 @@ const MODULES: KnowledgeModule[] = [
     id: "stock-basics",
     title: "Stock Market 101",
     description: "New to investing? Start here. A plain-English mini-course covering what stocks are, how the market works, and how to get started.",
-    icon: <BarChart3 size={22} />,
+    icon: "📊",
     tags: ["Finance", "Beginner"],
     ready: true,
   },
