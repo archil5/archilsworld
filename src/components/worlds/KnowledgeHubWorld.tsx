@@ -33,7 +33,7 @@ const MODULES: KnowledgeModule[] = [
     id: "candlestick",
     title: "Candlestick Patterns",
     description: "35+ candlestick patterns for trading — visual diagrams, simple explanations, and practical trade tips.",
-    icon: <TrendingUp size={22} />,
+    icon: "🕯️",
     tags: ["Finance", "Trading"],
     ready: true,
   },
