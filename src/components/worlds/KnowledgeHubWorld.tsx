@@ -103,11 +103,8 @@ const KnowledgeHubWorld = () => {
               whileHover={mod.ready ? { y: -2, rotate: 0.5 } : {}}
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shrink-0"
-                  style={{
-                    background: `${COPPER}10`,
-                    color: COPPER,
-                  }}>
+                <div className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shrink-0 text-2xl rounded-lg"
+                  style={{ background: `${COPPER}10` }}>
                   {mod.icon}
                 </div>
                 <div className="flex-1 min-w-0">
