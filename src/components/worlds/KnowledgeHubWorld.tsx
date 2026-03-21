@@ -57,7 +57,7 @@ const MODULES: KnowledgeModule[] = [
     id: "mental-models",
     title: "Mental Models & Puzzles",
     description: "Thinking frameworks from first principles to inversion, plus interactive logic puzzles and mathematical reasoning challenges. The kind of thing that makes you stop and think.",
-    icon: <BookOpen size={22} />,
+    icon: "🧩",
     tags: ["Thinking", "Puzzles"],
     ready: true,
   },
