@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { chapterImages } from "@/data/brandLogos";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 const links = [
   { label: "LinkedIn", url: "https://www.linkedin.com/in/archil5/", icon: "↗" },

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 const HTML_COLOR = "#8B6350";
 
 interface CodePiece {
@@ -69,7 +69,7 @@ const CodeBuilderWorld = () => {
               className="px-4 py-1.5 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
               style={{
                 background: activeTab === tab ? INK : `${INK}04`,
-                color: activeTab === tab ? "#E8E0D0" : INK_MUTED,
+                color: activeTab === tab ? "#F8FAFC" : INK_MUTED,
                 border: `1px solid ${activeTab === tab ? INK : `${INK}08`}`,
               }}>
               {tab === "puzzle" ? "Build" : tab === "skills" ? "Skills" : "Value"}

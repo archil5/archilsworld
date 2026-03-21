@@ -52,8 +52,8 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
       <AnimatePresence>
         {chapter && !exiting && (
           <motion.div
-            className="fixed inset-0 z-50 flex flex-col paper-grain"
-            style={{ background: "#E8E0D0" }}
+            className="fixed inset-0 z-50 flex flex-col"
+            style={{ background: "#F8FAFC" }}
             initial={{ opacity: 0, scale: 2.5 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 3, filter: "blur(12px)", y: -60 }}
@@ -66,9 +66,9 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
               initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, ease: [0.22, 1, 0.36, 1] }}>
               <button onClick={handleClose}
                 className="flex items-center gap-2 px-3 py-2 transition-all ink-underline"
-                style={{ color: "hsl(220, 12%, 38%)", background: "hsl(220 30% 10% / 0.04)", border: "1px solid hsl(220 30% 10% / 0.08)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "hsl(220 30% 10% / 0.08)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "hsl(220 30% 10% / 0.04)"; }}>
+                style={{ color: "#64748B", background: "hsl(222 47% 11% / 0.04)", border: "1px solid hsl(222 47% 11% / 0.08)" }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "hsl(222 47% 11% / 0.08)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "hsl(222 47% 11% / 0.04)"; }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
                 <span className="font-mono text-mono-xs tracking-wider">Back</span>
               </button>
@@ -82,7 +82,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
                   <span className="inline-flex items-center gap-1 px-2 py-1"
                     style={{ background: `${chapter.color}08`, border: `1px solid ${chapter.color}12` }}>
                     <img src={careerLogos.RBC} alt="RBC" className="h-4 md:h-5 object-contain" />
-                    <span style={{ color: "hsl(220, 12%, 38%)", fontSize: 8 }}>+</span>
+                    <span style={{ color: "#64748B", fontSize: 8 }}>+</span>
                     <img src={careerLogos.BMO} alt="BMO" className="h-4 md:h-5 object-contain" />
                   </span>
                 ) : chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
@@ -94,8 +94,8 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
                   <span className="text-xl md:text-2xl">{chapter.icon}</span>
                 )}
                 <div className="text-right">
-                  <p className="font-display text-display-sm tracking-wider" style={{ color: "hsl(220, 30%, 10%)" }}>{chapter.title}</p>
-                  <p className="font-mono text-mono-xs" style={{ color: "hsl(220, 12%, 38%)" }}>{chapter.year}</p>
+                  <p className="font-display text-display-sm tracking-wider" style={{ color: "#0F172A" }}>{chapter.title}</p>
+                  <p className="font-mono text-mono-xs" style={{ color: "#64748B" }}>{chapter.year}</p>
                 </div>
               </div>
             </motion.div>
@@ -107,7 +107,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
 
             <motion.div className="relative z-10 text-center py-3"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-              <p className="font-mono text-mono-xs" style={{ color: "hsl(220 12% 38% / 0.4)" }}>
+              <p className="font-mono text-mono-xs" style={{ color: "hsl(215 16% 47% / 0.4)" }}>
                 ← Back to return to the board
               </p>
             </motion.div>

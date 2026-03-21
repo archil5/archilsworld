@@ -2,9 +2,9 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CLOUD_PATTERNS, CLOUD_PATTERN_CATEGORIES, type CloudPattern } from "@/data/cloudPatterns";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 interface CloudPatternsModuleProps {
   onBack: () => void;
@@ -26,7 +26,7 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
 
   if (selectedPattern) {
     return (
-      <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+      <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
         <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
           style={{ borderBottom: `1px solid ${INK}08` }}>
           <button onClick={() => setSelectedPattern(null)}
@@ -52,7 +52,7 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
 
             {/* Problem */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(5, 50%, 48%)" }}>The Problem</p>
+              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#DC2626" }}>The Problem</p>
               <p className="font-display text-sm leading-relaxed" style={{ color: INK }}>{selectedPattern.problem}</p>
             </motion.div>
 
@@ -86,8 +86,8 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
                       <p className="font-mono text-mono-xs mb-1" style={{ color: COPPER }}>✓ PRO</p>
                       <p className="font-display text-sm" style={{ color: INK }}>{t.pro}</p>
                     </div>
-                    <div className="p-3" style={{ background: "hsl(5 50% 48% / 0.04)", borderLeft: "2px solid hsl(5 50% 48% / 0.2)" }}>
-                      <p className="font-mono text-mono-xs mb-1" style={{ color: "hsl(5, 50%, 48%)" }}>✗ CON</p>
+                    <div className="p-3" style={{ background: "hsl(0 72% 51% / 0.04)", borderLeft: "2px solid hsl(0 72% 51% / 0.2)" }}>
+                      <p className="font-mono text-mono-xs mb-1" style={{ color: "#DC2626" }}>✗ CON</p>
                       <p className="font-display text-sm" style={{ color: INK }}>{t.con}</p>
                     </div>
                   </div>
@@ -97,8 +97,8 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
 
             {/* Real World */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-              className="p-4" style={{ background: `${INK}03`, borderLeft: `2px solid hsl(43 55% 55% / 0.3)` }}>
-              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(43, 55%, 55%)" }}>From Production</p>
+              className="p-4" style={{ background: `${INK}03`, borderLeft: `2px solid hsl(36 95% 44% / 0.3)` }}>
+              <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#D97706" }}>From Production</p>
               <p className="font-display text-sm leading-relaxed italic" style={{ color: INK }}>{selectedPattern.realWorld}</p>
             </motion.div>
 
@@ -115,10 +115,10 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
                 ))}
               </div>
               <div>
-                <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "hsl(5, 50%, 48%)" }}>When NOT To Use</p>
+                <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#DC2626" }}>When NOT To Use</p>
                 {selectedPattern.whenNotToUse.map((w, i) => (
                   <div key={i} className="flex items-start gap-2 mb-1.5">
-                    <span className="font-mono text-mono-xs mt-0.5" style={{ color: "hsl(5, 50%, 48%)" }}>✗</span>
+                    <span className="font-mono text-mono-xs mt-0.5" style={{ color: "#DC2626" }}>✗</span>
                     <span className="font-display text-sm" style={{ color: INK }}>{w}</span>
                   </div>
                 ))}
@@ -147,7 +147,7 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ background: "#E8E0D0" }}>
+    <div className="h-full flex flex-col" style={{ background: "#F8FAFC" }}>
       <div className="shrink-0 px-4 md:px-8 py-4 flex items-center justify-between"
         style={{ borderBottom: `1px solid ${INK}08` }}>
         <button onClick={onBack}
@@ -175,7 +175,7 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
             className="px-3 py-1 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
             style={{
               background: categoryFilter === "all" ? INK : `${INK}04`,
-              color: categoryFilter === "all" ? "#E8E0D0" : INK_MUTED,
+              color: categoryFilter === "all" ? "#F8FAFC" : INK_MUTED,
               border: `1px solid ${INK}15`,
             }}>All</button>
           {CLOUD_PATTERN_CATEGORIES.map(cat => (
@@ -183,7 +183,7 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
               className="px-3 py-1 font-mono text-mono-xs uppercase tracking-[0.1em] transition-all"
               style={{
                 background: categoryFilter === cat.value ? INK : `${INK}04`,
-                color: categoryFilter === cat.value ? "#E8E0D0" : INK_MUTED,
+                color: categoryFilter === cat.value ? "#F8FAFC" : INK_MUTED,
                 border: `1px solid ${INK}15`,
               }}>{cat.label}</button>
           ))}

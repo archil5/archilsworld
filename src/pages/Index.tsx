@@ -6,8 +6,8 @@ import meepleImg from "@/assets/meeple.png";
 const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden paper-grain"
-      style={{ background: "#E8E0D0" }}
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
+      style={{ background: "#F8FAFC" }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
     >
@@ -24,8 +24,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
       {/* Cartographer's grid */}
       <div className="absolute inset-0 opacity-[0.04]" style={{
         backgroundImage: `
-          linear-gradient(hsl(220 30% 10% / 0.3) 1px, transparent 1px),
-          linear-gradient(90deg, hsl(220 30% 10% / 0.3) 1px, transparent 1px)
+          linear-gradient(hsl(222 47% 11% / 0.3) 1px, transparent 1px),
+          linear-gradient(90deg, hsl(222 47% 11% / 0.3) 1px, transparent 1px)
         `,
         backgroundSize: "80px 80px",
       }} />
@@ -42,7 +42,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
             points="30,0 60,17 60,52 30,69 0,52 0,17"
             transform={`translate(${x},${y})`}
             fill="none"
-            stroke="hsl(220 30% 10%)"
+            stroke="hsl(222 47% 11%)"
             strokeWidth="0.5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -59,13 +59,13 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="mb-8"
         >
-          <img src={meepleImg} alt="Game piece" className="w-14 h-14 object-contain animate-float-piece" style={{ filter: "drop-shadow(0 3px 8px hsl(220 30% 10% / 0.15))" }} />
+          <img src={meepleImg} alt="Game piece" className="w-14 h-14 object-contain animate-float-piece" style={{ filter: "drop-shadow(0 3px 8px hsl(222 47% 11% / 0.15))" }} />
         </motion.div>
 
         {/* Name */}
         <motion.h1
           className="font-display text-display-hero font-bold mb-4"
-          style={{ color: "hsl(220, 30%, 10%)" }}
+          style={{ color: "#0F172A" }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -79,12 +79,12 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           initial={{ opacity: 0 }} animate={{ opacity: 0.4 }}
           transition={{ delay: 0.7, duration: 0.6 }}
         >
-          <path d="M0 3 Q 40 0, 80 3 T 160 3 T 200 3" fill="none" stroke="hsl(144, 14%, 55%)" strokeWidth="1.5" />
+          <path d="M0 3 Q 40 0, 80 3 T 160 3 T 200 3" fill="none" stroke="#0D9488" strokeWidth="1.5" />
         </motion.svg>
 
         <motion.p
           className="font-mono text-mono-sm uppercase tracking-[0.3em] mb-10"
-          style={{ color: "hsl(144, 14%, 55%)" }}
+          style={{ color: "#0D9488" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
@@ -96,14 +96,14 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
         <motion.div
           className="px-6 py-5 mb-10 max-w-sm"
           style={{
-            background: "hsl(220 30% 10% / 0.03)",
-            borderLeft: "2px solid hsl(144 14% 55% / 0.3)",
+            background: "hsl(222 47% 11% / 0.03)",
+            borderLeft: "2px solid hsl(174 83% 32% / 0.3)",
           }}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1 }}
         >
-          <p className="font-display text-base leading-relaxed italic" style={{ color: "hsl(220, 12%, 38%)" }}>
+          <p className="font-display text-base leading-relaxed italic" style={{ color: "#64748B" }}>
             I take things apart to understand how they work — then build them back better.
             This portfolio is my game board. Each tile is a chapter.
           </p>
@@ -121,8 +121,8 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
               key={tag}
               className="font-mono text-mono-xs uppercase tracking-[0.15em] px-3 py-1.5"
               style={{
-                color: "hsl(220, 12%, 38%)",
-                borderBottom: "1px solid hsl(144 14% 55% / 0.25)",
+                color: "#64748B",
+                borderBottom: "1px solid hsl(174 83% 32% / 0.25)",
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -138,9 +138,9 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
           onClick={onEnter}
           className="group relative px-10 py-4 font-display text-display-sm tracking-[0.15em] uppercase transition-all"
           style={{
-            color: "#E8E0D0",
-            background: "hsl(220, 30%, 10%)",
-            border: "1px solid hsl(220 30% 10% / 0.8)",
+            color: "#F8FAFC",
+            background: "#0F172A",
+            border: "1px solid hsl(222 47% 11% / 0.8)",
           }}
           whileHover={{
             background: "hsl(220, 30%, 15%)",
@@ -163,7 +163,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
 
         <motion.p
           className="font-mono text-mono-xs mt-8 tracking-wider"
-          style={{ color: "hsl(220 12% 38% / 0.35)" }}
+          style={{ color: "hsl(215 16% 47% / 0.35)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}

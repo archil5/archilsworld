@@ -16,7 +16,6 @@ export default {
         mono: ["JetBrains Mono", "Fira Code", "monospace"],
       },
       fontSize: {
-        /* Intentional scale — nothing default */
         "display-hero": ["3.5rem", { lineHeight: "1.1", letterSpacing: "0.06em" }],
         "display-lg": ["2.25rem", { lineHeight: "1.15", letterSpacing: "0.05em" }],
         "display-md": ["1.5rem", { lineHeight: "1.2", letterSpacing: "0.04em" }],

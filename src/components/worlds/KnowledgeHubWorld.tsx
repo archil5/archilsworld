@@ -7,9 +7,9 @@ import CloudPatternsModule from "@/components/knowledge/CloudPatternsModule";
 import SystemDesignModule from "@/components/knowledge/SystemDesignModule";
 import MentalModelsModule from "@/components/knowledge/MentalModelsModule";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
 
 interface KnowledgeModule {
   id: string;
@@ -73,7 +73,7 @@ const KnowledgeHubWorld = () => {
   if (activeModule === "mental-models") return <MentalModelsModule onBack={() => setActiveModule(null)} />;
 
   return (
-    <div className="h-full overflow-y-auto px-4 md:px-10 py-8" style={{ background: "#E8E0D0" }}>
+    <div className="h-full overflow-y-auto px-4 md:px-10 py-8" style={{ background: "#F8FAFC" }}>
       <motion.div className="max-w-3xl mx-auto"
         initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
 

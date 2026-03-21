@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 
-const INK = "hsl(220, 30%, 10%)";
-const INK_MUTED = "hsl(220, 12%, 38%)";
-const COPPER = "hsl(144, 14%, 55%)";
-const PARCHMENT = "#E8E0D0";
-const SURFACE = "hsl(40, 30%, 95%)";
+const INK = "#0F172A";
+const INK_MUTED = "#64748B";
+const COPPER = "#0D9488";
+const PARCHMENT = "#F8FAFC";
+const SURFACE = "#F1F5F9";
 
 const fileSystem: Record<string, string[]> = {
   "C:\\>": ["Type HELP for commands", ""],
@@ -164,12 +164,12 @@ const DosTerminalWorld = () => {
     switch (type) {
       case "command": return INK;
       case "output": return COPPER;
-      case "highlight": return "hsl(5, 50%, 48%)";
+      case "highlight": return "#DC2626";
       case "system": return INK_MUTED;
       case "hint": return INK_MUTED;
       case "error": return "hsl(0, 55%, 48%)";
       case "skill": return COPPER;
-      case "value": return "hsl(5, 50%, 48%)";
+      case "value": return "#DC2626";
       case "box": return INK_MUTED;
       default: return INK_MUTED;
     }
@@ -206,11 +206,11 @@ const DosTerminalWorld = () => {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           style={{ background: INK, border: `1px solid ${INK_MUTED}30` }}
           onClick={() => inputRef.current?.focus()}>
-          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "hsl(220, 25%, 14%)", borderBottom: `1px solid hsl(220 30% 10% / 0.5)` }}>
+          <div className="flex items-center gap-2 px-4 py-2" style={{ background: "#1E293B", borderBottom: `1px solid hsl(222 47% 11% / 0.5)` }}>
             <div className="w-2.5 h-2.5" style={{ background: "hsl(0, 55%, 48%)" }} />
-            <div className="w-2.5 h-2.5" style={{ background: "hsl(43, 55%, 55%)" }} />
+            <div className="w-2.5 h-2.5" style={{ background: "#D97706" }} />
             <div className="w-2.5 h-2.5" style={{ background: COPPER }} />
-            <span className="ml-2 font-mono text-mono-xs" style={{ color: "hsl(220 12% 38% / 0.5)" }}>ARCHIL-DOS — Interactive Terminal</span>
+            <span className="ml-2 font-mono text-mono-xs" style={{ color: "hsl(215 16% 47% / 0.5)" }}>ARCHIL-DOS — Interactive Terminal</span>
           </div>
 
           <div ref={containerRef} className="p-6 font-mono text-sm leading-relaxed overflow-y-auto"
