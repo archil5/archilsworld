@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { STOCK_BASICS, type StockBasicsTopic } from "@/data/stockBasics";
+import StockVisual from "./diagrams/StockVisual";
 
 const INK = "#0F172A";
 const INK_MUTED = "#475569";
