@@ -129,7 +129,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
 
         <motion.p
           className="font-mono text-mono-xs mt-8 tracking-wider"
-          style={{ color: "hsl(215 16% 47% / 0.4)" }}
+          style={{ color: "hsl(215 25% 50%)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}

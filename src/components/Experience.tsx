@@ -340,7 +340,7 @@ const Experience = () => {
           <div className="flex items-center gap-2 font-mono text-mono-xs" style={{ color: "hsl(215 25% 50%)" }}>
             <span className="px-1.5 py-0.5" style={{ border: "1px solid hsl(215 25% 50% / 0.3)" }}>←→</span>
             navigate
-            <span className="px-1.5 py-0.5 ml-2" style={{ border: "1px solid hsl(215 16% 47% / 0.15)" }}>Enter</span>
+            <span className="px-1.5 py-0.5 ml-2" style={{ border: "1px solid hsl(215 25% 50% / 0.3)" }}>Enter</span>
             dive in
           </div>
         </div>
