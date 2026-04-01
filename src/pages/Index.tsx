@@ -89,7 +89,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
               key={tag}
               className="font-mono text-mono-xs uppercase tracking-[0.15em] px-3 py-1.5 rounded"
               style={{
-                color: "#64748B",
+                color: "#475569",
                 background: "hsl(222 47% 11% / 0.04)",
                 borderBottom: "2px solid hsl(174 83% 32% / 0.2)",
               }}
@@ -129,7 +129,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
 
         <motion.p
           className="font-mono text-mono-xs mt-8 tracking-wider"
-          style={{ color: "hsl(215 16% 47% / 0.4)" }}
+          style={{ color: "hsl(215 25% 50%)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}

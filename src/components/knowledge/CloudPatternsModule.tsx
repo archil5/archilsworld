@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CLOUD_PATTERNS, CLOUD_PATTERN_CATEGORIES, type CloudPattern } from "@/data/cloudPatterns";
 
 const INK = "#0F172A";
-const INK_MUTED = "#64748B";
+const INK_MUTED = "#475569";
 const COPPER = "#0D9488";
 
 interface CloudPatternsModuleProps {
