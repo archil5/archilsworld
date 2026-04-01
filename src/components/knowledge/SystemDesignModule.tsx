@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SYSTEM_DESIGN_TOPICS, SYSTEM_DESIGN_CATEGORIES, type SystemDesignTopic } from "@/data/systemDesign";
 
 const INK = "#0F172A";
-const INK_MUTED = "#64748B";
+const INK_MUTED = "#475569";
 const COPPER = "#0D9488";
 
 interface SystemDesignModuleProps {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const INK = "#0F172A";
-const INK_MUTED = "#64748B";
+const INK_MUTED = "#475569";
 const COPPER = "#0D9488";
 
 const thesis = {

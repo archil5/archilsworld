@@ -41,7 +41,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
         {exiting && chapter && (
           <motion.div
             className="fixed inset-0 z-[60] pointer-events-none"
-            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #E8E0D0)` }}
+            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #F8FAFC)` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 0.8, 1, 0] }}
             transition={{ duration: 0.8, times: [0, 0.3, 0.6, 1] }}
@@ -66,7 +66,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
               initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, ease: [0.22, 1, 0.36, 1] }}>
               <button onClick={handleClose}
                 className="flex items-center gap-2 px-3 py-2 transition-all ink-underline"
-                style={{ color: "#64748B", background: "hsl(222 47% 11% / 0.04)", border: "1px solid hsl(222 47% 11% / 0.08)" }}
+                style={{ color: "#475569", background: "hsl(222 47% 11% / 0.04)", border: "1px solid hsl(222 47% 11% / 0.08)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "hsl(222 47% 11% / 0.08)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "hsl(222 47% 11% / 0.04)"; }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
@@ -82,7 +82,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
                   <span className="inline-flex items-center gap-1 px-2 py-1"
                     style={{ background: `${chapter.color}08`, border: `1px solid ${chapter.color}12` }}>
                     <img src={careerLogos.RBC} alt="RBC" className="h-4 md:h-5 object-contain" />
-                    <span style={{ color: "#64748B", fontSize: 8 }}>+</span>
+                    <span style={{ color: "#475569", fontSize: 8 }}>+</span>
                     <img src={careerLogos.BMO} alt="BMO" className="h-4 md:h-5 object-contain" />
                   </span>
                 ) : chapter.brandLogo && brandLogos[chapter.brandLogo] ? (
@@ -95,7 +95,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
                 )}
                 <div className="text-right">
                   <p className="font-display text-display-sm tracking-wider" style={{ color: "#0F172A" }}>{chapter.title}</p>
-                  <p className="font-mono text-mono-xs" style={{ color: "#64748B" }}>{chapter.year}</p>
+                  <p className="font-mono text-mono-xs" style={{ color: "#475569" }}>{chapter.year}</p>
                 </div>
               </div>
             </motion.div>

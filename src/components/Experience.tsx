@@ -231,7 +231,7 @@ const Experience = () => {
         {diveAnimating && (
           <motion.div
             className="fixed inset-0 z-50 pointer-events-none"
-            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #E8E0D0)` }}
+            style={{ background: `radial-gradient(circle at 50% 50%, ${chapter.color}, #F8FAFC)` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 0.6, 1] }}
             exit={{ opacity: 0 }}
@@ -245,7 +245,7 @@ const Experience = () => {
         <h1 className="font-display text-display-sm md:text-display-md tracking-wider" style={{ color: "#0F172A" }}>
           Archil Patel
         </h1>
-        <p className="font-mono text-mono-xs mt-1 hidden sm:block" style={{ color: "#64748B" }}>
+        <p className="font-mono text-mono-xs mt-1 hidden sm:block" style={{ color: "#475569" }}>
           Principal Cloud Engineer · A Journey in Tiles
         </p>
       </div>
@@ -299,7 +299,7 @@ const Experience = () => {
           </div>
 
           <span className="font-mono text-mono-xs px-2 py-1" style={{
-            color: "#64748B",
+            color: "#475569",
             background: "hsl(210 40% 98% / 0.8)",
             border: "1px solid hsl(222 47% 11% / 0.06)",
           }}>
@@ -328,7 +328,7 @@ const Experience = () => {
 
       {activeIndex === 0 && !showOverlay && (
         <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-pulse pointer-events-none">
-          <p className="font-mono text-mono-xs tracking-[0.3em] uppercase" style={{ color: "#64748B" }}>
+          <p className="font-mono text-mono-xs tracking-[0.3em] uppercase" style={{ color: "#475569" }}>
             Swipe or tap arrows
           </p>
         </div>

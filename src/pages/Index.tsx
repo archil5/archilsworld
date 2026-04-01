@@ -89,7 +89,7 @@ const IntroScreen = ({ onEnter }: { onEnter: () => void }) => {
               key={tag}
               className="font-mono text-mono-xs uppercase tracking-[0.15em] px-3 py-1.5 rounded"
               style={{
-                color: "#64748B",
+                color: "#475569",
                 background: "hsl(222 47% 11% / 0.04)",
                 borderBottom: "2px solid hsl(174 83% 32% / 0.2)",
               }}
