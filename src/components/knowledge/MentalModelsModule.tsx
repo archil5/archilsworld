@@ -119,6 +119,9 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
               </p>
             </motion.div>
 
+            {/* Visual Diagram */}
+            <MentalModelVisual modelId={selectedModel.id} />
+
             {/* Explanation */}
             <div className="space-y-3">
               {selectedModel.explanation.map((para, i) => (

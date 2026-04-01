@@ -51,6 +51,9 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
               </p>
             </motion.div>
 
+            {/* Architecture Diagram */}
+            <CloudPatternDiagram patternId={selectedPattern.id} steps={selectedPattern.howItWorks} />
+
             {/* Problem */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
               <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#DC2626" }}>The Problem</p>

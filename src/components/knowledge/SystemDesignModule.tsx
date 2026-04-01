@@ -51,6 +51,9 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
               </p>
             </motion.div>
 
+            {/* Visual Diagram */}
+            <SystemDesignDiagram topicId={selectedTopic.id} steps={selectedTopic.howItActuallyWorks} />
+
             {/* The Real Problem */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
               <p className="font-mono text-mono-xs uppercase tracking-[0.15em] mb-2" style={{ color: "#DC2626" }}>
