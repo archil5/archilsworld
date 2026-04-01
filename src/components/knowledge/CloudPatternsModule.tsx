@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CLOUD_PATTERNS, CLOUD_PATTERN_CATEGORIES, type CloudPattern } from "@/data/cloudPatterns";
+import CloudPatternDiagram from "./diagrams/CloudPatternDiagram";
 
 const INK = "#0F172A";
 const INK_MUTED = "#475569";
@@ -49,6 +50,9 @@ const CloudPatternsModule = ({ onBack }: CloudPatternsModuleProps) => {
                 "{selectedPattern.oneLiner}"
               </p>
             </motion.div>
+
+            {/* Architecture Diagram */}
+            <CloudPatternDiagram patternId={selectedPattern.id} steps={selectedPattern.howItWorks} />
 
             {/* Problem */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>

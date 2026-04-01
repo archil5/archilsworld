@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SYSTEM_DESIGN_TOPICS, SYSTEM_DESIGN_CATEGORIES, type SystemDesignTopic } from "@/data/systemDesign";
+import SystemDesignDiagram from "./diagrams/SystemDesignDiagram";
 
 const INK = "#0F172A";
 const INK_MUTED = "#475569";
@@ -49,6 +50,9 @@ const SystemDesignModule = ({ onBack }: SystemDesignModuleProps) => {
                 "{selectedTopic.oneLiner}"
               </p>
             </motion.div>
+
+            {/* Visual Diagram */}
+            <SystemDesignDiagram topicId={selectedTopic.id} steps={selectedTopic.howItActuallyWorks} />
 
             {/* The Real Problem */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MENTAL_MODELS, LOGIC_PUZZLES, MENTAL_MODEL_CATEGORIES, type MentalModel, type LogicPuzzle } from "@/data/mentalModels";
+import MentalModelVisual from "./diagrams/MentalModelVisual";
 
 const INK = "#0F172A";
 const INK_MUTED = "#475569";
@@ -117,6 +118,9 @@ const MentalModelsModule = ({ onBack }: MentalModelsModuleProps) => {
                 "{selectedModel.oneLiner}"
               </p>
             </motion.div>
+
+            {/* Visual Diagram */}
+            <MentalModelVisual modelId={selectedModel.id} />
 
             {/* Explanation */}
             <div className="space-y-3">
