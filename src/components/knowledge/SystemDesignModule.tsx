@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SYSTEM_DESIGN_TOPICS, SYSTEM_DESIGN_CATEGORIES, type SystemDesignTopic } from "@/data/systemDesign";
+import SystemDesignDiagram from "./diagrams/SystemDesignDiagram";
 
 const INK = "#0F172A";
 const INK_MUTED = "#475569";
