@@ -140,7 +140,7 @@ const ChapterOverlay = ({ chapter, visible, onDive }: ChapterOverlayProps) => {
 
             <motion.div
               className="font-display text-sm md:text-base leading-relaxed mb-6 max-w-md"
-              style={{ color: "hsl(215 16% 47% / 0.7)", fontStyle: "italic" }}
+              style={{ color: "hsl(215 25% 35%)", fontStyle: "italic" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.3 }}

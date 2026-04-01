@@ -107,7 +107,7 @@ const WorldDive = ({ chapter, onClose }: WorldDiveProps) => {
 
             <motion.div className="relative z-10 text-center py-3"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-              <p className="font-mono text-mono-xs" style={{ color: "hsl(215 16% 47% / 0.4)" }}>
+              <p className="font-mono text-mono-xs" style={{ color: "hsl(215 25% 50%)" }}>
                 ← Back to return to the board
               </p>
             </motion.div>

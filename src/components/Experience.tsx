@@ -337,7 +337,7 @@ const Experience = () => {
       {/* Keyboard hint */}
       {!isDiving && (
         <div className="absolute top-6 right-6 md:top-8 md:right-10 z-20 pointer-events-none hidden md:block">
-          <div className="flex items-center gap-2 font-mono text-mono-xs" style={{ color: "hsl(215 16% 47% / 0.3)" }}>
+          <div className="flex items-center gap-2 font-mono text-mono-xs" style={{ color: "hsl(215 25% 50%)" }}>
             <span className="px-1.5 py-0.5" style={{ border: "1px solid hsl(215 16% 47% / 0.15)" }}>←→</span>
             navigate
             <span className="px-1.5 py-0.5 ml-2" style={{ border: "1px solid hsl(215 16% 47% / 0.15)" }}>Enter</span>
