@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const INK = "#0F172A";
@@ -335,17 +335,117 @@ const OSIPuzzle = () => {
    SKILLS + VALUE
    ═══════════════════════════════════════════════════════════ */
 
-const htmlSkills = ["HTML5", "CSS3", "Web Design", "DOM Structure", "Semantic Markup", "Box Model", "Typography"];
-const netSkills = ["TCP/IP", "OSI Model", "DNS Resolution", "Subnetting", "Network Security", "Packet Analysis", "Wireshark", "Routing Protocols"];
-const combinedValue = [
-  "Discovered the power of creating from nothing",
-  "Saw that networks are just elegant, learnable patterns",
-  "Developed the builder's mindset — ship, iterate, improve",
-  "Every cloud skill later built on this networking base",
-  "Learned to trace problems through layers of abstraction",
+
+/* ── Skill Chip (proper component so hooks work) ─────────── */
+const SkillChip = ({
+  skill, note, color, delay,
+}: { skill: string; note: string; color: string; delay: number }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      className="px-3 py-2.5 cursor-default"
+      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ delay }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered ? `${color}12` : `${color}04`,
+        borderLeft: `2px solid ${hovered ? color : `${color}30`}`,
+        transition: "all 0.2s",
+      }}>
+      <span className="font-mono text-mono-xs font-bold block" style={{ color }}>{skill}</span>
+      <AnimatePresence>
+        {hovered && (
+          <motion.span className="font-display text-xs block mt-0.5 leading-snug"
+            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+            style={{ color: INK_MUTED }}>
+            {note}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
+const WEB_SKILLS = [
+  { skill: "HTML5", note: "Built first sites for family & friends" },
+  { skill: "CSS3", note: "Layouts, animations, responsive design" },
+  { skill: "Web Design", note: "Form follows function — always" },
+  { skill: "DOM Structure", note: "Understanding the tree changed everything" },
+  { skill: "Semantic Markup", note: "Accessibility matters from the start" },
+  { skill: "Box Model", note: "The rule that explains all CSS pain" },
+  { skill: "Typography", note: "Type is 90% of visual design" },
 ];
 
-/* ═══════════════════════════════════════════════════════════ */
+const NET_SKILLS = [
+  { skill: "TCP/IP", note: "The bedrock of everything cloud" },
+  { skill: "OSI Model", note: "Debug any system layer by layer" },
+  { skill: "DNS Resolution", note: "How names become addresses" },
+  { skill: "Subnetting", note: "VPC design starts here" },
+  { skill: "Network Security", note: "Foundation of zero-trust design" },
+  { skill: "Packet Analysis", note: "Wireshark taught me to see flows" },
+  { skill: "Wireshark", note: "Used in Dalhousie labs" },
+  { skill: "Routing Protocols", note: "BGP, OSPF — cloud routing ancestor" },
+];
+
+const VALUE_ITEMS = [
+  { then: "Discovered HTML renders instantly in a browser", now: "→ Still chasing that feedback loop. Fast iteration is a non-negotiable design principle.", icon: "⚡" },
+  { then: "Saw that networks are just elegant, learnable patterns", now: "→ Every cloud VPC, subnet, and Transit Gateway I design traces back to understanding TCP/IP here.", icon: "🕸️" },
+  { then: "Developed the builder's mindset — ship, iterate, improve", now: "→ CI/CD isn't just tooling for me. It's a philosophy I learned by pushing HTML to a server at age 15.", icon: "🔄" },
+  { then: "Learned to trace problems through layers of abstraction", now: "→ OSI model thinking = debug any distributed system. I still use it mentally on production incidents.", icon: "🔬" },
+  { then: "Found that building something real beats reading about it", now: "→ Every piece of knowledge in this hub exists because I built it before I wrote about it.", icon: "🏗️" },
+];
+
+const SkillsSection = () => (
+  <div>
+    <div className="mb-6">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="h-px flex-1" style={{ background: `${HTML_COLOR}20` }} />
+        <span className="font-mono text-mono-xs uppercase tracking-[0.15em]" style={{ color: HTML_COLOR }}>Web Technologies · hover to explore</span>
+        <div className="h-px flex-1" style={{ background: `${HTML_COLOR}20` }} />
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {WEB_SKILLS.map((item, i) => (
+          <SkillChip key={item.skill} skill={item.skill} note={item.note} color={HTML_COLOR} delay={i * 0.05} />
+        ))}
+      </div>
+    </div>
+    <div>
+      <div className="flex items-center gap-3 mb-3">
+        <div className="h-px flex-1" style={{ background: "hsl(200 20% 50% / 0.2)" }} />
+        <span className="font-mono text-mono-xs uppercase tracking-[0.15em]" style={{ color: "#5A7A8B" }}>Networking · hover to explore</span>
+        <div className="h-px flex-1" style={{ background: "hsl(200 20% 50% / 0.2)" }} />
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {NET_SKILLS.map((item, i) => (
+          <SkillChip key={item.skill} skill={item.skill} note={item.note} color="#5A7A8B" delay={0.25 + i * 0.05} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+const ValueSection = () => (
+  <div>
+    <p className="font-mono text-mono-xs uppercase tracking-[0.15em] text-center mb-6" style={{ color: INK_MUTED }}>
+      What I Took Away — and Where It Went
+    </p>
+    {VALUE_ITEMS.map((item, i) => (
+      <motion.div key={i} className="flex gap-4 mb-4"
+        initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: i * 0.1 }}>
+        <div className="flex flex-col items-center gap-1 shrink-0 pt-0.5">
+          <span className="text-xl">{item.icon}</span>
+          {i < VALUE_ITEMS.length - 1 && <div className="w-px flex-1 mt-1" style={{ background: `${INK}10` }} />}
+        </div>
+        <div className="flex-1 pb-4" style={{ borderBottom: i < VALUE_ITEMS.length - 1 ? `1px solid ${INK}06` : "none" }}>
+          <p className="font-display text-sm font-semibold mb-1" style={{ color: INK }}>{item.then}</p>
+          <p className="font-mono text-xs leading-relaxed" style={{ color: COPPER }}>{item.now}</p>
+        </div>
+      </motion.div>
+    ))}
+  </div>
+);
 
 const WebFoundationsWorld = () => {
   const [activeSection, setActiveSection] = useState<"html" | "network" | "skills" | "value">("html");
@@ -385,38 +485,12 @@ const WebFoundationsWorld = () => {
           )}
           {activeSection === "skills" && (
             <motion.div key="skills" className="max-w-3xl mx-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <h4 className="font-mono text-mono-xs uppercase tracking-[0.15em] text-center mb-4" style={{ color: HTML_COLOR }}>Web Technologies</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-                {htmlSkills.map((skill, i) => (
-                  <motion.div key={skill} className="flex items-center gap-2 px-3 py-2.5"
-                    initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}
-                    style={{ background: `${HTML_COLOR}06`, borderLeft: `2px solid ${HTML_COLOR}30` }}>
-                    <span className="font-mono text-mono-xs" style={{ color: HTML_COLOR }}>{skill}</span>
-                  </motion.div>
-                ))}
-              </div>
-              <h4 className="font-mono text-mono-xs uppercase tracking-[0.15em] text-center mb-4" style={{ color: "#5A7A8B" }}>Networking</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {netSkills.map((skill, i) => (
-                  <motion.div key={skill} className="flex items-center gap-2 px-3 py-2.5"
-                    initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.06 }}
-                    style={{ background: "hsl(200 20% 50% / 0.06)", borderLeft: "2px solid hsl(200 20% 50% / 0.3)" }}>
-                    <span className="font-mono text-mono-xs" style={{ color: "#5A7A8B" }}>{skill}</span>
-                  </motion.div>
-                ))}
-              </div>
+              <SkillsSection />
             </motion.div>
           )}
           {activeSection === "value" && (
-            <motion.div key="value" className="max-w-lg mx-auto space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              {combinedValue.map((val, i) => (
-                <motion.div key={i} className="flex items-start gap-3 px-4 py-3"
-                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.12 }}
-                  style={{ background: `${INK}03`, borderLeft: `2px solid ${COPPER}20` }}>
-                  <span className="font-mono text-mono-xs mt-1" style={{ color: COPPER }}>▸</span>
-                  <span className="font-display text-sm" style={{ color: INK_MUTED }}>{val}</span>
-                </motion.div>
-              ))}
+            <motion.div key="value" className="max-w-2xl mx-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <ValueSection />
             </motion.div>
           )}
         </AnimatePresence>

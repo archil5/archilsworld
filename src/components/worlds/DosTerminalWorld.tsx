@@ -180,7 +180,7 @@ const DosTerminalWorld = () => {
   return (
     <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-3xl flex flex-col gap-4">
-        <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
+        <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
           <span className="font-mono text-mono-xs" style={{ color: COPPER }}>
             DISCOVERY: {commandsUsed.size}/{validCommands.length}
           </span>
@@ -235,7 +235,7 @@ const DosTerminalWorld = () => {
           </div>
         </motion.div>
 
-        <motion.div className="flex flex-wrap gap-2 justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
+        <motion.div className="flex flex-wrap gap-2 justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
           {validCommands.map(cmd => (
             <button key={cmd} onClick={() => executeCommand(cmd)}
               className="font-mono text-mono-xs px-3 py-1.5 transition-all"
