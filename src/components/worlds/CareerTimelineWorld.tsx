@@ -330,26 +330,87 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-start p-4 md:p-6 overflow-y-auto">
-      {/* Hero banner */}
-      <motion.div
-        className="w-full max-w-3xl mb-4 rounded-xl p-4 text-center"
-        style={{
-          background: "rgba(180,140,100,0.04)",
-          border: "1px solid rgba(180,140,100,0.12)",
-        }}
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <p className="text-[10px] font-mono uppercase tracking-widest mb-1" style={{ color: "rgba(80,70,60,0.5)" }}>
-          Interactive Cloud Architecture
-        </p>
-        <p className="text-sm font-display font-bold" style={{ color: "#2d2a26" }}>
-          Real-world solutions from enterprise cloud engineering + 1 fun puzzle to test your skills
-        </p>
-      </motion.div>
+      {/* Current Role Hero — only shows when on index 0 */}
+      <AnimatePresence mode="wait">
+        {activeStop === 0 ? (
+          <motion.div
+            key="current-hero"
+            className="w-full max-w-3xl mb-5 rounded-2xl overflow-hidden"
+            style={{ border: `1px solid ${stops[0].color}25`, background: "#fff" }}
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="px-5 py-4 flex items-center gap-4"
+              style={{ background: `${stops[0].color}08`, borderBottom: `1px solid ${stops[0].color}12` }}>
+              <div className="relative">
+                {brandLogos[stops[0].company] && (
+                  <img src={brandLogos[stops[0].company]} alt={stops[0].company} className="h-8 object-contain" />
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <motion.span
+                    className="flex items-center gap-1.5 text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-full"
+                    style={{ background: "#16A34A", color: "#fff" }}
+                    animate={{ opacity: [1, 0.7, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />
+                    Current Role
+                  </motion.span>
+                  <span className="text-[9px] font-mono" style={{ color: "rgba(80,70,60,0.5)" }}>
+                    {stops[0].period}
+                  </span>
+                </div>
+                <p className="text-sm font-display font-bold" style={{ color: "#2d2a26" }}>{stops[0].title}</p>
+              </div>
+              <div className="hidden md:flex flex-col items-end gap-1">
+                <span className="text-[9px] font-mono uppercase tracking-wider" style={{ color: "rgba(80,70,60,0.5)" }}>Focus Area</span>
+                <div className="flex gap-1 flex-wrap justify-end">
+                  {["Agentic AI", "LLMOps", "GraphRAG"].map(tag => (
+                    <span key={tag} className="text-[9px] font-mono px-2 py-0.5 rounded"
+                      style={{ background: `${stops[0].color}10`, color: stops[0].color, border: `1px solid ${stops[0].color}20` }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="px-5 py-3">
+              <p className="text-xs font-body leading-relaxed" style={{ color: "rgba(45,42,38,0.75)" }}>
+                {stops[0].narrative}
+              </p>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="history-banner"
+            className="w-full max-w-3xl mb-4 rounded-xl p-3"
+            style={{ background: "rgba(180,140,100,0.04)", border: "1px solid rgba(180,140,100,0.1)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <p className="text-[10px] font-mono uppercase tracking-widest text-center" style={{ color: "rgba(80,70,60,0.45)" }}>
+              Career History · {stops[activeStop].period}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Journey Path */}
       <div className="w-full max-w-3xl mb-6">
+        <div className="flex items-center gap-2 mb-2 px-2">
+          <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: "rgba(80,70,60,0.35)" }}>
+            ← Present
+          </span>
+          <div className="flex-1 h-px" style={{ background: "rgba(180,140,100,0.12)" }} />
+          <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: "rgba(80,70,60,0.35)" }}>
+            Past →
+          </span>
+        </div>
         <div className="relative">
           <div
             className="absolute top-[28px] left-0 right-0 h-[3px] rounded-full"
@@ -401,6 +462,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                       boxShadow: isActive
                         ? `0 0 16px ${s.color}20`
                         : "none",
+                      opacity: i === 0 ? 1 : 0.7,
                     }}
                   >
                     {brandLogos[s.company] ? (
@@ -417,6 +479,16 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                         {s.company}
                       </span>
                     )}
+                    {i === 0 && (
+                      <motion.div
+                        className="absolute -top-1.5 -right-1 px-1 py-0.5 rounded-full text-[7px] font-mono font-bold"
+                        style={{ background: "#16A34A", color: "#fff", lineHeight: 1.4 }}
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                      >
+                        NOW
+                      </motion.div>
+                    )}
                   </motion.div>
                   <span
                     className="text-[8px] font-mono text-center leading-tight max-w-[90px]"
@@ -426,7 +498,7 @@ const CareerTimelineWorld = ({ startRole }: { startRole?: string }) => {
                         : "rgba(80,70,60,0.4)",
                     }}
                   >
-                    {s.title.replace("Principal — ", "").replace("Principal Cloud Engineer — ", "")}
+                    {i === 0 ? "AI Platform" : s.title.replace("Principal — ", "").replace("Principal Cloud Engineer — ", "")}
                   </span>
                 </motion.button>
               );
