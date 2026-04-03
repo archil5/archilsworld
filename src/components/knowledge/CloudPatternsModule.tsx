@@ -1,302 +1,321 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Server, Database, Zap, ShieldAlert, Activity, RefreshCcw, Layers } from "lucide-react";
+import { ArrowLeft, BookOpen, Anchor, Leaf, ShieldAlert, Smartphone, Plane, Utensils, Zap } from "lucide-react";
+
+const PATTERNS = [
+  {
+    id: "saga",
+    name: "Saga",
+    icon: <Plane size={20} />,
+    tagline: "Clean up your own mess.",
+    description: "You try to book a flight, then a hotel, then a car. But car company says 'No cars!'. You cannot just freeze the internet. Saga means you have to manually go back and say 'Cancel hotel, cancel flight'. You walk backward and fix what you broke.",
+    color: "blue"
+  },
+  {
+    id: "cqrs",
+    name: "CQRS",
+    icon: <Utensils size={20} />,
+    tagline: "Don't make the cook take orders.",
+    description: "Imagine a burger shop. If the guy making the burger also has to take the money and answer questions about the menu, line gets very slow. So, we make one database only for taking orders (writes), and another database only for reading the menu (reads).",
+    color: "emerald"
+  },
+  {
+    id: "event-sourcing",
+    name: "Event Sourcing",
+    icon: <BookOpen size={20} />,
+    tagline: "Keep the receipts.",
+    description: "Normally a database just says 'You have $50'. But how did you get it? Event sourcing saves every single action like a receipt: 'Added $100', 'Bought coffee for $50'. If the system breaks, we just read the receipt from top to bottom to get the money back.",
+    color: "amber"
+  },
+  {
+    id: "bulkhead",
+    name: "Bulkhead",
+    icon: <Anchor size={20} />,
+    tagline: "Don't let the whole ship sink.",
+    description: "Like a big ship with walls inside. If the ship hits a rock, water fills only one room. The walls stop the water, so the ship doesn't sink. In code, if one API is very slow, we lock it in a room so it doesn't crash the rest of the server.",
+    color: "red"
+  },
+  {
+    id: "strangler",
+    name: "Strangler Fig",
+    icon: <Leaf size={20} />,
+    tagline: "Move out slowly.",
+    description: "You have a very old, ugly app. You want to make a new one, but you cannot just delete the old one today. So you build the new app piece by piece around the old one. Send a little traffic to new one, a little to old one. One day, old app is empty and you delete it.",
+    color: "green"
+  },
+  {
+    id: "acl",
+    name: "Anti-Corruption",
+    icon: <ShieldAlert size={20} />,
+    tagline: "Talk to the translator.",
+    description: "You build beautiful new app. But it has to talk to a 20-year-old dinosaur database that speaks crazy spaghetti language. You put a 'translator' in the middle. Translator talks crazy to the dinosaur, and talks nice clean JSON to your new app.",
+    color: "purple"
+  },
+  {
+    id: "bff",
+    name: "BFF",
+    icon: <Smartphone size={20} />,
+    tagline: "Personal shopper.",
+    description: "Mobile phone has bad internet. Desktop computer has big screen. Why send the same giant data to both? BFF (Backend For Frontend) is like a personal shopper. Mobile shopper only brings back small, important data. Desktop shopper brings back everything.",
+    color: "pink"
+  },
+  {
+    id: "sidecar",
+    name: "Sidecar",
+    icon: <Zap size={20} />,
+    tagline: "Bring a buddy to do the boring stuff.",
+    description: "You just want to write code to do business stuff. But boss says 'Add security! Add logs!'. Sidecar pattern is like driving a motorcycle. You just focus on driving. Your buddy sits in the sidecar and shoots the bad guys and takes the photos.",
+    color: "orange"
+  }
+];
 
 export default function CloudPatternsModule({ onBack }: { onBack: () => void }) {
-  // States: "healthy" | "degraded" | "critical" | "crashed" | "recovered_cb" | "wrong_fix"
-  const [sysState, setSysState] = useState<string>("healthy");
-  const [threadCount, setThreadCount] = useState(0);
-  const MAX_THREADS = 20;
+  const [activeId, setActiveId] = useState(PATTERNS[0].id);
+  const activePattern = PATTERNS.find(p => p.id === activeId) || PATTERNS[0];
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // The Simulation Engine
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (sysState === "healthy") {
-      // Threads process normally and clear out
-      interval = setInterval(() => setThreadCount(prev => Math.max(0, prev > 2 ? prev - 2 : 0)), 500);
-      // Trigger incident after 4 seconds
-      setTimeout(() => setSysState("degraded"), 4000);
-    } 
-    else if (sysState === "degraded" || sysState === "critical") {
-      // Downstream is slow, threads pile up
-      interval = setInterval(() => {
-        setThreadCount(prev => {
-          const next = prev + 1;
-          if (next >= MAX_THREADS) {
-            setSysState("crashed");
-            return MAX_THREADS;
-          }
-          if (next > MAX_THREADS * 0.7 && sysState !== "critical") setSysState("critical");
-          return next;
-        });
-      }, 400);
-    }
-    else if (sysState === "recovered_cb") {
-      // Circuit breaker is open. Threads fail-fast and drain instantly.
-      interval = setInterval(() => setThreadCount(prev => Math.max(0, prev - 3)), 200);
-    }
-
-    return () => clearInterval(interval);
-  }, [sysState]);
-
-  const handleDeploy = (pattern: string) => {
-    if (sysState === "crashed") return;
-    
-    if (pattern === "Circuit Breaker") {
-      setSysState("recovered_cb");
-    } else {
-      setSysState("wrong_fix");
-      setTimeout(() => setSysState("crashed"), 1500);
-    }
-  };
-
-  const resetSim = () => {
-    setSysState("healthy");
-    setThreadCount(0);
+  const triggerAnimation = () => {
+    setIsPlaying(true);
+    setTimeout(() => setIsPlaying(false), 4000);
   };
 
   return (
-    <div className="h-full overflow-y-auto px-4 md:px-10 py-8 bg-slate-950 text-slate-200 font-mono">
-      <div className="max-w-4xl mx-auto">
-        
-        {/* Navigation & Header */}
-        <div className="flex justify-between items-start mb-8 border-b border-slate-800 pb-6">
-          <div>
-            <button onClick={onBack} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-4 text-xs font-bold uppercase tracking-widest">
-              <ArrowLeft size={14} /> Leave Simulator
-            </button>
-            <h2 className="text-3xl font-display font-bold text-white mb-2 flex items-center gap-3">
-              <Activity className={sysState === "crashed" ? "text-red-500" : "text-emerald-500"} /> 
-              Incident #4042: Cascading Failure
-            </h2>
-            <p className="text-sm text-slate-400 max-w-xl leading-relaxed">
-              Watch the telemetry. When the downstream payment service degrades, your API gateway threads will hang waiting for responses. Fix it before the thread pool hits capacity.
-            </p>
-          </div>
+    <div className="h-full overflow-y-auto px-4 md:px-10 py-8 bg-[#F8FAFC]">
+      <div className="max-w-5xl mx-auto">
+        <button 
+          onClick={onBack} 
+          className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors mb-8 font-mono text-xs font-bold uppercase tracking-widest"
+        >
+          <ArrowLeft size={14} /> Back
+        </button>
 
-          {/* Telemetry Readout */}
-          <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl text-right min-w-[180px]">
-            <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2">API Thread Pool</p>
-            <div className="text-3xl font-bold font-display mb-2 flex justify-end items-end gap-1">
-              <span className={threadCount >= MAX_THREADS ? "text-red-500" : threadCount > 10 ? "text-yellow-500" : "text-emerald-500"}>
-                {threadCount}
-              </span>
-              <span className="text-sm text-slate-600 mb-1">/ {MAX_THREADS}</span>
-            </div>
-            {/* Progress Bar */}
-            <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-              <motion.div 
-                className={`h-full ${threadCount >= MAX_THREADS ? "bg-red-500" : threadCount > 12 ? "bg-yellow-500" : "bg-emerald-500"}`}
-                animate={{ width: `${(threadCount / MAX_THREADS) * 100}%` }}
-                transition={{ type: "tween", ease: "linear", duration: 0.2 }}
-              />
-            </div>
-          </div>
+        <div className="mb-8">
+          <h2 className="font-display text-3xl font-bold text-slate-900 mb-2">Cloud Patterns (No Jargon)</h2>
+          <p className="font-mono text-sm text-slate-500">How I actually explain this stuff over a coffee.</p>
         </div>
 
-        {/* --- THE ANIMATED SIMULATION VIEWPORT --- */}
-        <div className="bg-slate-900/50 rounded-2xl p-8 border-2 border-slate-800 relative overflow-hidden mb-8 h-[350px] flex items-center justify-center shadow-2xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          <div className="flex items-center gap-4 w-full max-w-2xl relative z-10">
-            
-            {/* 1. Client App */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-slate-800 border-2 border-slate-700 rounded-2xl flex items-center justify-center z-10">
-                <span className="text-2xl">📱</span>
-              </div>
-              <p className="mt-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Clients</p>
-            </div>
-
-            {/* Path 1: Client to Gateway */}
-            <div className="flex-1 h-0.5 bg-slate-800 relative">
-               {(sysState === "healthy" || sysState === "degraded" || sysState === "critical") && (
-                  <motion.div className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_#34d399]" animate={{ left: ["0%", "100%"] }} transition={{ repeat: Infinity, duration: 0.6, ease: "linear" }} />
-               )}
-            </div>
-
-            {/* 2. API Gateway (The Victim) */}
-            <div className="flex flex-col items-center relative">
-              <motion.div 
-                animate={
-                  sysState === "crashed" ? { scale: 0.9, opacity: 0.5 } :
-                  sysState === "critical" ? { x: [-2, 2, -2] } : 
-                  sysState === "recovered_cb" ? { scale: [1, 1.05, 1], borderColor: "#3b82f6" } : {}
-                }
-                transition={{ repeat: sysState === "critical" ? Infinity : 0, duration: 0.1 }}
-                className={`w-24 h-24 border-2 rounded-2xl flex flex-col items-center justify-center z-10 relative overflow-hidden bg-slate-900 ${
-                  sysState === "crashed" ? "border-red-900 text-red-900" :
-                  sysState === "recovered_cb" ? "border-blue-500 text-blue-400" :
-                  threadCount > 14 ? "border-red-500 text-red-500" : 
-                  "border-emerald-500 text-emerald-400"
+          {/* Left Column: Menu */}
+          <div className="lg:col-span-4 space-y-2 max-h-[600px] overflow-y-auto pr-2">
+            {PATTERNS.map((pattern) => (
+              <button
+                key={pattern.id}
+                onClick={() => { setActiveId(pattern.id); setIsPlaying(false); }}
+                className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 flex items-center gap-4 ${
+                  activeId === pattern.id 
+                    ? `bg-white border-slate-900 shadow-md ring-2 ring-slate-900/10` 
+                    : 'bg-white/50 border-slate-200 hover:border-slate-300 text-slate-600'
                 }`}
               >
-                <Server size={32} className="mb-2" />
-                
-                {/* Visual representation of threads backing up */}
-                <div className="absolute bottom-0 left-0 w-full flex flex-wrap-reverse content-start gap-1 p-1 opacity-50">
-                  {[...Array(threadCount)].map((_, i) => (
-                    <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className={`w-2 h-2 rounded-sm ${sysState === "recovered_cb" ? 'bg-blue-500' : 'bg-current'}`} />
-                  ))}
+                <div className={`p-2 rounded-lg ${activeId === pattern.id ? `bg-slate-900 text-white` : 'bg-slate-100 text-slate-400'}`}>
+                  {pattern.icon}
                 </div>
-              </motion.div>
-              <p className="mt-3 text-[10px] font-bold text-slate-300 uppercase tracking-wider">Order API</p>
-              
-              {sysState === "crashed" && (
-                <div className="absolute -top-8 text-xs font-bold text-red-500 bg-red-950/80 px-3 py-1 rounded border border-red-900">NODE OFFLINE</div>
-              )}
-            </div>
-
-            {/* Path 2: Gateway to Downstream */}
-            <div className="flex-1 h-0.5 relative flex items-center justify-center">
-              <div className="absolute w-full h-full bg-slate-800" />
-              
-              {/* Traffic Animation depending on state */}
-              {sysState === "healthy" && (
-                 <motion.div className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_#34d399]" animate={{ left: ["0%", "100%"] }} transition={{ repeat: Infinity, duration: 0.6, ease: "linear", delay: 0.3 }} />
-              )}
-              {(sysState === "degraded" || sysState === "critical") && (
-                 <motion.div className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-500 rounded-full shadow-[0_0_8px_#eab308]" animate={{ left: ["0%", "90%"] }} transition={{ repeat: Infinity, duration: 3, ease: "linear" }} />
-              )}
-              
-              {/* THE CIRCUIT BREAKER VIZ */}
-              <AnimatePresence>
-                {sysState === "recovered_cb" && (
-                  <motion.div 
-                    initial={{ scale: 0, rotate: -45 }} 
-                    animate={{ scale: 1, rotate: 0 }} 
-                    className="absolute z-20 flex flex-col items-center"
-                  >
-                    <div className="w-1 h-12 bg-red-500 transform rotate-45 shadow-[0_0_15px_red]" />
-                    <span className="absolute top-10 text-[8px] font-bold text-red-400 tracking-widest uppercase bg-slate-900 px-2 py-0.5 rounded border border-red-900/50">Tripped</span>
-                    
-                    {/* Bouncing / Fast failing traffic */}
-                    <motion.div className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-400 rounded-full shadow-[0_0_8px_#60a5fa]" animate={{ left: ["-50%", "-100%"], opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.4, ease: "linear" }} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* 3. Downstream Service (The Culprit) */}
-            <div className="flex flex-col items-center relative">
-              <div className={`w-20 h-20 border-2 rounded-2xl flex flex-col items-center justify-center z-10 bg-slate-900 ${
-                (sysState === "degraded" || sysState === "critical") ? "border-yellow-600 text-yellow-600" : 
-                sysState === "recovered_cb" ? "border-slate-700 text-slate-700 opacity-50" :
-                "border-emerald-600 text-emerald-600"
-              }`}>
-                <Database size={28} />
-              </div>
-              <p className="mt-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Payment DB</p>
-              
-              {(sysState === "degraded" || sysState === "critical") && (
-                 <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1 }} className="absolute -top-8 text-xs font-bold text-yellow-500 bg-yellow-950/80 px-3 py-1 rounded border border-yellow-900">TIMING OUT</motion.div>
-              )}
-            </div>
-
+                <div>
+                  <h3 className={`font-bold font-display ${activeId === pattern.id ? 'text-slate-900' : 'text-slate-700'}`}>
+                    {pattern.name}
+                  </h3>
+                  <p className="font-mono text-[9px] mt-0.5 opacity-70 uppercase tracking-wider">{pattern.tagline}</p>
+                </div>
+              </button>
+            ))}
           </div>
 
-          {/* Background Grid Polish */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none" />
-        </div>
-
-
-        {/* --- THE INTERACTIVE PUZZLE CONTROLS --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          {/* Status Output */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-800 pb-2">System Logs</h3>
-            <div className="space-y-3 text-xs leading-relaxed">
-              <p className="text-emerald-500">{`> [00:00:00] System running normally. Latency 45ms.`}</p>
-              
-              {(sysState === "degraded" || sysState === "critical" || sysState === "crashed") && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-yellow-500">
-                  {`> [00:00:04] WARN: Payment DB latency spiked to 30,000ms. Connections hanging.`}
-                </motion.p>
-              )}
-              
-              {sysState === "critical" && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 font-bold">
-                  {`> [00:00:08] CRITICAL: Order API thread pool at 80% capacity. Rejecting new connections.`}
-                </motion.p>
-              )}
-
-              {sysState === "crashed" && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-600 font-bold bg-red-950/30 p-2 border-l-2 border-red-600 mt-2">
-                  {`> FATAL EXCEPTION: Thread pool exhausted. Node offline. Outage in progress.`}
-                </motion.p>
-              )}
-
-              {sysState === "wrong_fix" && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-yellow-600 mt-2">
-                  {`> ERROR: Fix deployed but threads are still hanging on DB connection. Ineffective.`}
-                </motion.p>
-              )}
-
-              {sysState === "recovered_cb" && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-blue-400 font-bold bg-blue-950/30 p-2 border-l-2 border-blue-500 mt-2">
-                  {`> ACTION SUCCESS: Circuit Breaker deployed and TRIPPED. Failing fast. Thread pool draining. Node saved.`}
-                </motion.p>
-              )}
-            </div>
-          </div>
-
-          {/* Action Panel */}
-          <div>
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Emergency Patch Deployment</h3>
+          {/* Right Column: Viewer */}
+          <div className="lg:col-span-8 flex flex-col gap-6">
             
-            {(sysState === "healthy") && (
-               <div className="h-full flex items-center justify-center border border-dashed border-slate-800 rounded-xl bg-slate-900/50 p-6 text-center text-sm text-slate-500">
-                 Monitoring... wait for an incident to trigger before deploying a fix.
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-8 shadow-sm">
+               <div className="flex items-start gap-4 mb-6">
+                 <div className="p-3 bg-slate-100 rounded-xl text-slate-700">
+                   {activePattern.icon}
+                 </div>
+                 <div>
+                   <h3 className="font-display text-2xl font-bold text-slate-900">{activePattern.name}</h3>
+                   <p className="font-mono text-xs text-slate-500 uppercase tracking-widest">{activePattern.tagline}</p>
+                 </div>
                </div>
-            )}
+               <p className="text-slate-700 leading-relaxed font-medium text-lg">
+                 "{activePattern.description}"
+               </p>
+            </div>
 
-            {(sysState === "degraded" || sysState === "critical" || sysState === "wrong_fix") && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-                <button onClick={() => handleDeploy("Retry")} className="w-full p-4 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 hover:border-slate-500 text-left flex items-center gap-4 transition-all group">
-                  <div className="p-2 bg-slate-900 rounded-lg group-hover:text-white text-slate-400"><RefreshCcw size={18} /></div>
-                  <div>
-                    <span className="block font-bold text-slate-200">Retry Pattern</span>
-                    <span className="text-[10px] text-slate-500">Keep trying the failing DB connection</span>
-                  </div>
-                </button>
-                
-                <button onClick={() => handleDeploy("Circuit Breaker")} className="w-full p-4 rounded-xl border border-blue-900/50 bg-blue-950/20 hover:bg-blue-900/40 hover:border-blue-500 text-left flex items-center gap-4 transition-all group">
-                  <div className="p-2 bg-slate-900 rounded-lg text-blue-500"><Zap size={18} /></div>
-                  <div>
-                    <span className="block font-bold text-blue-100">Circuit Breaker</span>
-                    <span className="text-[10px] text-blue-300/70">Trip the connection and fail-fast instantly</span>
-                  </div>
-                </button>
+            {/* Animation Stage */}
+            <div className="bg-slate-900 border-4 border-slate-800 rounded-3xl p-8 h-[300px] relative overflow-hidden shadow-inner flex flex-col justify-center items-center">
+              
+              <button 
+                onClick={triggerAnimation}
+                disabled={isPlaying}
+                className="absolute top-4 right-4 z-20 bg-white/10 hover:bg-white/20 text-white font-mono text-xs px-4 py-2 rounded-full transition-colors disabled:opacity-50"
+              >
+                {isPlaying ? "Showing..." : "Show Me"}
+              </button>
 
-                <button onClick={() => handleDeploy("Auto Scale")} className="w-full p-4 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 hover:border-slate-500 text-left flex items-center gap-4 transition-all group">
-                  <div className="p-2 bg-slate-900 rounded-lg group-hover:text-white text-slate-400"><Layers size={18} /></div>
-                  <div>
-                    <span className="block font-bold text-slate-200">Scale API Nodes</span>
-                    <span className="text-[10px] text-slate-500">Add more order APIs to handle the traffic</span>
-                  </div>
-                </button>
-              </motion.div>
-            )}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activePattern.id}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="w-full flex justify-center items-center font-display"
+                >
+                  
+                  {/* SAGA */}
+                  {activePattern.id === "saga" && (
+                    <div className="flex items-center gap-8 text-4xl">
+                       <div className="text-center"><div className="mb-2">✈️</div><span className="text-[10px] text-white font-mono uppercase">Flight</span></div>
+                       <motion.div animate={isPlaying ? { x: [0, 30, 0], color: ["#fff", "#4ade80", "#fff"] } : {}} transition={{ duration: 1 }}>→</motion.div>
+                       
+                       <div className="text-center"><div className="mb-2">🏨</div><span className="text-[10px] text-white font-mono uppercase">Hotel</span></div>
+                       <motion.div animate={isPlaying ? { x: [0, 30, 0], color: ["#fff", "#4ade80", "#fff"] } : {}} transition={{ duration: 1, delay: 1 }}>→</motion.div>
+                       
+                       <div className="text-center relative">
+                         <div className="mb-2">🚗</div><span className="text-[10px] text-white font-mono uppercase">Car</span>
+                         {isPlaying && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -inset-2 bg-red-500/50 rounded-full flex items-center justify-center text-sm font-bold">FAIL</motion.div>}
+                       </div>
 
-            {(sysState === "crashed" || sysState === "recovered_cb") && (
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className={`p-6 rounded-xl border ${sysState === "recovered_cb" ? "bg-blue-950/20 border-blue-900/50" : "bg-red-950/20 border-red-900/50"}`}>
-                <h4 className={`text-lg font-bold font-display mb-2 ${sysState === "recovered_cb" ? "text-blue-400" : "text-red-500"}`}>
-                  {sysState === "recovered_cb" ? "System Stabilized." : "Post-Mortem: System Crashed."}
-                </h4>
-                <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                  {sysState === "recovered_cb" 
-                    ? "Exactly. By tripping the circuit breaker, the API gateway stopped waiting on the dead database. It failed fast, returning an immediate error to the user, but crucially, it freed up its threads so the node didn't crash."
-                    : "Adding more nodes or retrying a dead database just creates a larger blast radius. You needed to sever the connection to stop the cascading failure."}
-                </p>
-                <button onClick={resetSim} className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold uppercase tracking-widest rounded-lg transition-colors">
-                  Restart Simulation
-                </button>
-              </motion.div>
-            )}
+                       {/* The Undo Animation */}
+                       {isPlaying && (
+                         <motion.div 
+                           initial={{ x: 150, opacity: 0 }} 
+                           animate={{ x: -150, opacity: 1 }} 
+                           transition={{ duration: 1.5, delay: 2.5 }}
+                           className="absolute text-red-500 font-bold text-xl drop-shadow-lg"
+                         >
+                           ⏪ CANCEL EVERYTHING
+                         </motion.div>
+                       )}
+                    </div>
+                  )}
+
+                  {/* CQRS */}
+                  {activePattern.id === "cqrs" && (
+                    <div className="flex flex-col gap-8 w-full max-w-md">
+                      <div className="flex justify-between items-center bg-slate-800 p-4 rounded-2xl relative">
+                        <span className="text-3xl">🍔</span>
+                        {isPlaying && <motion.div animate={{ left: ["10%", "80%"] }} className="absolute text-xl">📝</motion.div>}
+                        <div className="text-center"><div className="text-3xl">👨‍🍳</div><span className="text-[10px] text-amber-400 font-mono uppercase">Write DB (Cook)</span></div>
+                      </div>
+                      <div className="flex justify-between items-center bg-slate-800 p-4 rounded-2xl relative">
+                        <span className="text-3xl">👀</span>
+                        {isPlaying && <motion.div animate={{ left: ["10%", "80%"] }} className="absolute text-xl">📖</motion.div>}
+                        <div className="text-center"><div className="text-3xl">📋</div><span className="text-[10px] text-emerald-400 font-mono uppercase">Read DB (Menu)</span></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* EVENT SOURCING */}
+                  {activePattern.id === "event-sourcing" && (
+                    <div className="flex flex-col items-center">
+                       <div className="text-3xl text-emerald-400 font-bold mb-4 flex items-center gap-4">
+                         Total: <motion.span animate={isPlaying ? { opacity: [1,0,1] } : {}} transition={{ delay: 3 }}>$150</motion.span>
+                       </div>
+                       <div className="flex gap-2">
+                         <motion.div animate={isPlaying ? { y: [20, 0], opacity: [0, 1] } : { opacity: 0 }} className="bg-slate-800 p-3 rounded text-sm text-white font-mono">+ $100</motion.div>
+                         <motion.div animate={isPlaying ? { y: [20, 0], opacity: [0, 1] } : { opacity: 0 }} transition={{ delay: 1 }} className="bg-slate-800 p-3 rounded text-sm text-red-400 font-mono">- $50</motion.div>
+                         <motion.div animate={isPlaying ? { y: [20, 0], opacity: [0, 1] } : { opacity: 0 }} transition={{ delay: 2 }} className="bg-slate-800 p-3 rounded text-sm text-white font-mono">+ $100</motion.div>
+                       </div>
+                    </div>
+                  )}
+
+                  {/* BULKHEAD */}
+                  {activePattern.id === "bulkhead" && (
+                    <div className="flex gap-4">
+                      <div className={`w-20 h-32 rounded-xl flex items-end justify-center pb-4 text-2xl transition-all duration-1000 border-4 border-slate-700 ${isPlaying ? 'bg-red-900/50' : 'bg-slate-800'}`}>
+                        {isPlaying ? '🔥' : '⚙️'}
+                      </div>
+                      <div className="w-2 h-32 bg-slate-600 rounded-full" /> {/* The Wall */}
+                      <div className="w-20 h-32 bg-slate-800 rounded-xl flex items-end justify-center pb-4 text-2xl border-4 border-slate-700">⚙️</div>
+                      <div className="w-2 h-32 bg-slate-600 rounded-full" /> {/* The Wall */}
+                      <div className="w-20 h-32 bg-slate-800 rounded-xl flex items-end justify-center pb-4 text-2xl border-4 border-slate-700">⚙️</div>
+                    </div>
+                  )}
+
+                  {/* STRANGLER */}
+                  {activePattern.id === "strangler" && (
+                    <div className="relative w-64 h-64 flex items-center justify-center">
+                      <motion.div 
+                        animate={isPlaying ? { scale: 0.2, opacity: 0.5 } : { scale: 1 }} 
+                        transition={{ duration: 3 }}
+                        className="absolute inset-0 bg-slate-700 rounded-3xl flex items-center justify-center text-4xl"
+                      >
+                        🦖
+                      </motion.div>
+                      <motion.div 
+                        animate={isPlaying ? { scale: 1, opacity: 1 } : { scale: 0.2, opacity: 0 }} 
+                        transition={{ duration: 3 }}
+                        className="absolute inset-4 bg-emerald-500 rounded-2xl flex items-center justify-center text-4xl shadow-2xl"
+                      >
+                        🚀
+                      </motion.div>
+                    </div>
+                  )}
+
+                  {/* ACL */}
+                  {activePattern.id === "acl" && (
+                    <div className="flex items-center gap-6">
+                      <div className="bg-slate-800 p-6 rounded-2xl text-4xl">🦖</div>
+                      
+                      <div className="relative w-32 h-16 bg-slate-700 rounded flex items-center justify-center overflow-hidden">
+                        <span className="text-[10px] text-slate-400 font-mono absolute top-1">Translator</span>
+                        {isPlaying && (
+                          <motion.div 
+                            animate={{ x: [-50, 50] }} 
+                            transition={{ duration: 2, repeat: 1 }}
+                            className="text-xl"
+                          >
+                            🍝 ➡️ 🍣
+                          </motion.div>
+                        )}
+                      </div>
+
+                      <div className="bg-blue-900/50 border border-blue-500 p-6 rounded-2xl text-4xl">💻</div>
+                    </div>
+                  )}
+
+                  {/* BFF */}
+                  {activePattern.id === "bff" && (
+                    <div className="flex items-center justify-between w-full max-w-lg px-8">
+                      <div className="text-4xl">📱</div>
+                      <div className="flex-1 px-8 relative h-10 flex items-center justify-center">
+                        {isPlaying && <motion.div animate={{ x: [-50, 50] }} className="absolute text-sm">📦 (Small)</motion.div>}
+                      </div>
+                      <div className="bg-pink-900/40 p-4 rounded-2xl text-2xl border border-pink-500">🛍️ BFF</div>
+                      <div className="flex-1 px-8 relative h-10 flex items-center justify-center">
+                        {isPlaying && <motion.div animate={{ x: [-50, 50] }} className="absolute text-2xl">📦📦📦📦</motion.div>}
+                      </div>
+                      <div className="text-4xl">🗄️</div>
+                    </div>
+                  )}
+
+                  {/* SIDECAR */}
+                  {activePattern.id === "sidecar" && (
+                    <div className="flex items-center gap-2">
+                       <motion.div 
+                         animate={isPlaying ? { y: [-2, 2, -2] } : {}} 
+                         transition={{ repeat: Infinity, duration: 0.5 }}
+                         className="bg-blue-600 w-32 h-20 rounded-2xl flex items-center justify-center text-3xl shadow-lg relative"
+                       >
+                         🚗
+                         <span className="absolute -bottom-6 text-[10px] font-mono text-slate-400 uppercase">App (You)</span>
+                       </motion.div>
+                       
+                       <motion.div 
+                         animate={isPlaying ? { y: [-2, 2, -2] } : {}} 
+                         transition={{ repeat: Infinity, duration: 0.5, delay: 0.1 }}
+                         className="bg-orange-500 w-16 h-16 rounded-xl flex items-center justify-center text-2xl shadow-lg relative ml-2"
+                       >
+                         🔫
+                         <span className="absolute -bottom-6 text-[10px] font-mono text-slate-400 uppercase">Sidecar</span>
+                       </motion.div>
+                    </div>
+                  )}
+
+                </motion.div>
+              </AnimatePresence>
+
+              {!isPlaying && <div className="absolute bottom-4 text-[10px] text-slate-500 font-mono uppercase tracking-widest">Awaiting Simulation</div>}
+            </div>
+
           </div>
         </div>
-
       </div>
     </div>
   );
