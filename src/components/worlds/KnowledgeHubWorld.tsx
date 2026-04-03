@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import AIEngineeringModule from "@/components/knowledge/AIEngineeringModule";
 import CandlestickModule from "@/components/knowledge/CandlestickModule";
-import StockBasicsModule from "@/components/knowledge/StockBasicsModule";
 import CloudPatternsModule from "@/components/knowledge/CloudPatternsModule";
 import SystemDesignModule from "@/components/knowledge/SystemDesignModule";
 import MentalModelsModule from "@/components/knowledge/MentalModelsModule";
@@ -26,17 +26,17 @@ interface KnowledgeModule {
 
 const MODULES: KnowledgeModule[] = [
   {
-    id: "stock-basics",
-    title: "Stock Market 101",
-    description: "Plain-English mini-course on stocks, markets, and investing fundamentals — written from a practitioner's POV.",
-    icon: "📊",
-    tags: ["Finance", "Beginner"],
+    id: "ai-engineering",
+    title: "AI Engineering in Practice",
+    description: "RAG, GraphRAG, Agentic AI, LLMOps, enterprise constraints — written from inside a regulated bank. Nothing surface level.",
+    icon: "🤖",
+    tags: ["AI", "Production"],
     ready: true,
-    color: "#0D9488",
-    items: 10,
-    itemLabel: "lessons",
-    interactiveBadge: "🧪 Quizzes",
-    interactiveDetail: "Quiz after each lesson · earn mastery badges",
+    color: "#7C3AED",
+    items: 8,
+    itemLabel: "deep topics",
+    interactiveBadge: "🚨 RAG Diagnostics",
+    interactiveDetail: "Diagnose production failures · Architecture challenges",
   },
   {
     id: "candlestick",
@@ -71,7 +71,7 @@ const MODULES: KnowledgeModule[] = [
     icon: "⚙️",
     tags: ["Engineering", "Interviews"],
     ready: true,
-    color: "#7C3AED",
+    color: "#0D9488",
     items: 10,
     itemLabel: "topics",
     interactiveBadge: "🏗️ Architect Challenge",
@@ -114,8 +114,8 @@ const KnowledgeHubWorld = () => {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
+  if (activeModule === "ai-engineering") return <AIEngineeringModule onBack={() => setActiveModule(null)} />;
   if (activeModule === "candlestick") return <CandlestickModule onBack={() => setActiveModule(null)} />;
-  if (activeModule === "stock-basics") return <StockBasicsModule onBack={() => setActiveModule(null)} />;
   if (activeModule === "cloud-patterns") return <CloudPatternsModule onBack={() => setActiveModule(null)} />;
   if (activeModule === "system-design") return <SystemDesignModule onBack={() => setActiveModule(null)} />;
   if (activeModule === "mental-models") return <MentalModelsModule onBack={() => setActiveModule(null)} />;
