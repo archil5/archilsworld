@@ -21,6 +21,14 @@ import {
   Waves,
 } from "lucide-react";
 
+const INK = "#0F172A";
+const INK_MUTED = "#475569";
+const COPPER = "#0D9488";
+const BLUE = "#2563EB";
+const PURPLE = "#7C3AED";
+const AMBER = "#D97706";
+const RED = "#DC2626";
+
 type Mode = "playful" | "principal";
 
 type Concept = {
@@ -252,18 +260,29 @@ const CONCEPTS: Concept[] = [
   },
 ];
 
-function cn(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
+/* ── Helpers ──────────────────────────────────────────────── */
+
+const TAG_COLORS: Record<string, string> = {
+  resilience: COPPER,
+  "failure domains": RED,
+  consistency: PURPLE,
+  performance: AMBER,
+  messaging: BLUE,
+  "global systems": "#0891B2",
+  validation: "#059669",
+  "overload control": "#DC2626",
+};
+
+/* ── Scene Components (light-themed) ─────────────────────── */
 
 function Packet({
-  className,
+  color,
   x,
   y,
   duration = 1.6,
   delay = 0,
 }: {
-  className: string;
+  color: string;
   x: number[];
   y: number[];
   duration?: number;
@@ -271,47 +290,54 @@ function Packet({
 }) {
   return (
     <motion.div
-      className={cn("absolute h-2.5 w-2.5 rounded-full shadow-[0_0_16px_currentColor]", className)}
+      className="absolute h-2.5 w-2.5 rounded-full"
+      style={{ background: color, boxShadow: `0 0 8px ${color}60` }}
       animate={{ x, y, opacity: [0, 1, 1, 0], scale: [0.85, 1, 1, 0.85] }}
       transition={{ duration, delay, repeat: Infinity, ease: "linear" }}
     />
   );
 }
 
-function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {
+function SceneBox({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-      <div className="mb-2 text-[10px] uppercase tracking-[0.24em] text-slate-400">{label}</div>
-      <div className={cn("text-xl font-semibold", accent)}>{value}</div>
+    <div
+      className={`rounded-xl border p-4 ${className}`}
+      style={{ background: `${INK}03`, border: `1px solid ${INK}08` }}
+    >
+      {children}
     </div>
   );
 }
 
 function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: boolean }) {
+  const sceneLabel = (text: string, color: string = INK_MUTED) => (
+    <div className="font-mono text-[9px] uppercase tracking-[0.2em] mb-2" style={{ color }}>{text}</div>
+  );
+
   switch (conceptId) {
     case "planes":
       return (
-        <div className="relative flex h-full w-full flex-col justify-center gap-8 px-4 md:px-10">
+        <div className="flex flex-col gap-4 px-4 md:px-8">
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-3xl border border-cyan-500/30 bg-cyan-500/10 p-5">
-              <div className="mb-4 flex items-center justify-between">
+            <div className="rounded-xl border p-5" style={{ background: `${COPPER}06`, border: `1px solid ${COPPER}15` }}>
+              <div className="mb-3 flex items-center justify-between">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.25em] text-cyan-300">Control Plane</div>
-                  <div className="mt-1 text-sm text-slate-300">config • policy • provisioning</div>
+                  {sceneLabel("Control Plane", COPPER)}
+                  <p className="font-mono text-xs" style={{ color: INK_MUTED }}>config · policy · provisioning</p>
                 </div>
-                <CloudCog className="h-6 w-6 text-cyan-300" />
+                <CloudCog className="h-5 w-5" style={{ color: COPPER }} />
               </div>
               <div className="space-y-2">
                 {["Deploy config", "Change policy", "Rotate secrets"].map((item, i) => (
                   <motion.div
                     key={item}
-                    className={cn(
-                      "rounded-xl border px-3 py-2 text-sm",
-                      incidentMode && i === 1
-                        ? "border-rose-400/50 bg-rose-500/20 text-rose-100"
-                        : "border-white/10 bg-white/5 text-slate-200",
-                    )}
-                    animate={incidentMode && i === 1 ? { x: [-3, 3, -3] } : { x: 0 }}
+                    className="rounded-lg border px-3 py-2 font-mono text-xs"
+                    style={{
+                      background: incidentMode && i === 1 ? `${RED}08` : `${INK}03`,
+                      border: `1px solid ${incidentMode && i === 1 ? `${RED}30` : `${INK}08`}`,
+                      color: incidentMode && i === 1 ? RED : INK,
+                    }}
+                    animate={incidentMode && i === 1 ? { x: [-2, 2, -2] } : { x: 0 }}
                     transition={{ repeat: incidentMode && i === 1 ? Infinity : 0, duration: 0.35 }}
                   >
                     {item}
@@ -320,19 +346,19 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
               </div>
             </div>
 
-            <div className="rounded-3xl border border-emerald-500/30 bg-emerald-500/10 p-5">
-              <div className="mb-4 flex items-center justify-between">
+            <div className="rounded-xl border p-5" style={{ background: `${COPPER}04`, border: `1px solid ${COPPER}10` }}>
+              <div className="mb-3 flex items-center justify-between">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.25em] text-emerald-300">Data Plane</div>
-                  <div className="mt-1 text-sm text-slate-300">requests • traffic • real users</div>
+                  {sceneLabel("Data Plane", "#059669")}
+                  <p className="font-mono text-xs" style={{ color: INK_MUTED }}>requests · traffic · real users</p>
                 </div>
-                <Activity className="h-6 w-6 text-emerald-300" />
+                <Activity className="h-5 w-5" style={{ color: "#059669" }} />
               </div>
-              <div className="relative h-24 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/50">
-                <Packet className="bg-emerald-300 text-emerald-300" x={[-10, 280]} y={[26, 26]} />
-                <Packet className="bg-emerald-300 text-emerald-300" x={[-10, 280]} y={[58, 58]} delay={0.6} />
-                <Packet className="bg-emerald-300 text-emerald-300" x={[-10, 280]} y={[42, 42]} delay={1.1} />
-                <div className="absolute left-3 top-2 text-[10px] uppercase tracking-[0.2em] text-slate-500">
+              <div className="relative h-20 overflow-hidden rounded-lg" style={{ background: `${INK}04`, border: `1px solid ${INK}06` }}>
+                <Packet color={COPPER} x={[-10, 260]} y={[20, 20]} />
+                <Packet color={COPPER} x={[-10, 260]} y={[44, 44]} delay={0.6} />
+                <Packet color={COPPER} x={[-10, 260]} y={[32, 32]} delay={1.1} />
+                <div className="absolute left-2 top-1.5 font-mono text-[9px] uppercase tracking-wider" style={{ color: INK_MUTED }}>
                   last known good config {incidentMode ? "active" : "cached"}
                 </div>
               </div>
@@ -340,11 +366,9 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
           </div>
 
           {incidentMode && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border border-amber-400/40 bg-amber-500/10 p-4 text-sm text-amber-100"
-            >
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border p-4 font-mono text-xs leading-relaxed"
+              style={{ background: `${AMBER}08`, border: `1px solid ${AMBER}20`, color: AMBER }}>
               Control plane is coughing loudly. Data plane keeps serving on cached state. Users remain blissfully unaware.
             </motion.div>
           )}
@@ -353,39 +377,33 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
 
     case "blast-radius":
       return (
-        <div className="relative grid h-full w-full gap-4 p-4 md:grid-cols-3 md:p-8">
+        <div className="relative grid gap-4 px-4 md:px-8 md:grid-cols-3">
           {[1, 2, 3].map((cell) => {
             const hit = incidentMode && cell === 2;
             return (
-              <motion.div
-                key={cell}
+              <motion.div key={cell}
                 animate={hit ? { y: [-2, 2, -2] } : { y: 0 }}
                 transition={{ repeat: hit ? Infinity : 0, duration: 0.35 }}
-                className={cn(
-                  "rounded-3xl border p-5",
-                  hit
-                    ? "border-rose-400/60 bg-rose-500/10"
-                    : "border-white/10 bg-white/5",
-                )}
-              >
+                className="rounded-xl border p-4"
+                style={{
+                  background: hit ? `${RED}06` : `${INK}03`,
+                  border: `1px solid ${hit ? `${RED}25` : `${INK}08`}`,
+                }}>
                 <div className="mb-3 flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-[0.25em] text-slate-400">Cell {cell}</div>
-                    <div className="mt-1 text-sm text-slate-200">users, compute, db</div>
+                    {sceneLabel(`Cell ${cell}`, hit ? RED : INK_MUTED)}
+                    <p className="font-mono text-[10px]" style={{ color: INK_MUTED }}>users, compute, db</p>
                   </div>
-                  <Layers3 className={cn("h-5 w-5", hit ? "text-rose-300" : "text-slate-300")} />
+                  <Layers3 className="h-4 w-4" style={{ color: hit ? RED : INK_MUTED }} />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        "rounded-xl border px-3 py-4 text-center text-xs",
-                        hit && i > 1
-                          ? "border-rose-400/50 bg-rose-500/20 text-rose-100"
-                          : "border-white/10 bg-slate-950/40 text-slate-300",
-                      )}
-                    >
+                    <div key={i} className="rounded-lg border px-2 py-3 text-center font-mono text-[10px]"
+                      style={{
+                        background: hit && i > 1 ? `${RED}08` : `${INK}03`,
+                        border: `1px solid ${hit && i > 1 ? `${RED}20` : `${INK}06`}`,
+                        color: hit && i > 1 ? RED : INK_MUTED,
+                      }}>
                       svc-{cell}.{i + 1}
                     </div>
                   ))}
@@ -394,7 +412,8 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
             );
           })}
           {incidentMode && (
-            <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-3 text-sm text-emerald-100">
+            <div className="absolute bottom-2 left-4 right-4 rounded-xl border p-3 font-mono text-xs"
+              style={{ background: `${COPPER}08`, border: `1px solid ${COPPER}20`, color: COPPER }}>
               Only one cell is on fire. Everybody else still gets to keep their weekend.
             </div>
           )}
@@ -403,74 +422,55 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
 
     case "saga":
       return (
-        <div className="relative flex h-full w-full items-center justify-center px-6">
-          <div className="absolute top-6 text-[10px] uppercase tracking-[0.3em] text-slate-500">order pipeline</div>
-          <div className="relative flex w-full max-w-3xl items-center justify-between">
-            <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-16 rounded-2xl border border-fuchsia-400/40 bg-fuchsia-500/10 px-4 py-3 text-center">
-              <div className="text-xs uppercase tracking-[0.2em] text-fuchsia-300">Orchestrator</div>
-              <div className="mt-1 text-sm text-slate-200">keeps receipts</div>
-            </div>
+        <div className="relative flex flex-col items-center justify-center px-6 py-4">
+          <div className="font-mono text-[9px] uppercase tracking-[0.2em] mb-6" style={{ color: INK_MUTED }}>order pipeline</div>
+          <div className="rounded-xl border px-5 py-2 mb-8 font-mono text-xs"
+            style={{ background: `${PURPLE}08`, border: `1px solid ${PURPLE}15`, color: PURPLE }}>
+            <BrainCircuit className="h-3.5 w-3.5 inline mr-2" />Orchestrator — keeps receipts
+          </div>
+          <div className="flex w-full max-w-md items-center justify-between relative">
             {["Order", "Payment", "Inventory"].map((name, i) => {
               const failed = incidentMode && i === 2;
               const compensating = incidentMode && i < 2;
+              const color = failed ? RED : compensating ? AMBER : COPPER;
               return (
-                <div key={name} className="relative flex flex-col items-center">
+                <div key={name} className="flex flex-col items-center">
                   <motion.div
                     animate={failed ? { x: [-2, 2, -2] } : { x: 0 }}
                     transition={{ repeat: failed ? Infinity : 0, duration: 0.35 }}
-                    className={cn(
-                      "flex h-24 w-24 items-center justify-center rounded-3xl border text-center text-sm",
-                      failed
-                        ? "border-rose-400/60 bg-rose-500/10 text-rose-100"
-                        : compensating
-                          ? "border-amber-400/50 bg-amber-500/10 text-amber-100"
-                          : "border-cyan-400/40 bg-cyan-500/10 text-cyan-100",
-                    )}
-                  >
+                    className="flex h-20 w-20 items-center justify-center rounded-xl border font-mono text-xs font-medium"
+                    style={{ background: `${color}08`, border: `1px solid ${color}20`, color }}>
                     {name}
                   </motion.div>
-                  <div className="mt-3 text-[11px] uppercase tracking-[0.22em] text-slate-500">
+                  <div className="mt-2 font-mono text-[9px] uppercase tracking-wider" style={{ color }}>
                     {failed ? "failed" : compensating ? "compensating" : "committed"}
                   </div>
                 </div>
               );
             })}
-
-            {!incidentMode && (
-              <>
-                <Packet className="bg-cyan-300 text-cyan-300" x={[70, 260]} y={[0, 0]} />
-                <Packet className="bg-cyan-300 text-cyan-300" x={[310, 500]} y={[0, 0]} delay={0.8} />
-              </>
-            )}
-
-            {incidentMode && (
-              <>
-                <Packet className="bg-amber-300 text-amber-300" x={[500, 310]} y={[0, 0]} />
-                <Packet className="bg-amber-300 text-amber-300" x={[260, 70]} y={[0, 0]} delay={0.8} />
-              </>
-            )}
           </div>
         </div>
       );
 
     case "tail-latency":
       return (
-        <div className="flex h-full w-full flex-col justify-center px-6 md:px-10">
-          <div className="mb-4 text-[10px] uppercase tracking-[0.28em] text-slate-500">fan-out request race</div>
-          <div className="grid gap-3">
+        <div className="flex flex-col justify-center px-4 md:px-8">
+          {sceneLabel("fan-out request race")}
+          <div className="grid gap-2.5">
             {Array.from({ length: 8 }).map((_, i) => {
               const slow = incidentMode && i === 6;
               return (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-20 text-xs uppercase tracking-[0.2em] text-slate-500">svc-{i + 1}</div>
-                  <div className="h-4 flex-1 overflow-hidden rounded-full bg-white/5">
+                  <div className="w-16 font-mono text-[10px] uppercase tracking-wider" style={{ color: INK_MUTED }}>svc-{i + 1}</div>
+                  <div className="h-3.5 flex-1 overflow-hidden rounded-full" style={{ background: `${INK}06` }}>
                     <motion.div
-                      className={cn("h-full rounded-full", slow ? "bg-rose-400" : "bg-cyan-300")}
+                      className="h-full rounded-full"
+                      style={{ background: slow ? RED : COPPER }}
                       animate={{ width: slow ? "92%" : `${28 + i * 6}%` }}
                       transition={{ duration: 0.7 }}
                     />
                   </div>
-                  <div className={cn("w-16 text-right text-sm", slow ? "text-rose-200" : "text-slate-300")}>
+                  <div className="w-14 text-right font-mono text-xs font-medium" style={{ color: slow ? RED : INK_MUTED }}>
                     {slow ? "811ms" : `${40 + i * 9}ms`}
                   </div>
                 </div>
@@ -478,11 +478,9 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
             })}
           </div>
           {incidentMode && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 p-4 text-sm text-cyan-100"
-            >
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              className="mt-5 rounded-xl border p-4 font-mono text-xs leading-relaxed"
+              style={{ background: `${BLUE}06`, border: `1px solid ${BLUE}15`, color: BLUE }}>
               One straggler dominates the composite experience. This is why teams end up talking about hedging, cancellation, and fast-path isolation.
             </motion.div>
           )}
@@ -491,40 +489,44 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
 
     case "exactly-once":
       return (
-        <div className="relative flex h-full w-full items-center justify-center px-6">
-          <div className="grid w-full max-w-3xl gap-6 md:grid-cols-[1fr_180px_1fr]">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-              <div className="mb-4 text-xs uppercase tracking-[0.24em] text-slate-400">inbox</div>
-              <div className="relative h-40 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/50">
-                <Packet className="bg-fuchsia-300 text-fuchsia-300" x={[-10, 180]} y={[24, 24]} />
-                <Packet className="bg-fuchsia-300 text-fuchsia-300" x={[-10, 180]} y={[58, 58]} delay={0.5} />
-                {incidentMode && <Packet className="bg-rose-300 text-rose-300" x={[-10, 180]} y={[92, 92]} delay={0.2} />}
-                {incidentMode && <Packet className="bg-rose-300 text-rose-300" x={[-10, 180]} y={[92, 92]} delay={0.8} />}
+        <div className="flex items-center justify-center px-4 md:px-6">
+          <div className="grid w-full max-w-2xl gap-4 md:grid-cols-[1fr_140px_1fr]">
+            <div className="rounded-xl border p-4" style={{ background: `${INK}03`, border: `1px solid ${INK}08` }}>
+              {sceneLabel("inbox")}
+              <div className="relative h-28 overflow-hidden rounded-lg" style={{ background: `${INK}04`, border: `1px solid ${INK}06` }}>
+                <Packet color={PURPLE} x={[-10, 160]} y={[20, 20]} />
+                <Packet color={PURPLE} x={[-10, 160]} y={[50, 50]} delay={0.5} />
+                {incidentMode && <Packet color={RED} x={[-10, 160]} y={[80, 80]} delay={0.2} />}
+                {incidentMode && <Packet color={RED} x={[-10, 160]} y={[80, 80]} delay={0.8} />}
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-emerald-400/30 bg-emerald-500/10 p-5">
-              <Receipt className="h-8 w-8 text-emerald-300" />
-              <div className="text-center text-xs uppercase tracking-[0.24em] text-emerald-200">idempotency ledger</div>
-              <div className="rounded-xl border border-white/10 bg-slate-950/40 px-3 py-2 text-center text-sm text-slate-200">
+            <div className="flex flex-col items-center justify-center gap-2 rounded-xl border p-4"
+              style={{ background: `${COPPER}06`, border: `1px solid ${COPPER}15` }}>
+              <Receipt className="h-6 w-6" style={{ color: COPPER }} />
+              <div className="font-mono text-[9px] uppercase tracking-wider text-center" style={{ color: COPPER }}>idempotency ledger</div>
+              <div className="rounded-lg border px-2 py-1.5 font-mono text-[10px] text-center"
+                style={{ background: `${INK}03`, border: `1px solid ${INK}08`, color: INK }}>
                 msg-1042 ✓
               </div>
               {incidentMode && (
-                <div className="rounded-xl border border-white/10 bg-slate-950/40 px-3 py-2 text-center text-sm text-slate-200">
-                  msg-1042 duplicate
+                <div className="rounded-lg border px-2 py-1.5 font-mono text-[10px] text-center"
+                  style={{ background: `${RED}06`, border: `1px solid ${RED}15`, color: RED }}>
+                  msg-1042 dup
                 </div>
               )}
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-              <div className="mb-4 text-xs uppercase tracking-[0.24em] text-slate-400">business outcome</div>
-              <div className="grid gap-3">
+            <div className="rounded-xl border p-4" style={{ background: `${INK}03`, border: `1px solid ${INK}08` }}>
+              {sceneLabel("business outcome")}
+              <div className="grid gap-2">
                 {[
                   incidentMode ? "Charge card once" : "Charge card",
                   incidentMode ? "Send email once" : "Send email",
                   incidentMode ? "Write order once" : "Write order",
                 ].map((item) => (
-                  <div key={item} className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm text-slate-200">
+                  <div key={item} className="rounded-lg border px-3 py-2 font-mono text-xs"
+                    style={{ background: `${INK}03`, border: `1px solid ${INK}06`, color: INK }}>
                     {item}
                   </div>
                 ))}
@@ -536,31 +538,23 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
 
     case "active-active":
       return (
-        <div className="relative flex h-full w-full items-center justify-center px-6">
-          <div className="grid w-full max-w-3xl gap-4 md:grid-cols-[1fr_120px_1fr]">
+        <div className="flex items-center justify-center px-4 md:px-6">
+          <div className="grid w-full max-w-2xl gap-4 md:grid-cols-[1fr_100px_1fr]">
             {[
-              { name: "Region A", color: "cyan", note: incidentMode ? "cart + tacos" : "cart synced" },
-              { name: "Region B", color: incidentMode ? "rose" : "emerald", note: incidentMode ? "cart + nachos" : "cart synced" },
+              { name: "Region A", color: BLUE, note: incidentMode ? "cart + tacos" : "cart synced" },
+              { name: "Region B", color: incidentMode ? RED : COPPER, note: incidentMode ? "cart + nachos" : "cart synced" },
             ].map((region) => (
-              <div
-                key={region.name}
-                className={cn(
-                  "rounded-3xl border p-5",
-                  region.color === "rose"
-                    ? "border-rose-400/50 bg-rose-500/10"
-                    : region.color === "emerald"
-                      ? "border-emerald-400/50 bg-emerald-500/10"
-                      : "border-cyan-400/50 bg-cyan-500/10",
-                )}
-              >
-                <div className="mb-4 flex items-center justify-between">
+              <div key={region.name} className="rounded-xl border p-4"
+                style={{ background: `${region.color}06`, border: `1px solid ${region.color}15` }}>
+                <div className="mb-3 flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-[0.24em] text-slate-300">{region.name}</div>
-                    <div className="mt-1 text-sm text-slate-200">nearest users write here</div>
+                    {sceneLabel(region.name, region.color)}
+                    <p className="font-mono text-[10px]" style={{ color: INK_MUTED }}>nearest users write here</p>
                   </div>
-                  <Globe2 className="h-5 w-5 text-slate-200" />
+                  <Globe2 className="h-4 w-4" style={{ color: region.color }} />
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-6 text-center text-sm text-slate-100">
+                <div className="rounded-lg border px-3 py-5 text-center font-mono text-xs font-medium"
+                  style={{ background: `${INK}03`, border: `1px solid ${INK}06`, color: INK }}>
                   {region.note}
                 </div>
               </div>
@@ -568,15 +562,14 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
 
             <div className="flex items-center justify-center">
               <motion.div
-                animate={incidentMode ? { rotate: [0, -10, 10, 0] } : { rotate: 0 }}
+                animate={incidentMode ? { rotate: [0, -8, 8, 0] } : { rotate: 0 }}
                 transition={{ repeat: incidentMode ? Infinity : 0, duration: 1.2 }}
-                className={cn(
-                  "rounded-2xl border px-4 py-5 text-center text-xs uppercase tracking-[0.22em]",
-                  incidentMode
-                    ? "border-amber-400/50 bg-amber-500/10 text-amber-100"
-                    : "border-white/10 bg-white/5 text-slate-300",
-                )}
-              >
+                className="rounded-xl border px-3 py-4 text-center font-mono text-[10px] uppercase tracking-wider"
+                style={{
+                  background: incidentMode ? `${AMBER}08` : `${INK}03`,
+                  border: `1px solid ${incidentMode ? `${AMBER}20` : `${INK}08`}`,
+                  color: incidentMode ? AMBER : INK_MUTED,
+                }}>
                 {incidentMode ? "conflict" : "replication"}
               </motion.div>
             </div>
@@ -586,25 +579,23 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
 
     case "chaos":
       return (
-        <div className="grid h-full w-full gap-4 p-4 md:grid-cols-[1.2fr_0.8fr] md:p-8">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+        <div className="grid gap-4 px-4 md:px-8 md:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-xl border p-5" style={{ background: `${INK}03`, border: `1px solid ${INK}08` }}>
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <div className="text-xs uppercase tracking-[0.24em] text-slate-400">steady state</div>
-                <div className="mt-1 text-sm text-slate-200">p99 &lt; 200ms • error rate &lt; 0.1%</div>
+                {sceneLabel("steady state")}
+                <p className="font-mono text-xs" style={{ color: INK_MUTED }}>p99 &lt; 200ms · error rate &lt; 0.1%</p>
               </div>
-              <Bot className="h-5 w-5 text-slate-300" />
+              <Bot className="h-4 w-4" style={{ color: INK_MUTED }} />
             </div>
             <div className="grid gap-3">
               {["latency", "error", "saturation"].map((item, i) => (
                 <div key={item}>
-                  <div className="mb-1 text-xs uppercase tracking-[0.2em] text-slate-500">{item}</div>
-                  <div className="h-3 rounded-full bg-slate-950/50">
+                  <div className="mb-1 font-mono text-[9px] uppercase tracking-wider" style={{ color: INK_MUTED }}>{item}</div>
+                  <div className="h-3 rounded-full" style={{ background: `${INK}06` }}>
                     <motion.div
-                      className={cn(
-                        "h-full rounded-full",
-                        incidentMode && i === 1 ? "bg-rose-400" : "bg-emerald-400",
-                      )}
+                      className="h-full rounded-full"
+                      style={{ background: incidentMode && i === 1 ? RED : COPPER }}
                       animate={{ width: incidentMode && i === 1 ? "76%" : `${30 + i * 9}%` }}
                       transition={{ duration: 0.7 }}
                     />
@@ -614,15 +605,16 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
             </div>
           </div>
 
-          <div className="rounded-3xl border border-fuchsia-400/30 bg-fuchsia-500/10 p-5">
-            <div className="mb-4 text-xs uppercase tracking-[0.24em] text-fuchsia-200">hypothesis</div>
-            <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4 text-sm leading-6 text-slate-100">
+          <div className="rounded-xl border p-5" style={{ background: `${PURPLE}06`, border: `1px solid ${PURPLE}15` }}>
+            {sceneLabel("hypothesis", PURPLE)}
+            <div className="rounded-lg border p-3 font-mono text-xs leading-relaxed"
+              style={{ background: `${INK}03`, border: `1px solid ${INK}06`, color: INK }}>
               {incidentMode
                 ? "If network latency spikes between services, retries should stay bounded and customer-facing latency should degrade but remain within tolerance."
                 : "If AZ-B disappears, Cell 2 should degrade locally while other cells continue serving normally."}
             </div>
-            <div className="mt-4 flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-fuchsia-100">
-              <FlaskConical className="h-4 w-4" />
+            <div className="mt-4 flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider" style={{ color: PURPLE }}>
+              <FlaskConical className="h-3.5 w-3.5" />
               {incidentMode ? "fault injected" : "ready to validate"}
             </div>
           </div>
@@ -631,52 +623,48 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
 
     case "backpressure":
       return (
-        <div className="relative flex h-full w-full items-center justify-center px-6">
-          <div className="grid w-full max-w-4xl gap-4 md:grid-cols-[1fr_1fr_1fr]">
-            <div className="rounded-3xl border border-cyan-400/30 bg-cyan-500/10 p-5">
-              <div className="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-200">incoming traffic</div>
+        <div className="flex items-center justify-center px-4 md:px-6">
+          <div className="grid w-full max-w-3xl gap-4 md:grid-cols-3">
+            <div className="rounded-xl border p-4" style={{ background: `${BLUE}06`, border: `1px solid ${BLUE}15` }}>
+              {sceneLabel("incoming traffic", BLUE)}
               <div className="space-y-2">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="h-3 rounded-full bg-cyan-300"
-                    animate={{ x: [0, 6, 0] }}
+                  <motion.div key={i} className="h-2.5 rounded-full" style={{ background: BLUE }}
+                    animate={{ x: [0, 4, 0] }}
                     transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.1 }}
                   />
                 ))}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-              <div className="mb-4 text-xs uppercase tracking-[0.24em] text-slate-400">queue</div>
-              <div className="flex h-40 items-end gap-2 rounded-2xl border border-white/10 bg-slate-950/50 p-3">
+            <div className="rounded-xl border p-4" style={{ background: `${INK}03`, border: `1px solid ${INK}08` }}>
+              {sceneLabel("queue")}
+              <div className="flex h-32 items-end gap-1.5 rounded-lg border p-2"
+                style={{ background: `${INK}04`, border: `1px solid ${INK}06` }}>
                 {Array.from({ length: incidentMode ? 9 : 5 }).map((_, i) => (
-                  <motion.div
-                    key={i}
+                  <motion.div key={i}
                     initial={{ height: 0 }}
                     animate={{ height: `${28 + (i % 4) * 14}px` }}
-                    className={cn(
-                      "w-full rounded-t-md",
-                      incidentMode && i > 6 ? "bg-rose-400" : "bg-amber-300",
-                    )}
+                    className="w-full rounded-t"
+                    style={{ background: incidentMode && i > 6 ? RED : AMBER }}
                   />
                 ))}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-emerald-400/30 bg-emerald-500/10 p-5">
-              <div className="mb-4 text-xs uppercase tracking-[0.24em] text-emerald-200">backpressure signal</div>
-              <div className="flex h-40 flex-col items-center justify-center rounded-2xl border border-white/10 bg-slate-950/50">
+            <div className="rounded-xl border p-4" style={{ background: `${COPPER}06`, border: `1px solid ${COPPER}15` }}>
+              {sceneLabel("backpressure signal", COPPER)}
+              <div className="flex h-32 flex-col items-center justify-center rounded-lg border"
+                style={{ background: `${INK}04`, border: `1px solid ${INK}06` }}>
                 <motion.div
-                  animate={incidentMode ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+                  animate={incidentMode ? { scale: [1, 1.06, 1] } : { scale: 1 }}
                   transition={{ repeat: Infinity, duration: 1.2 }}
-                  className={cn(
-                    "rounded-full border px-5 py-4 text-sm uppercase tracking-[0.2em]",
-                    incidentMode
-                      ? "border-emerald-300/60 bg-emerald-500/20 text-emerald-100"
-                      : "border-white/10 bg-white/5 text-slate-300",
-                  )}
-                >
+                  className="rounded-full border px-4 py-3 font-mono text-[10px] uppercase tracking-wider"
+                  style={{
+                    background: incidentMode ? `${COPPER}10` : `${INK}04`,
+                    border: `1px solid ${incidentMode ? `${COPPER}25` : `${INK}08`}`,
+                    color: incidentMode ? COPPER : INK_MUTED,
+                  }}>
                   {incidentMode ? "slow down" : "stable flow"}
                 </motion.div>
               </div>
@@ -690,215 +678,208 @@ function Scene({ conceptId, incidentMode }: { conceptId: string; incidentMode: b
   }
 }
 
-export default function DistributedSystemsPanicRoom({ onBack }: { onBack?: () => void }) {
+/* ── Main Component ──────────────────────────────────────── */
+
+export default function CloudPatternsModule({ onBack }: { onBack?: () => void }) {
   const [activeId, setActiveId] = useState(CONCEPTS[0].id);
   const [mode, setMode] = useState<Mode>("playful");
   const [incidentMode, setIncidentMode] = useState(false);
 
   const active = useMemo(
-    () => CONCEPTS.find((concept) => concept.id === activeId) ?? CONCEPTS[0],
+    () => CONCEPTS.find((c) => c.id === activeId) ?? CONCEPTS[0],
     [activeId],
   );
 
   const explanation = mode === "playful" ? active.playful : active.principal;
+  const tagColor = TAG_COLORS[active.tag] ?? COPPER;
 
   return (
-    <div className="min-h-screen bg-[#050816] text-slate-100 h-full overflow-y-auto">
-      <div className="relative overflow-hidden min-h-full">
-        {/* Background Gradients */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(192,132,252,0.16),transparent_22%),radial-gradient(circle_at_bottom,rgba(16,185,129,0.14),transparent_28%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:42px_42px] opacity-20" />
+    <div className="h-full overflow-y-auto px-4 md:px-8 py-8" style={{ background: "#F8FAFC" }}>
+      <div className="max-w-6xl mx-auto">
 
-        <div className="relative mx-auto max-w-[1400px] px-4 py-8 md:px-8 md:py-10">
-          
-          {/* Header Bar */}
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              {onBack && (
-                <button
-                  onClick={onBack}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Back
-                </button>
-              )}
-              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-cyan-200">
-                <Sparkles className="h-3.5 w-3.5" />
-                portfolio lab
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1">
-                {([
-                  ["playful", "Fun mode"],
-                  ["principal", "Deep mode"],
-                ] as const).map(([value, label]) => (
-                  <button
-                    key={value}
-                    onClick={() => setMode(value)}
-                    className={cn(
-                      "rounded-full px-4 py-2 text-sm transition",
-                      mode === value
-                        ? "bg-white text-slate-950"
-                        : "text-slate-300 hover:bg-white/10",
-                    )}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => setIncidentMode((current) => !current)}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition",
-                  incidentMode
-                    ? "border-rose-400/40 bg-rose-500/15 text-rose-100 hover:bg-rose-500/20"
-                    : "border-emerald-400/30 bg-emerald-500/10 text-emerald-100 hover:bg-emerald-500/15",
-                )}
-              >
-                {incidentMode ? <TrafficCone className="h-4 w-4" /> : <LifeBuoy className="h-4 w-4" />}
-                {incidentMode ? "Restore system" : "Trigger incident"}
+        {/* Header */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-3">
+            {onBack && (
+              <button onClick={onBack}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-xs transition-all"
+                style={{ color: INK_MUTED, background: `${INK}04`, border: `1px solid ${INK}08` }}>
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Back
               </button>
+            )}
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full"
+              style={{ background: `${BLUE}08`, border: `1px solid ${BLUE}15` }}>
+              <Sparkles className="h-3 w-3" style={{ color: BLUE }} />
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: BLUE }}>
+                Incident Simulator
+              </span>
             </div>
           </div>
 
-          {/* Hero Intro */}
-          <div className="mb-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-md md:p-8">
-              <div className="mb-4 flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/20 bg-fuchsia-400/10 px-3 py-1 text-[11px] uppercase tracking-[0.25em] text-fuchsia-200">
-                  <BrainCircuit className="h-3.5 w-3.5" />
-                  distributed systems panic room
-                </div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-slate-300">
-                  eight concepts • one interactive story
-                </div>
+          <div className="flex items-center gap-3">
+            {/* Mode toggle */}
+            <div className="flex rounded-lg overflow-hidden" style={{ border: `1px solid ${INK}10` }}>
+              {([["playful", "Fun mode"], ["principal", "Deep mode"]] as const).map(([value, label]) => (
+                <button key={value} onClick={() => setMode(value)}
+                  className="px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all"
+                  style={{
+                    background: mode === value ? `${BLUE}10` : "transparent",
+                    color: mode === value ? BLUE : INK_MUTED,
+                  }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Incident toggle */}
+            <button onClick={() => setIncidentMode((c) => !c)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-[10px] uppercase tracking-wider transition-all"
+              style={{
+                background: incidentMode ? `${RED}08` : `${COPPER}08`,
+                border: `1px solid ${incidentMode ? `${RED}20` : `${COPPER}15`}`,
+                color: incidentMode ? RED : COPPER,
+              }}>
+              {incidentMode ? <TrafficCone className="h-3.5 w-3.5" /> : <LifeBuoy className="h-3.5 w-3.5" />}
+              {incidentMode ? "Restore" : "Trigger incident"}
+            </button>
+          </div>
+        </div>
+
+        {/* Hero */}
+        <div className="mb-8">
+          <div className="rounded-xl border p-6 md:p-8" style={{ background: `${INK}02`, border: `1px solid ${INK}06` }}>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="font-mono text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider"
+                style={{ background: `${BLUE}10`, color: BLUE, border: `1px solid ${BLUE}20` }}>
+                ☁️ distributed systems panic room
+              </span>
+              <span className="font-mono text-[10px]" style={{ color: INK_MUTED }}>
+                8 concepts · interactive
+              </span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-bold mb-3" style={{ color: INK }}>
+              Cloud Architecture — The Incident Simulator
+            </h1>
+            <p className="font-mono text-xs leading-relaxed max-w-2xl" style={{ color: INK_MUTED }}>
+              Instead of dumping architecture jargon into cards, this tells the story like production is slightly on fire
+              and you are the adult in the room. Each concept gets a live scene, a plain-English translation,
+              and a portfolio-ready takeaway.
+            </p>
+          </div>
+        </div>
+
+        {/* Main Layout */}
+        <div className="grid gap-6 xl:grid-cols-[240px_minmax(0,1fr)_280px]">
+
+          {/* Sidebar */}
+          <aside className="space-y-2">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[9px] uppercase tracking-[0.2em]" style={{ color: INK_MUTED }}>mission board</span>
+              <RadioTower className="h-3.5 w-3.5" style={{ color: INK_MUTED }} />
+            </div>
+            {CONCEPTS.map((concept, index) => {
+              const isActive = concept.id === activeId;
+              const cTag = TAG_COLORS[concept.tag] ?? COPPER;
+              return (
+                <button key={concept.id}
+                  onClick={() => { setActiveId(concept.id); setIncidentMode(false); }}
+                  className="w-full rounded-xl border p-3 text-left transition-all"
+                  style={{
+                    background: isActive ? `${BLUE}06` : `${INK}02`,
+                    border: `1px solid ${isActive ? `${BLUE}20` : `${INK}06`}`,
+                  }}>
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <div className="w-7 h-7 flex items-center justify-center rounded-lg shrink-0"
+                      style={{ background: `${cTag}10`, color: cTag }}>
+                      {concept.icon}
+                    </div>
+                    <span className="font-mono text-[9px]" style={{ color: INK_MUTED }}>0{index + 1}</span>
+                  </div>
+                  <div className="font-display text-xs font-semibold" style={{ color: INK }}>{concept.title}</div>
+                  <div className="font-mono text-[9px] mt-0.5 leading-relaxed" style={{ color: INK_MUTED }}>{concept.eyebrow}</div>
+                </button>
+              );
+            })}
+          </aside>
+
+          {/* Center: Scene + Explanation */}
+          <main className="flex flex-col rounded-xl overflow-hidden" style={{ border: `1px solid ${INK}08` }}>
+            {/* Scene */}
+            <div className="flex-1 min-h-[320px] py-6" style={{ background: `${INK}02` }}>
+              <Scene conceptId={activeId} incidentMode={incidentMode} />
+            </div>
+
+            {/* Explanation */}
+            <div className="border-t p-5 md:p-6" style={{ background: `${INK}03`, borderColor: `${INK}06` }}>
+              <div className="flex items-center gap-2 mb-3">
+                <BrainCircuit className="h-3.5 w-3.5" style={{ color: BLUE }} />
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em]" style={{ color: BLUE }}>
+                  {mode === "playful" ? "The Sandbox Translation" : "The Principal Translation"}
+                </span>
               </div>
-
-              <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-white md:text-5xl">
-                I rewired this from a boring pattern catalog into a tiny incident simulator.
-              </h1>
-
-              <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 md:text-lg">
-                Instead of dumping architecture jargon into cards, this version tells the story like production is slightly on fire and you are the adult in the room.
-                Each concept gets a live scene, a plain-English translation, a principal-level explanation, and a portfolio-ready takeaway.
+              <p className="font-mono text-xs leading-relaxed mb-5" style={{ color: INK }}>
+                {explanation}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-300">
-                {[
-                  "funny but credible",
-                  "interactive instead of static",
-                  "good for portfolio storytelling",
-                  "feels like a product, not homework",
-                ].map((item) => (
-                  <div key={item} className="rounded-full border border-white/10 bg-black/20 px-3 py-2">
-                    {item}
-                  </div>
-                ))}
+              {/* What Architects Do */}
+              <div className="border-t pt-4" style={{ borderColor: `${INK}06` }}>
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] mb-3 block" style={{ color: COPPER }}>
+                  What Architects Actually Do
+                </span>
+                <ul className="grid gap-2">
+                  {active.whatArchitectsDo.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 rounded-lg border p-3 font-mono text-xs leading-relaxed"
+                      style={{ background: `${INK}02`, border: `1px solid ${INK}06`, color: INK }}>
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: COPPER }} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
+          </main>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              <StatCard label="Active Concept" value={active.title} accent="text-cyan-200" />
-              <StatCard label={active.metricLabel} value={active.metricValue} accent="text-emerald-200" />
+          {/* Right sidebar: Ammo Cards */}
+          <aside className="space-y-4">
+            {/* Stats */}
+            <div className="rounded-xl border p-4" style={{ background: `${INK}03`, border: `1px solid ${INK}08` }}>
+              <span className="font-mono text-[9px] uppercase tracking-wider block mb-1" style={{ color: INK_MUTED }}>
+                {active.metricLabel}
+              </span>
+              <span className="font-display text-xl font-bold" style={{ color: BLUE }}>{active.metricValue}</span>
             </div>
-          </div>
 
-          {/* Main 3-Column Layout */}
-          <div className="grid gap-6 xl:grid-cols-[290px_minmax(0,1fr)_340px]">
-            
-            {/* Column 1: Sidebar Navigation */}
-            <aside className="rounded-[28px] border border-white/10 bg-white/5 p-3 backdrop-blur-md h-fit">
-              <div className="mb-3 flex items-center justify-between px-3 pt-2">
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.26em] text-slate-500">mission board</div>
-                  <div className="mt-1 text-sm text-slate-300">Pick a concept, then break it safely.</div>
-                </div>
-                <RadioTower className="h-4 w-4 text-slate-400" />
-              </div>
+            {/* Tag */}
+            <div className="rounded-xl border p-4" style={{ background: `${tagColor}06`, border: `1px solid ${tagColor}15` }}>
+              <span className="font-mono text-[9px] uppercase tracking-wider block mb-1" style={{ color: tagColor }}>
+                Category
+              </span>
+              <span className="font-mono text-xs font-medium" style={{ color: INK }}>{active.tag}</span>
+            </div>
 
-              <div className="space-y-2">
-                {CONCEPTS.map((concept, index) => {
-                  const activeCard = concept.id === activeId;
-                  return (
-                    <button
-                      key={concept.id}
-                      onClick={() => {
-                        setActiveId(concept.id);
-                        setIncidentMode(false);
-                      }}
-                      className={cn(
-                        "w-full rounded-2xl border p-4 text-left transition",
-                        activeCard
-                          ? "border-cyan-400/30 bg-cyan-500/10 shadow-[0_0_0_1px_rgba(56,189,248,0.18)]"
-                          : "border-white/10 bg-black/10 hover:bg-white/5",
-                      )}
-                    >
-                      <div className="mb-3 flex items-start justify-between gap-3">
-                        <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-100">
-                          {concept.icon}
-                        </div>
-                        <div className="text-[10px] uppercase tracking-[0.22em] text-slate-500">0{index + 1}</div>
-                      </div>
-                      <div className="text-sm font-medium text-white">{concept.title}</div>
-                      <div className="mt-1 text-xs leading-5 text-slate-400">{concept.eyebrow}</div>
-                    </button>
-                  );
-                })}
-              </div>
-            </aside>
+            {/* Hook */}
+            <div className="rounded-xl border p-4" style={{ background: `${PURPLE}04`, border: `1px solid ${PURPLE}12` }}>
+              <span className="font-mono text-[9px] uppercase tracking-wider block mb-2" style={{ color: PURPLE }}>The Hook</span>
+              <p className="font-mono text-xs leading-relaxed" style={{ color: INK }}>{active.hook}</p>
+            </div>
 
-            {/* Column 2: Interactive Scene & Explanation */}
-            <main className="flex min-h-[550px] flex-col rounded-[28px] border border-white/10 bg-[#0B1120] overflow-hidden">
-              <div className="flex-1 relative py-8">
-                <Scene conceptId={activeId} incidentMode={incidentMode} />
-              </div>
-              <div className="border-t border-white/10 bg-white/5 p-6 backdrop-blur-md md:p-8">
-                <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-500">
-                  <BrainCircuit className="h-4 w-4" />
-                  {mode === "playful" ? "The Sandbox Translation" : "The Principal Translation"}
-                </div>
-                <p className="text-base leading-relaxed text-slate-200">
-                  {explanation}
-                </p>
-                
-                {/* What Architects Do */}
-                <div className="mt-8 border-t border-white/10 pt-6">
-                  <div className="mb-4 text-xs uppercase tracking-[0.2em] text-cyan-400">What Architects Actually Do</div>
-                  <ul className="grid gap-3 sm:grid-cols-1">
-                    {active.whatArchitectsDo.map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-slate-300 bg-white/5 p-3 rounded-xl border border-white/5">
-                        <ChevronRight className="h-4 w-4 text-cyan-400 shrink-0 mt-0.5" />
-                        <span className="leading-relaxed">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </main>
+            {/* Why It Matters */}
+            <div className="rounded-xl border p-4" style={{ background: `${COPPER}04`, border: `1px solid ${COPPER}12` }}>
+              <span className="font-mono text-[9px] uppercase tracking-wider block mb-2" style={{ color: COPPER }}>Why It Matters</span>
+              <p className="font-mono text-xs leading-relaxed" style={{ color: INK }}>{active.whyItMatters}</p>
+            </div>
 
-            {/* Column 3: The Ammo Cards */}
-            <aside className="space-y-4 h-fit">
-              <div className="rounded-[28px] border border-fuchsia-500/20 bg-fuchsia-500/5 p-6 backdrop-blur-md">
-                <div className="mb-3 text-xs uppercase tracking-[0.2em] text-fuchsia-400">The Hook</div>
-                <div className="text-sm leading-relaxed text-fuchsia-100">{active.hook}</div>
-              </div>
-              <div className="rounded-[28px] border border-emerald-500/20 bg-emerald-500/5 p-6 backdrop-blur-md">
-                <div className="mb-3 text-xs uppercase tracking-[0.2em] text-emerald-400">Why It Matters</div>
-                <div className="text-sm leading-relaxed text-emerald-100">{active.whyItMatters}</div>
-              </div>
-              <div className="rounded-[28px] border border-cyan-500/20 bg-cyan-500/5 p-6 backdrop-blur-md">
-                <div className="mb-3 text-xs uppercase tracking-[0.2em] text-cyan-400">Interview Ammo</div>
-                <div className="text-sm font-medium leading-relaxed text-cyan-100 border-l-2 border-cyan-500/50 pl-4 py-1 italic">
-                  "{active.interviewAmmo}"
-                </div>
-              </div>
-            </aside>
+            {/* Interview Ammo */}
+            <div className="rounded-xl border p-4" style={{ background: `${BLUE}04`, border: `1px solid ${BLUE}12` }}>
+              <span className="font-mono text-[9px] uppercase tracking-wider block mb-2" style={{ color: BLUE }}>Interview Ammo</span>
+              <p className="font-mono text-xs leading-relaxed italic border-l-2 pl-3 py-1"
+                style={{ color: INK, borderColor: `${BLUE}40` }}>
+                "{active.interviewAmmo}"
+              </p>
+            </div>
+          </aside>
 
-          </div>
         </div>
       </div>
     </div>
